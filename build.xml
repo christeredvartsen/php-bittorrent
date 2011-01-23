@@ -1,0 +1,23 @@
+<project name="phpbt" default="build" basedir=".">
+  <target name="clean">
+    <delete dir="${basedir}/build"/>
+    <mkdir dir="${basedir}/build/coverage" />
+    <mkdir dir="${basedir}/build/logs" />
+    <mkdir dir="${basedir}/build/docs" />
+  </target>
+
+  <target name="phpab">
+    <exec executable="phpab">
+      <arg line="-o ${basedir}/PHP/BitTorrent/Autoload.php 
+                 -t ${basedir}/PHP/BitTorrent/Autoload.php.in 
+                 --indent '        ' 
+                 ${basedir}/PHP" />
+    </exec>
+  </target>
+
+  <target name="phpunit">
+    <exec executable="phpunit" failonerror="true" />
+  </target>
+  
+  <target name="build" depends="clean,phpab,phpunit" />
+</project>
