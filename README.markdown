@@ -1,6 +1,9 @@
 # PHP_BitTorrent
 **PHP_BitTorrent** is a library that provides PHP classes that can be used to encode/decode to/from the BitTorrent format. It also provides tracker classes that can be used to run your own BitTorrent tracker. The package is not a complete tracker system like for instance btit.
 
+## Requirements
+PHP_BitTorrent requires PHP 5.3.x. 
+
 ## Installation
 No automatick installation is available at the moment. PEAR packages will be available as soon as the project is more complete.
 
