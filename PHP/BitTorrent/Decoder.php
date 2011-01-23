@@ -43,7 +43,7 @@ class PHP_BitTorrent_Decoder {
      * @return array
      * @throws PHP_BitTorrent_Decoder_Exception
      */
-    public static function decodeFile($file, $strict = false) {
+    static public function decodeFile($file, $strict = false) {
         if (!is_readable($file)) {
             throw new PHP_BitTorrent_Decoder_Exception('File ' . $file . ' does not exist or can not be read.');
         }
@@ -68,7 +68,7 @@ class PHP_BitTorrent_Decoder {
      * @return mixed
      * @throws PHP_BitTorrent_Decoder_Exception
      */
-    public static function decode($string) {
+    static public function decode($string) {
         if ($string[0] === 'i') {
             return static::decodeInteger($string);
         } else if ($string[0] === 'l') {
@@ -89,7 +89,7 @@ class PHP_BitTorrent_Decoder {
      * @return int
      * @throws PHP_BitTorrent_Decoder_Exception
      */
-    public static function decodeInteger($integer) {
+    static public function decodeInteger($integer) {
         if ($integer[0] !== 'i' || (!$ePos = strpos($integer, 'e'))) {
             throw new PHP_BitTorrent_Decoder_Exception('Invalid integer. Inteers must start wth "i" and end with "e".');
         }
@@ -111,7 +111,7 @@ class PHP_BitTorrent_Decoder {
      * @return string
      * @throws PHP_BitTorrent_Decoder_Exception
      */
-    public static function decodeString($string) {
+    static public function decodeString($string) {
         $stringParts = explode(':', $string, 2);
 
         // The string must have two parts
@@ -136,7 +136,7 @@ class PHP_BitTorrent_Decoder {
      * @return array
      * @throws PHP_BitTorrent_Decoder_Exception
      */
-    public static function decodeList($list) {
+    static public function decodeList($list) {
         if ($list[0] !== 'l') {
             throw new PHP_BitTorrent_Decoder_Exception('Parameter is not an encoded list.');
         }
@@ -167,7 +167,7 @@ class PHP_BitTorrent_Decoder {
      * @return array
      * @throws PHP_BitTorrent_Decoder_Exception
      */
-    public static function decodeDictionary($dictionary) {
+    static public function decodeDictionary($dictionary) {
         if ($dictionary[0] !== 'd') {
             throw new PHP_BitTorrent_Decoder_Exception('Parameter is not an encoded dictionary.');
         }

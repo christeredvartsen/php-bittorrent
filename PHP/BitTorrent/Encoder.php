@@ -42,7 +42,7 @@ class PHP_BitTorrent_Encoder {
      * @return string
      * @throws PHP_BitTorrent_Encoder_Exception
      */
-    public static function encode($var) {
+    static public function encode($var) {
         if (is_int($var)) {
             return static::encodeInteger($var);
         } else if (is_string($var)) {
@@ -69,7 +69,7 @@ class PHP_BitTorrent_Encoder {
      * @return string
      * @throws PHP_BitTorrent_Encoder_Exception
      */
-    public static function encodeInteger($integer) {
+    static public function encodeInteger($integer) {
         if (!is_int($integer)) {
             throw new PHP_BitTorrent_Encoder_Exception('Expected integer, got: ' . gettype($integer) . '.');
         }
@@ -84,7 +84,7 @@ class PHP_BitTorrent_Encoder {
      * @return string
      * @throws PHP_BitTorrent_Encoder_Exception
      */
-    public static function encodeString($string) {
+    static public function encodeString($string) {
         if (!is_string($string)) {
             throw new PHP_BitTorrent_Encoder_Exception('Expected string, got: ' . gettype($string) . '.');
         }
@@ -99,7 +99,7 @@ class PHP_BitTorrent_Encoder {
      * @return string
      * @throws PHP_BitTorrent_Encoder_Exception
      */
-    public static function encodeList($list) {
+    static public function encodeList($list) {
         if (!is_array($list)) {
             throw new PHP_BitTorrent_Encoder_Exception('Expected array, got: ' . gettype($list) . '.');
         }
@@ -120,7 +120,7 @@ class PHP_BitTorrent_Encoder {
      * @return string
      * @throws PHP_BitTorrent_Encoder_Exception
      */
-    public static function encodeDictionary($dictionary) {
+    static public function encodeDictionary($dictionary) {
         if (!is_array($dictionary)) {
             throw new PHP_BitTorrent_Encoder_Exception('Expected array, got: ' . gettype($dictionary) . '.');
         }
