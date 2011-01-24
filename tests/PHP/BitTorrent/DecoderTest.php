@@ -1,5 +1,7 @@
 <?php
 /**
+ * PHP_BitTorrent
+ *
  * Copyright (c) 2011 Christer Edvartsen <cogo@starzinger.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
