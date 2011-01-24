@@ -8,19 +8,7 @@ PHP_BitTorrent requires PHP 5.3.x.
 No automatic installation is available at the moment. PEAR packages will be available as soon as the project is more complete.
 
 ### Manual installation
-First, generate the Autoload.php file by running the [phpab](https://github.com/theseer/Autoload) target in the build.xml file:
-
-    christer@aurora:~/php-bittorrent$ ant phpab
-    Buildfile: build.xml
-
-    phpab:
-         [exec] Autoload file '/home/christer/php-bittorrent/PHP/BitTorrent/Autoload.php' generated.
-         [exec] 
-
-    BUILD SUCCESSFUL
-    Total time: 0 seconds
-    
-Then, add the php-bittorrent directory to your include path so you can require the generated Autoload.php script by:
+Fetch the code from github and place it in some directory. Add the directory to PHP's include_path so you can require the Autoload.php script by doing:
 
     <?php
     require_once 'PHP/BitTorrent/Autoload.php';
