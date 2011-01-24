@@ -143,4 +143,8 @@ class PHP_BitTorrent_DecoderTest extends PHPUnit_Framework_TestCase {
         $this->setExpectedException('PHP_BitTorrent_Decoder_Exception');
         PHP_BitTorrent_Decoder::decodeFile($file);
     }
+
+    public function testDecodeFileWithStrictChecksEnabled() {
+        $list = PHP_BitTorrent_Decoder::decodeFile(__DIR__ . '/_files/valid.torrent', true);
+    }
 }
