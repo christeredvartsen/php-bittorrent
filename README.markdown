@@ -5,7 +5,7 @@
 PHP_BitTorrent requires PHP 5.3.x. 
 
 ## Installation
-No automatick installation is available at the moment. PEAR packages will be available as soon as the project is more complete.
+No automatic installation is available at the moment. PEAR packages will be available as soon as the project is more complete.
 
 ### Manual installation
 First, generate the Autoload.php file by running the [phpab](https://github.com/theseer/Autoload) target in the build.xml file:
@@ -58,6 +58,29 @@ The decoder class also has a method for decoding a torrent file (which is an enc
     
     $decodedFile = PHP_BitTorrent_Decoder::decodeFile('/path/to/file.torrent');
     
+### Create new torrent files and open existing ones
+The **PHP_BitTorrent_Torrent** class represents a torrent file and can be used to create torrent files.
+
+    <?php
+    require_once 'PHP/BitTorrent/Autoload.php';
+    
+    $torrent = new PHP_BitTorrent_Torrent();
+    $torrent->setAnnounce('http://tracker/announce.php')
+            ->setComment('Some comment')
+            ->loadFromPath('/path/to/files')
+            ->save('/save/path/file.torrent');
+            
+The class can also load a torrent file:
+
+    <?php
+    require_once 'PHP/BitTorrent/Autoload.php';
+    
+    $torrent = new PHP_BitTorrent_Torrent();
+    $torrent->loadFromTorrentFile('/path/to/file.torrent')
+            ->setAnnounce('http://tracker/announce.php') // Override announce in original file
+            ->setComment('Some comment') // Override commend in original file
+            ->save('/save/path/file.torrent'); // Save to a new file
+            
 
 
 ## Using the `phpbt` tool
