@@ -11,6 +11,7 @@ Installation
 No automatic installation is available at the moment. PEAR packages will be available as soon as the project is more complete.
 
 **Manual installation**
+
 Fetch the code from https://github.com/christeredvartsen/php-bittorrent and place it in some directory. Add the directory to PHP's include_path so you can require the Autoload.php script by doing:
 
     <?php
@@ -43,6 +44,7 @@ There is also a convenience method simply called *encode* in the PHP_BitTorrent_
 There is also a convenience method called decode that can decode any bittorrent endocded data.
 
 **Decode torrent files**
+
 The decoder class also has a method for decoding a torrent file (which is an encoded dictionary):
 
     <?php
@@ -51,6 +53,7 @@ The decoder class also has a method for decoding a torrent file (which is an enc
     $decodedFile = PHP_BitTorrent_Decoder::decodeFile('/path/to/file.torrent');
     
 **Create new torrent files and open existing ones**
+
 The **PHP_BitTorrent_Torrent** class represents a torrent file and can be used to create torrent files.
 
     <?php
