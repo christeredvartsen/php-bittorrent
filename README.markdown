@@ -1,24 +1,24 @@
+PHP_BitTorrent
+==============
 **PHP_BitTorrent** is a library that provides PHP classes that can be used to encode/decode to/from the BitTorrent format. It also provides tracker classes that can be used to run your own BitTorrent tracker. The package is not a complete tracker system like for instance btit.
 
 Requirements
-============
-PHP_BitTorrent requires PHP 5.3.x. 
+------------
+PHP_BitTorrent requires PHP 5.3.x or above. 
 
 Installation
-============
+------------
 No automatic installation is available at the moment. PEAR packages will be available as soon as the project is more complete.
 
-Manual installation
--------------------
-Fetch the code from github and place it in some directory. Add the directory to PHP's include_path so you can require the Autoload.php script by doing:
+**Manual installation**
+Fetch the code from https://github.com/christeredvartsen/php-bittorrent and place it in some directory. Add the directory to PHP's include_path so you can require the Autoload.php script by doing:
 
     <?php
     require_once 'PHP/BitTorrent/Autoload.php';
 
 Using the PHP_BitTorrent API
-============================
-Encode PHP variables
---------------------
+----------------------------
+**Encode PHP variables**
 
     <?php
     require_once 'PHP/BitTorrent/Autoload.php';
@@ -28,10 +28,9 @@ Encode PHP variables
     var_dump(PHP_BitTorrent_Encoder::encodeList(array(1, 2, 3)); // string(11) "li1ei2ei3ee" 
     var_dump(PHP_BitTorrent_Encoder::encodeDictionary(array('foo' => 'bar', 'bar' => 'foo')); // string(22) "d3:foo3:bar3:bar3:fooe"
     
-There is also a convenience method simply called **encode** in the PHP_BitTorrent_Encoder that can be used to encode all encodable variables. Only int, string and arrays can be encoded.
+There is also a convenience method simply called *encode* in the PHP_BitTorrent_Encoder class that can be used to encode all encodable variables. Only integers, strings and arrays can be encoded to the BitTorrent format.
     
-Decode BitTorrent encoded data
-------------------------------
+**Decode BitTorrent encoded data**
 
     <?php
     require_once 'PHP/BitTorrent/Autoload.php';
@@ -43,8 +42,7 @@ Decode BitTorrent encoded data
 
 There is also a convenience method called decode that can decode any bittorrent endocded data.
 
-Decode torrent files
---------------------
+**Decode torrent files**
 The decoder class also has a method for decoding a torrent file (which is an encoded dictionary):
 
     <?php
@@ -52,8 +50,7 @@ The decoder class also has a method for decoding a torrent file (which is an enc
     
     $decodedFile = PHP_BitTorrent_Decoder::decodeFile('/path/to/file.torrent');
     
-Create new torrent files and open existing ones
------------------------------------------------
+**Create new torrent files and open existing ones**
 The **PHP_BitTorrent_Torrent** class represents a torrent file and can be used to create torrent files.
 
     <?php
