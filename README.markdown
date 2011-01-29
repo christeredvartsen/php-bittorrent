@@ -8,14 +8,21 @@ PHP_BitTorrent requires PHP 5.3.x or above.
 
 Installation
 ------------
-No automatic installation is available at the moment. PEAR packages will be available as soon as the project is more complete.
+PHP_BitTorrent should be installed using [PEAR](http://pear.php.net/).
 
-**Manual installation**
+The PEAR channel (`pear.starzinger.net`) that is used to distribute PHP_BitTorrent needs to be registered with the local PEAR environment.
 
-Fetch the code from https://github.com/christeredvartsen/php-bittorrent and place it in some directory. Add the directory to PHP's include_path so you can require the Autoload.php script by doing:
+    christer@aurora:~$ sudo pear channel-discover pear.starzinger.net
+    Adding Channel "pear.starzinger.net" succeeded
+    Discovery of channel "pear.starzinger.net" succeeded
 
-    <?php
-    require_once 'PHP/BitTorrent/Autoload.php';
+This has to be done only once. Now, to install the package:
+
+    christer@aurora:~$ sudo pear install stz/PHP_BitTorrent-alpha
+    downloading PHP_BitTorrent-0.0.1.tgz ...
+    Starting to download PHP_BitTorrent-0.0.1.tgz (8,037 bytes)
+    .....done: 8,037 bytes
+    install ok: channel://pear.starzinger.net/PHP_BitTorrent-0.0.1
 
 Using the PHP_BitTorrent API
 ----------------------------
