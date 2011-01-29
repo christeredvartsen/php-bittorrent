@@ -211,19 +211,9 @@ class PHP_BitTorrent_TorrentTest extends PHPUnit_Framework_TestCase  {
     }
 
     public function testSaveWithNoAnnounce() {
-        $path      = __FILE__;
-        $target    = tempnam(sys_get_temp_dir(), 'PHP_BitTorrent');
-
-        if (!$target) {
-            $this->fail('Could not create file: ' . $target);
-        }
-
-        $this->torrent->loadFromPath($path);
+        $this->torrent->loadFromPath(__FILE__);
         $this->setExpectedException('PHP_BitTorrent_Torrent_Exception');
-        $this->torrent->save($target);
-
-        // Remove the saved file
-        unlink($target);
+        $this->torrent->save('/some/target');
     }
 
     /**
@@ -240,8 +230,5 @@ class PHP_BitTorrent_TorrentTest extends PHPUnit_Framework_TestCase  {
                       ->setAnnounce('http://tracker/');
         $this->setExpectedException('PHP_BitTorrent_Torrent_Exception');
         $this->torrent->save($target);
-
-        // Remove the saved file
-        unlink($target);
     }
 }
