@@ -210,10 +210,15 @@ class PHP_BitTorrent_TorrentTest extends PHPUnit_Framework_TestCase  {
         unlink($target);
     }
 
+    /**
+     * Try to save when no announce has been given. The code we are testing is AFTER the code that
+     * checks if the file specified is writeable, so make sure the argument to save() is a file that
+     * is writeable.
+     */
     public function testSaveWithNoAnnounce() {
         $this->torrent->loadFromPath(__FILE__);
         $this->setExpectedException('PHP_BitTorrent_Torrent_Exception');
-        $this->torrent->save('/some/target');
+        $this->torrent->save('/tmp/file');
     }
 
     /**
