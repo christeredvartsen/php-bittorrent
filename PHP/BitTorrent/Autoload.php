@@ -60,6 +60,8 @@ class PHP_BitTorrent_Autoload {
         'php_bittorrent_tracker_response' => '/BitTorrent/Tracker/Response.php',
         'php_bittorrent_tracker_storageadapter_abstract' => '/BitTorrent/Tracker/StorageAdapter/Abstract.php',
         'php_bittorrent_tracker_storageadapter_exception' => '/BitTorrent/Tracker/StorageAdapter/Exception.php',
+        'php_bittorrent_tracker_storageadapter_sqlite' => '/BitTorrent/Tracker/StorageAdapter/Sqlite.php',
+        'php_bittorrent_tracker_storageadapter_sqlite_exception' => '/BitTorrent/Tracker/StorageAdapter/Sqlite/Exception.php'
     );
 
     /**
