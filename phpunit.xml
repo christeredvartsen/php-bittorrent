@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit syntaxCheck="false" bootstrap="PHP/BitTorrent/Autoload.php">
+<phpunit colors="true" 
+         bootstrap="PHP/BitTorrent/Autoload.php">
     <testsuites>
         <testsuite name="phpbt">
             <directory suffix="Test.php">tests/PHP/BitTorrent</directory>
