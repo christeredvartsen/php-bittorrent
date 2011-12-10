@@ -28,6 +28,10 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 
+namespace PHP\BitTorrent\Tracker;
+
+use \PHP\BitTorrent\Exception as BaseException;
+
 /**
  * Exception class for the tracker
  *
@@ -36,7 +40,7 @@
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-class PHP_BitTorrent_Tracker_Exception extends PHP_BitTorrent_Exception {
+class Exception extends BaseException {
     /**
      * Encode the error message to it can be sent to a BitTorrent client
      *
@@ -47,6 +51,6 @@ class PHP_BitTorrent_Tracker_Exception extends PHP_BitTorrent_Exception {
      * @return string
      */
     public function getMessageEncoded() {
-        return PHP_BitTorrent_Encoder::encodeDictionary(array('failure reason' => $this->getMessage()));
+        return \PHP\BitTorrent\Encoder::encodeDictionary(array('failure reason' => $this->getMessage()));
     }
 }

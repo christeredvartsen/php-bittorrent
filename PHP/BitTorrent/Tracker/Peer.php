@@ -28,6 +28,8 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 
+namespace PHP\BitTorrent\Tracker;
+
 /**
  * This class represents a peer that is connected to the BitTorrent tracker
  *
@@ -36,7 +38,7 @@
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-class PHP_BitTorrent_Tracker_Peer {
+class Peer {
     /**
      * Ip address of the peer
      *
@@ -83,7 +85,7 @@ class PHP_BitTorrent_Tracker_Peer {
      * Set the ip property
      *
      * @param string $ip
-     * @return PHP_BitTorrent_Tracker_Peer
+     * @return \PHP\BitTorrent\Tracker\Peer
      */
     public function setIp($ip) {
         $this->ip = $ip;
@@ -104,7 +106,7 @@ class PHP_BitTorrent_Tracker_Peer {
      * Set the peer ID
      *
      * @param string $id
-     * @return PHP_BitTorrent_Tracker_Peer
+     * @return \PHP\BitTorrent\Tracker\Peer
      */
     public function setId($id) {
         $this->id = $id;
@@ -125,7 +127,7 @@ class PHP_BitTorrent_Tracker_Peer {
      * Set the port number
      *
      * @param int $port
-     * @return PHP_BitTorrent_Tracker_Peer
+     * @return \PHP\BitTorrent\Tracker\Peer
      */
     public function setPort($port) {
         $this->port = (int) $port;
@@ -146,7 +148,7 @@ class PHP_BitTorrent_Tracker_Peer {
      * Set the downloaded property
      *
      * @param int $downloaded
-     * @return PHP_BitTorrent_Tracker_Peer
+     * @return \PHP\BitTorrent\Tracker\Peer
      */
     public function setDownloaded($downloaded) {
         $this->downloaded = (int) $downloaded;
@@ -167,7 +169,7 @@ class PHP_BitTorrent_Tracker_Peer {
      * Set the uploaded property
      *
      * @param int $uploaded
-     * @return PHP_BitTorrent_Tracker_Peer
+     * @return \PHP\BitTorrent\Tracker\Peer
      */
     public function setUploaded($uploaded) {
         $this->uploaded = (int) $uploaded;
@@ -188,7 +190,7 @@ class PHP_BitTorrent_Tracker_Peer {
      * Set the left property
      *
      * @param int $left
-     * @return PHP_BitTorrent_Tracker_Peer
+     * @return \PHP\BitTorrent\Tracker\Peer
      */
     public function setLeft($left) {
         $this->left = (int) $left;

@@ -29,6 +29,8 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 
+namespace PHP\BitTorrent\Tests;
+
 /**
  * @package PHP_BitTorrent
  * @subpackage UnitTests
@@ -36,19 +38,19 @@
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-class PHP_BitTorrent_EncoderTest extends PHPUnit_Framework_TestCase {
+class EncoderTest extends \PHPUnit_Framework_TestCase {
     public function testEncodeInteger() {
         $decoded = array(-1, 0, 1);
         $encoded = array('i-1e', 'i0e', 'i1e');
 
         for ($i = 0; $i < count($decoded); $i++) {
-            $this->assertSame($encoded[$i], PHP_BitTorrent_Encoder::encodeInteger($decoded[$i]));
+            $this->assertSame($encoded[$i], \PHP\BitTorrent\Encoder::encodeInteger($decoded[$i]));
         }
     }
 
     public function testEncodeNonIntegerAsInteger() {
-        $this->setExpectedException('PHP_BitTorrent_Encoder_Exception');
-        PHP_BitTorrent_Encoder::encodeInteger('1');
+        $this->setExpectedException('\PHP\BitTorrent\Encoder\Exception');
+        \PHP\BitTorrent\Encoder::encodeInteger('1');
     }
 
     public function testEncodeString() {
@@ -56,37 +58,37 @@ class PHP_BitTorrent_EncoderTest extends PHPUnit_Framework_TestCase {
         $encoded = array('4:spam', '6:foobar', '7:foo:bar');
 
         for ($i = 0; $i < count($decoded); $i++) {
-            $this->assertSame($encoded[$i], PHP_BitTorrent_Encoder::encodeString($decoded[$i]));
+            $this->assertSame($encoded[$i], \PHP\BitTorrent\Encoder::encodeString($decoded[$i]));
         }
     }
 
     public function testEncodeNonStringAsString() {
-        $this->setExpectedException('PHP_BitTorrent_Encoder_Exception');
-        PHP_BitTorrent_Encoder::encodeString(1);
+        $this->setExpectedException('\PHP\BitTorrent\Encoder\Exception');
+        \PHP\BitTorrent\Encoder::encodeString(1);
     }
 
     public function testEncodeList() {
         $decoded = array('spam', 1, array(1));
         $encoded = 'l4:spami1eli1eee';
 
-        $this->assertSame($encoded, PHP_BitTorrent_Encoder::encodeList($decoded));
+        $this->assertSame($encoded, \PHP\BitTorrent\Encoder::encodeList($decoded));
     }
 
     public function testEncodeNonListAsList() {
-        $this->setExpectedException('PHP_BitTorrent_Encoder_Exception');
-        PHP_BitTorrent_Encoder::encodeList(1);
+        $this->setExpectedException('\PHP\BitTorrent\Encoder\Exception');
+        \PHP\BitTorrent\Encoder::encodeList(1);
     }
 
     public function testEncodeDictionary() {
         $decoded = array('1' => 'foo', 'foo' => 'bar', 'list' => array(1, 2, 3));
         $encoded = 'd1:13:foo3:foo3:bar4:listli1ei2ei3eee';
 
-        $this->assertSame($encoded, PHP_BitTorrent_Encoder::encodeDictionary($decoded));
+        $this->assertSame($encoded, \PHP\BitTorrent\Encoder::encodeDictionary($decoded));
     }
 
     public function testEncodeDictionaryListAsDictionary() {
-        $this->setExpectedException('PHP_BitTorrent_Encoder_Exception');
-        PHP_BitTorrent_Encoder::encodeDictionary('foo');
+        $this->setExpectedException('\PHP\BitTorrent\Encoder\Exception');
+        \PHP\BitTorrent\Encoder::encodeDictionary('foo');
     }
 
     public function testEncodeUsingGenericMethod() {
@@ -94,12 +96,12 @@ class PHP_BitTorrent_EncoderTest extends PHPUnit_Framework_TestCase {
         $encoded = array('i1e', '4:spam', 'li1ei2ee', 'd3:foo3:bar4:spam5:suckse');
 
         for ($i = 0; $i < count($decoded); $i++) {
-            $this->assertSame($encoded[$i], PHP_BitTorrent_Encoder::encode($decoded[$i]));
+            $this->assertSame($encoded[$i], \PHP\BitTorrent\Encoder::encode($decoded[$i]));
         }
     }
 
     public function testEncodeNonSupportedType() {
-        $this->setExpectedException('PHP_BitTorrent_Encoder_Exception');
-        PHP_BitTorrent_Encoder::encode(new stdClass());
+        $this->setExpectedException('\PHP\BitTorrent\Encoder\Exception');
+        \PHP\BitTorrent\Encoder::encode(new \stdClass());
     }
 }
