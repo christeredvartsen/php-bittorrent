@@ -1,7 +1,7 @@
 {
     "name": "christeredvartsen/php-bittorrent",
     "type": "library",
-    "description": "The PHP micro-framework based on the Symfony2 Components",
+    "description": "PHP classes for encoding/decoding data to/from the BitTorrent format, creating torrent files and running your own tracker.",
     "keywords": ["bittorrent", "torrent", "tracker"],
     "homepage": "https://github.com/christeredvartsen/php-bittorrent",
     "version": "1.0.0",
