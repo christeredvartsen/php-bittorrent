@@ -1,2 +1,4 @@
 build
+phpunit.xml
+build.xml
 .idea
