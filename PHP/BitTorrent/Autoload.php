@@ -50,18 +50,7 @@ class PHP_BitTorrent_Autoload {
         'php_bittorrent_encoder_exception' => '/BitTorrent/Encoder/Exception.php',
         'php_bittorrent_exception' => '/BitTorrent/Exception.php',
         'php_bittorrent_torrent' => '/BitTorrent/Torrent.php',
-        'php_bittorrent_torrent_exception' => '/BitTorrent/Torrent/Exception.php',
-        'php_bittorrent_tracker' => '/BitTorrent/Tracker.php',
-        'php_bittorrent_tracker_eventlistener' => '/BitTorrent/Tracker/Eventlistener.php',
-        'php_bittorrent_tracker_exception' => '/BitTorrent/Tracker/Exception.php',
-        'php_bittorrent_tracker_peer' => '/BitTorrent/Tracker/Peer.php',
-        'php_bittorrent_tracker_request' => '/BitTorrent/Tracker/Request.php',
-        'php_bittorrent_tracker_request_exception' => '/BitTorrent/Tracker/Request/Exception.php',
-        'php_bittorrent_tracker_response' => '/BitTorrent/Tracker/Response.php',
-        'php_bittorrent_tracker_storageadapter_abstract' => '/BitTorrent/Tracker/StorageAdapter/Abstract.php',
-        'php_bittorrent_tracker_storageadapter_exception' => '/BitTorrent/Tracker/StorageAdapter/Exception.php',
-        'php_bittorrent_tracker_storageadapter_sqlite' => '/BitTorrent/Tracker/StorageAdapter/Sqlite.php',
-        'php_bittorrent_tracker_storageadapter_sqlite_exception' => '/BitTorrent/Tracker/StorageAdapter/Sqlite/Exception.php'
+        'php_bittorrent_torrent_exception' => '/BitTorrent/Torrent/Exception.php'
     );
 
     /**
