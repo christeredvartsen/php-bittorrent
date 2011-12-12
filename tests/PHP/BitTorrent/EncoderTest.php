@@ -1,6 +1,6 @@
 <?php
 /**
- * PHP_BitTorrent
+ * PHP BitTorrent
  *
  * Copyright (c) 2011 Christer Edvartsen <cogo@starzinger.net>
  *
@@ -22,86 +22,171 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  *
- * @package PHP_BitTorrent
  * @subpackage UnitTests
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 
-namespace PHP\BitTorrent\Tests;
+namespace PHP\BitTorrent;
 
 /**
- * @package PHP_BitTorrent
  * @subpackage UnitTests
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 class EncoderTest extends \PHPUnit_Framework_TestCase {
-    public function testEncodeInteger() {
-        $decoded = array(-1, 0, 1);
-        $encoded = array('i-1e', 'i0e', 'i1e');
+    /**
+     * Encoder instance
+     *
+     * @var PHP\BitTorrent\Encdoder
+     */
+    private $encoder;
 
-        for ($i = 0; $i < count($decoded); $i++) {
-            $this->assertSame($encoded[$i], \PHP\BitTorrent\Encoder::encodeInteger($decoded[$i]));
-        }
+    /**
+     * Set up the encoder
+     */
+    public function setUp() {
+        $this->encoder = new Encoder();
     }
 
+    /**
+     * Tear down the encoder
+     */
+    public function tearDown() {
+        $this->encoder = null;
+    }
+
+    /**
+     * Data provider
+     *
+     * @return array
+     */
+    public function getEncodeIntegerData() {
+        return array(
+            array(-1, 'i-1e'),
+            array(0, 'i0e'),
+            array(1, 'i1e'),
+        );
+    }
+
+    /**
+     * @dataProvider getEncodeIntegerData()
+     */
+    public function testEncodeInteger($value, $encoded) {
+        $this->assertSame($encoded, $this->encoder->encodeInteger($value));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
     public function testEncodeNonIntegerAsInteger() {
-        $this->setExpectedException('\PHP\BitTorrent\Encoder\Exception');
-        \PHP\BitTorrent\Encoder::encodeInteger('1');
+        $this->encoder->encodeInteger('1');
     }
 
-    public function testEncodeString() {
-        $decoded = array('spam', 'foobar', 'foo:bar');
-        $encoded = array('4:spam', '6:foobar', '7:foo:bar');
-
-        for ($i = 0; $i < count($decoded); $i++) {
-            $this->assertSame($encoded[$i], \PHP\BitTorrent\Encoder::encodeString($decoded[$i]));
-        }
+    /**
+     * Data provider
+     *
+     * @return array
+     */
+    public function getEncodeStringData() {
+        return array(
+            array('spam', '4:spam'),
+            array('foobar', '6:foobar'),
+            array('foo:bar', '7:foo:bar'),
+        );
     }
 
+    /**
+     * @dataProvider getEncodeStringData()
+     */
+    public function testEncodeString($value, $encoded) {
+        $this->assertSame($encoded, $this->encoder->encodeString($value));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
     public function testEncodeNonStringAsString() {
-        $this->setExpectedException('\PHP\BitTorrent\Encoder\Exception');
-        \PHP\BitTorrent\Encoder::encodeString(1);
+        $this->encoder->encodeString(1);
     }
 
-    public function testEncodeList() {
-        $decoded = array('spam', 1, array(1));
-        $encoded = 'l4:spami1eli1eee';
-
-        $this->assertSame($encoded, \PHP\BitTorrent\Encoder::encodeList($decoded));
+    /**
+     * Data provider
+     *
+     * @return array
+     */
+    public function getEncodeListData() {
+        return array(
+            array(array('spam', 1, array(1)), 'l4:spami1eli1eee'),
+        );
     }
 
+    /**
+     * @dataProvider getEncodeListData()
+     */
+    public function testEncodeList($value, $encoded) {
+        $this->assertSame($encoded, $this->encoder->encodeList($value));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
     public function testEncodeNonListAsList() {
-        $this->setExpectedException('\PHP\BitTorrent\Encoder\Exception');
-        \PHP\BitTorrent\Encoder::encodeList(1);
+        $this->encoder->encodeList(1);
     }
 
-    public function testEncodeDictionary() {
-        $decoded = array('1' => 'foo', 'foo' => 'bar', 'list' => array(1, 2, 3));
-        $encoded = 'd1:13:foo3:foo3:bar4:listli1ei2ei3eee';
-
-        $this->assertSame($encoded, \PHP\BitTorrent\Encoder::encodeDictionary($decoded));
+    /**
+     * Data provider
+     *
+     * @return array
+     */
+    public function getEncodeDictionaryData() {
+        return array(
+            array(array('1' => 'foo', 'foo' => 'bar', 'list' => array(1, 2, 3)), 'd1:13:foo3:foo3:bar4:listli1ei2ei3eee'),
+        );
     }
 
+    /**
+     * @dataProvider getEncodeDictionaryData()
+     */
+    public function testEncodeDictionary($value, $encoded) {
+        $this->assertSame($encoded, $this->encoder->encodeDictionary($value));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
     public function testEncodeDictionaryListAsDictionary() {
-        $this->setExpectedException('\PHP\BitTorrent\Encoder\Exception');
-        \PHP\BitTorrent\Encoder::encodeDictionary('foo');
+        $this->encoder->encodeDictionary('foo');
     }
 
-    public function testEncodeUsingGenericMethod() {
-        $decoded = array(1, 'spam', array(1, 2), array('foo' => 'bar', 'spam' => 'sucks'));
-        $encoded = array('i1e', '4:spam', 'li1ei2ee', 'd3:foo3:bar4:spam5:suckse');
-
-        for ($i = 0; $i < count($decoded); $i++) {
-            $this->assertSame($encoded[$i], \PHP\BitTorrent\Encoder::encode($decoded[$i]));
-        }
+    /**
+     * Data provider
+     *
+     * @return array
+     */
+    public function getEncodeData() {
+        return array(
+            array(1, 'i1e'),
+            array('spam', '4:spam'),
+            array(array(1, 2), 'li1ei2ee'),
+            array(array('foo' => 'bar', 'spam' => 'sucks'), 'd3:foo3:bar4:spam5:suckse'),
+        );
     }
 
+    /**
+     * @dataProvider getEncodeData()
+     */
+    public function testEncodeUsingGenericMethod($value, $encoded) {
+        $this->assertSame($encoded, $this->encoder->encode($value));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
     public function testEncodeNonSupportedType() {
-        $this->setExpectedException('\PHP\BitTorrent\Encoder\Exception');
-        \PHP\BitTorrent\Encoder::encode(new \stdClass());
+        $this->encoder->encode(new \stdClass());
     }
 }
