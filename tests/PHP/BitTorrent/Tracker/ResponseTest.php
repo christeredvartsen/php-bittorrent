@@ -29,6 +29,8 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 
+namespace PHP\BitTorrent\Tests\Tracker;
+
 /**
  * @package PHP_BitTorrent
  * @subpackage UnitTests
@@ -36,7 +38,7 @@
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-class PHP_BitTorrent_Tracker_ResponseTest extends PHPUnit_Framework_TestCase {
+class ResponseTest extends \PHPUnit_Framework_TestCase {
     /**
      * Response object
      *
@@ -45,7 +47,7 @@ class PHP_BitTorrent_Tracker_ResponseTest extends PHPUnit_Framework_TestCase {
     protected $response = null;
 
     public function setUp() {
-        $this->response = new PHP_BitTorrent_Tracker_Response();
+        $this->response = new \PHP\BitTorrent\Tracker\Response();
     }
 
     public function tearDown() {
@@ -65,7 +67,7 @@ class PHP_BitTorrent_Tracker_ResponseTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testAddAndGetSinglePeer() {
-        $peer = new PHP_BitTorrent_Tracker_Peer();
+        $peer = new \PHP\BitTorrent\Tracker\Peer();
 
         $this->response->addPeer($peer);
         $peers = $this->response->getPeers();
@@ -76,9 +78,9 @@ class PHP_BitTorrent_Tracker_ResponseTest extends PHPUnit_Framework_TestCase {
 
     public function testAddAndGetSeveralPeers() {
         $peers = array(
-            new PHP_BitTorrent_Tracker_Peer(),
-            new PHP_BitTorrent_Tracker_Peer(),
-            new PHP_BitTorrent_Tracker_Peer(),
+            new \PHP\BitTorrent\Tracker\Peer(),
+            new \PHP\BitTorrent\Tracker\Peer(),
+            new \PHP\BitTorrent\Tracker\Peer(),
         );
 
         $this->response->addPeers($peers);
@@ -101,17 +103,17 @@ class PHP_BitTorrent_Tracker_ResponseTest extends PHPUnit_Framework_TestCase {
 
     public function testMagicToStringMethod() {
         // Add a peer
-        $leech = new PHP_BitTorrent_Tracker_Peer();
+        $leech = new \PHP\BitTorrent\Tracker\Peer();
         $leech->setId('id#1')->setIp('127.0.0.1')->setPort(123)->setLeft(123);
 
-        $seed = new PHP_BitTorrent_Tracker_Peer();
+        $seed = new \PHP\BitTorrent\Tracker\Peer();
         $seed->setId('id#2')->setIp('127.0.0.2')->setPort(1234)->setLeft(0);
 
         $this->response->addPeer($leech)->addPeer($seed);
         $response = (string) $this->response;
 
         // Decode the response
-        $responseDecoded = PHP_BitTorrent_Decoder::decode($response);
+        $responseDecoded = \PHP\BitTorrent\Decoder::decode($response);
 
         $this->assertSame(1, $responseDecoded['complete']);
         $this->assertSame(1, $responseDecoded['incomplete']);
@@ -122,17 +124,17 @@ class PHP_BitTorrent_Tracker_ResponseTest extends PHPUnit_Framework_TestCase {
         $this->response->setCompact(true);
 
         // Add a peer
-        $leech = new PHP_BitTorrent_Tracker_Peer();
+        $leech = new \PHP\BitTorrent\Tracker\Peer();
         $leech->setId('id#1')->setIp('127.0.0.1')->setPort(123)->setLeft(123);
 
-        $seed = new PHP_BitTorrent_Tracker_Peer();
+        $seed = new \PHP\BitTorrent\Tracker\Peer();
         $seed->setId('id#2')->setIp('127.0.0.2')->setPort(1234)->setLeft(0);
 
         $this->response->addPeer($leech)->addPeer($seed);
         $response = (string) $this->response;
 
         // Decode the response
-        $responseDecoded = PHP_BitTorrent_Decoder::decode($response);
+        $responseDecoded = \PHP\BitTorrent\Decoder::decode($response);
         $this->assertSame(1, $responseDecoded['complete']);
         $this->assertSame(1, $responseDecoded['incomplete']);
         $this->assertInternalType('string', $responseDecoded['peers']);

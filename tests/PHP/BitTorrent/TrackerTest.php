@@ -29,6 +29,8 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 
+namespace PHP\BitTorrent\Tests;
+
 /**
  * @package PHP_BitTorrent
  * @subpackage UnitTests
@@ -36,7 +38,7 @@
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-class PHP_BitTorrent_TrackerTest extends PHPUnit_Framework_TestCase {
+class TrackerTest extends \PHPUnit_Framework_TestCase {
     /**
      * Tracker instance
      *
@@ -48,7 +50,7 @@ class PHP_BitTorrent_TrackerTest extends PHPUnit_Framework_TestCase {
      * Set up method
      */
     public function setUp() {
-        $this->tracker = new PHP_BitTorrent_Tracker();
+        $this->tracker = new \PHP\BitTorrent\Tracker();
     }
 
     /**
@@ -104,7 +106,7 @@ class PHP_BitTorrent_TrackerTest extends PHPUnit_Framework_TestCase {
      * Test the set and get methods for the request
      */
     public function testSetAndGetRequest() {
-        $request = new PHP_BitTorrent_Tracker_Request();
+        $request = new \PHP\BitTorrent\Tracker\Request();
         $this->tracker->setRequest($request);
 
         $this->assertSame($request, $this->tracker->getRequest());
@@ -114,14 +116,14 @@ class PHP_BitTorrent_TrackerTest extends PHPUnit_Framework_TestCase {
      * Test the set and get methods for the storage adapter
      */
     public function testSetGetStorageAdapter() {
-        $adapter = new PHP_BitTorrent_Tracker_StorageAdapter_Sqlite();
+        $adapter = new \PHP\BitTorrent\Tracker\StorageAdapter\SqliteStorage();
         $this->tracker->setStorageAdapter($adapter);
 
         $this->assertSame($adapter, $this->tracker->getStorageAdapter());
     }
 
     /**
-     * @expectedException PHP_BitTorrent_Tracker_Exception
+     * @expectedException \PHP\BitTorrent\Tracker\Exception
      */
     public function testGetStorageAdapterWhenNoneIsSet() {
         $this->tracker->getStorageAdapter();
@@ -130,7 +132,7 @@ class PHP_BitTorrent_TrackerTest extends PHPUnit_Framework_TestCase {
     /**
      * Test the serve method with an invalid request
      *
-     * @expectedException PHP_BitTorrent_Tracker_Exception
+     * @expectedException \PHP\BitTorrent\Tracker\Exception
      * @expectedExceptionMessage Missing parameter "ip"
      */
     public function testServeWithInvalidRequest() {
@@ -141,13 +143,13 @@ class PHP_BitTorrent_TrackerTest extends PHPUnit_Framework_TestCase {
      * Trigger the serve method when torrent is unknown and the auto register feature is not
      * enabled (the default value)
      *
-     * @expectedException PHP_BitTorrent_Tracker_Exception
+     * @expectedException \PHP\BitTorrent\Tracker\Exception
      * @expectedExceptionMessage Torrent not found on this tracker
      */
     public function testServeWithUnknownTorrentAndAutoRegisterIsDisabled() {
         $params = $this->getParamsForRequestMock();
-        $request = $this->getMock('PHP_BitTorrent_Tracker_Request', null, array($params));
-        $storageAdapter = $this->getMockForAbstractClass('PHP_BitTorrent_Tracker_StorageAdapter_Abstract');
+        $request = $this->getMock('\PHP\BitTorrent\Tracker\Request', null, array($params));
+        $storageAdapter = $this->getMockForAbstractClass('\PHP\BitTorrent\Tracker\StorageAdapter\AbstractStorage');
 
         $this->tracker->setRequest($request)->setStorageAdapter($storageAdapter);
         $this->tracker->serve(true);
@@ -160,23 +162,23 @@ class PHP_BitTorrent_TrackerTest extends PHPUnit_Framework_TestCase {
         $this->tracker->setParam('autoRegister', true);
 
         $params = $this->getParamsForRequestMock();
-        $params['event'] = PHP_BitTorrent_Tracker_Request::EVENT_NONE;
+        $params['event'] = \PHP\BitTorrent\Tracker\Request::EVENT_NONE;
 
-        $request = $this->getMock('PHP_BitTorrent_Tracker_Request', null, array($params));
-        $storageAdapter = $this->getMockForAbstractClass('PHP_BitTorrent_Tracker_StorageAdapter_Abstract');
+        $request = $this->getMock('\PHP\BitTorrent\Tracker\Request', null, array($params));
+        $storageAdapter = $this->getMockForAbstractClass('\PHP\BitTorrent\Tracker\StorageAdapter\AbstractStorage');
         $storageAdapter->expects($this->once())->method('addTorrent')->with($params['info_hash']);
         $storageAdapter->expects($this->once())->method('torrentPeerExists')->with($params['info_hash'], $params['peer_id'])->will($this->returnValue(true));
         $storageAdapter->expects($this->once())->method('updateTorrentPeer')->with($params['info_hash']);
         $storageAdapter->expects($this->once())->method('getTorrentPeers')->with($params['info_hash'])->will($this->returnValue(array(
-            $this->getMock('PHP_BitTorrent_Tracker_Peer'),
+            $this->getMock('\PHP\BitTorrent\Tracker\Peer'),
         )));
 
-        $eventListener = $this->getMock('PHP_BitTorrent_Tracker_EventListener');
+        $eventListener = $this->getMock('\PHP\BitTorrent\Tracker\EventListener');
         $eventListener->expects($this->once())->method('torrentAutomaticallyRegistered');
 
         $this->tracker->setRequest($request)->setStorageAdapter($storageAdapter)->addEventListener($eventListener);
         $response = $this->tracker->serve(true);
-        $this->assertInstanceOf('PHP_BitTorrent_Tracker_Response', $response);
+        $this->assertInstanceOf('\PHP\BitTorrent\Tracker\Response', $response);
     }
 
     /**
@@ -184,20 +186,20 @@ class PHP_BitTorrent_TrackerTest extends PHPUnit_Framework_TestCase {
      */
     public function testSendStartedEvent() {
         $params = $this->getParamsForRequestMock();
-        $params['event'] = PHP_BitTorrent_Tracker_Request::EVENT_STARTED;
-        $request = $this->getMock('PHP_BitTorrent_Tracker_Request', null, array($params));
+        $params['event'] = \PHP\BitTorrent\Tracker\Request::EVENT_STARTED;
+        $request = $this->getMock('\PHP\BitTorrent\Tracker\Request', null, array($params));
 
-        $storageAdapter = $this->getMockForAbstractClass('PHP_BitTorrent_Tracker_StorageAdapter_Abstract');
+        $storageAdapter = $this->getMockForAbstractClass('\PHP\BitTorrent\Tracker\StorageAdapter\AbstractStorage');
         $storageAdapter->expects($this->once())->method('torrentExists')->with($params['info_hash'])->will($this->returnValue(true));
         $storageAdapter->expects($this->once())->method('addTorrentPeer')->with($params['info_hash']);
 
         $peers = array(
-            $this->getMock('PHP_BitTorrent_Tracker_Peer'),
+            $this->getMock('\PHP\BitTorrent\Tracker\Peer'),
         );
 
         $storageAdapter->expects($this->once())->method('getTorrentPeers')->with($params['info_hash'])->will($this->returnValue($peers));
 
-        $eventListener = $this->getMock('PHP_BitTorrent_Tracker_EventListener');
+        $eventListener = $this->getMock('\PHP\BitTorrent\Tracker\EventListener');
         $eventListener->expects($this->once())->method('eventStarted');
 
         $this->tracker->setRequest($request)
@@ -206,24 +208,24 @@ class PHP_BitTorrent_TrackerTest extends PHPUnit_Framework_TestCase {
 
         $response = $this->tracker->serve(true);
 
-        $this->assertInstanceOf('PHP_BitTorrent_Tracker_Response', $response);
+        $this->assertInstanceOf('\PHP\BitTorrent\Tracker\Response', $response);
         $this->assertSame($peers, $response->getPeers());
     }
 
     public function testSendRegularAnnouncementEvent() {
         $params = $this->getParamsForRequestMock();
-        $params['event'] = PHP_BitTorrent_Tracker_Request::EVENT_NONE;
-        $request = $this->getMock('PHP_BitTorrent_Tracker_Request', null, array($params));
+        $params['event'] = \PHP\BitTorrent\Tracker\Request::EVENT_NONE;
+        $request = $this->getMock('\PHP\BitTorrent\Tracker\Request', null, array($params));
 
-        $storageAdapter = $this->getMockForAbstractClass('PHP_BitTorrent_Tracker_StorageAdapter_Abstract');
+        $storageAdapter = $this->getMockForAbstractClass('\PHP\BitTorrent\Tracker\StorageAdapter\AbstractStorage');
         $storageAdapter->expects($this->once())->method('torrentExists')->with($params['info_hash'])->will($this->returnValue(true));
         $storageAdapter->expects($this->once())->method('torrentPeerExists')->with($params['info_hash'])->will($this->returnValue(true));
         $storageAdapter->expects($this->once())->method('updateTorrentPeer')->with($params['info_hash']);
         $storageAdapter->expects($this->once())->method('getTorrentPeers')->with($params['info_hash'])->will($this->returnValue(array(
-            $this->getMock('PHP_BitTorrent_Tracker_Peer'),
+            $this->getMock('\PHP\BitTorrent\Tracker\Peer'),
         )));
 
-        $eventListener = $this->getMock('PHP_BitTorrent_Tracker_EventListener');
+        $eventListener = $this->getMock('\PHP\BitTorrent\Tracker\EventListener');
         $eventListener->expects($this->once())->method('eventAnnouncement');
 
         $this->tracker->setRequest($request)
@@ -232,26 +234,26 @@ class PHP_BitTorrent_TrackerTest extends PHPUnit_Framework_TestCase {
 
         $response = $this->tracker->serve(true);
 
-        $this->assertInstanceOf('PHP_BitTorrent_Tracker_Response', $response);
+        $this->assertInstanceOf('\PHP\BitTorrent\Tracker\Response', $response);
     }
 
     public function testSendCompletedEvent() {
         $params = $this->getParamsForRequestMock();
-        $params['event'] = PHP_BitTorrent_Tracker_Request::EVENT_COMPLETED;
-        $request = $this->getMock('PHP_BitTorrent_Tracker_Request', null, array($params));
+        $params['event'] = \PHP\BitTorrent\Tracker\Request::EVENT_COMPLETED;
+        $request = $this->getMock('\PHP\BitTorrent\Tracker\Request', null, array($params));
 
-        $storageAdapter = $this->getMockForAbstractClass('PHP_BitTorrent_Tracker_StorageAdapter_Abstract');
+        $storageAdapter = $this->getMockForAbstractClass('\PHP\BitTorrent\Tracker\StorageAdapter\AbstractStorage');
         $storageAdapter->expects($this->once())->method('torrentExists')->with($params['info_hash'])->will($this->returnValue(true));
         $storageAdapter->expects($this->once())->method('torrentPeerExists')->with($params['info_hash'])->will($this->returnValue(true));
         $storageAdapter->expects($this->once())->method('torrentComplete')->with($params['info_hash']);
 
         $peers = array(
-            $this->getMock('PHP_BitTorrent_Tracker_Peer'),
+            $this->getMock('\PHP\BitTorrent\Tracker\Peer'),
         );
 
         $storageAdapter->expects($this->once())->method('getTorrentPeers')->with($params['info_hash'])->will($this->returnValue($peers));
 
-        $eventListener = $this->getMock('PHP_BitTorrent_Tracker_EventListener');
+        $eventListener = $this->getMock('\PHP\BitTorrent\Tracker\EventListener');
         $eventListener->expects($this->once())->method('eventCompleted');
 
         $this->tracker->setRequest($request)
@@ -260,27 +262,27 @@ class PHP_BitTorrent_TrackerTest extends PHPUnit_Framework_TestCase {
 
         $response = $this->tracker->serve(true);
 
-        $this->assertInstanceOf('PHP_BitTorrent_Tracker_Response', $response);
+        $this->assertInstanceOf('\PHP\BitTorrent\Tracker\Response', $response);
         $this->assertSame($peers, $response->getPeers());
     }
 
     public function testSendStopEvent() {
         $params = $this->getParamsForRequestMock();
-        $params['event'] = PHP_BitTorrent_Tracker_Request::EVENT_STOPPED;
-        $request = $this->getMock('PHP_BitTorrent_Tracker_Request', null, array($params));
+        $params['event'] = \PHP\BitTorrent\Tracker\Request::EVENT_STOPPED;
+        $request = $this->getMock('\PHP\BitTorrent\Tracker\Request', null, array($params));
 
-        $storageAdapter = $this->getMockForAbstractClass('PHP_BitTorrent_Tracker_StorageAdapter_Abstract');
+        $storageAdapter = $this->getMockForAbstractClass('\PHP\BitTorrent\Tracker\StorageAdapter\AbstractStorage');
         $storageAdapter->expects($this->once())->method('torrentExists')->with($params['info_hash'])->will($this->returnValue(true));
         $storageAdapter->expects($this->once())->method('torrentPeerExists')->with($params['info_hash'])->will($this->returnValue(true));
         $storageAdapter->expects($this->once())->method('deleteTorrentPeer')->with($params['info_hash']);
 
         $peers = array(
-            $this->getMock('PHP_BitTorrent_Tracker_Peer'),
+            $this->getMock('\PHP\BitTorrent\Tracker\Peer'),
         );
 
         $storageAdapter->expects($this->once())->method('getTorrentPeers')->with($params['info_hash'])->will($this->returnValue($peers));
 
-        $eventListener = $this->getMock('PHP_BitTorrent_Tracker_EventListener');
+        $eventListener = $this->getMock('\PHP\BitTorrent\Tracker\EventListener');
         $eventListener->expects($this->once())->method('eventStopped');
 
         $this->tracker->setRequest($request)
@@ -289,23 +291,23 @@ class PHP_BitTorrent_TrackerTest extends PHPUnit_Framework_TestCase {
 
         $response = $this->tracker->serve(true);
 
-        $this->assertInstanceOf('PHP_BitTorrent_Tracker_Response', $response);
+        $this->assertInstanceOf('\PHP\BitTorrent\Tracker\Response', $response);
         $this->assertSame($peers, $response->getPeers());
     }
 
     public function testSendInvalidEvent() {
         $params = $this->getParamsForRequestMock();
-        $params['event'] = PHP_BitTorrent_Tracker_Request::EVENT_NONE;
-        $request = $this->getMock('PHP_BitTorrent_Tracker_Request', null, array($params));
+        $params['event'] = \PHP\BitTorrent\Tracker\Request::EVENT_NONE;
+        $request = $this->getMock('\PHP\BitTorrent\Tracker\Request', null, array($params));
 
-        $storageAdapter = $this->getMockForAbstractClass('PHP_BitTorrent_Tracker_StorageAdapter_Abstract');
+        $storageAdapter = $this->getMockForAbstractClass('\PHP\BitTorrent\Tracker\StorageAdapter\AbstractStorage');
         $storageAdapter->expects($this->once())->method('torrentExists')->with($params['info_hash'])->will($this->returnValue(true));
         $storageAdapter->expects($this->once())->method('torrentPeerExists')->with($params['info_hash'])->will($this->returnValue(false));
 
         $this->tracker->setRequest($request)
                       ->setStorageAdapter($storageAdapter);
 
-        $this->setExpectedException('PHP_BitTorrent_Tracker_Exception', 'Unexpected error');
+        $this->setExpectedException('\PHP\BitTorrent\Tracker\Exception', 'Unexpected error');
         $this->tracker->serve(true);
     }
 
@@ -314,13 +316,13 @@ class PHP_BitTorrent_TrackerTest extends PHPUnit_Framework_TestCase {
      */
     public function testTriggerEvent() {
         // Add a couple of event handlers
-        $preValidateRequest = $this->getMock('PHP_BitTorrent_Tracker_EventListener');
+        $preValidateRequest = $this->getMock('\PHP\BitTorrent\Tracker\EventListener');
         $preValidateRequest->expects($this->once())->method('preValidateRequest');
 
-        $postValidateRequest = $this->getMock('PHP_BitTorrent_Tracker_EventListener');
+        $postValidateRequest = $this->getMock('\PHP\BitTorrent\Tracker\EventListener');
         $postValidateRequest->expects($this->once())->method('postValidateRequest');
 
-        $prePostValidateRequest = $this->getMock('PHP_BitTorrent_Tracker_EventListener');
+        $prePostValidateRequest = $this->getMock('\PHP\BitTorrent\Tracker\EventListener');
         $prePostValidateRequest->expects($this->once())->method('preValidateRequest');
         $prePostValidateRequest->expects($this->once())->method('postValidateRequest');
 
@@ -343,7 +345,7 @@ class PHP_BitTorrent_TrackerTest extends PHPUnit_Framework_TestCase {
             'uploaded' => 123,
             'downloaded' => 123,
             'left' => 123,
-            'event' => PHP_BitTorrent_Tracker_Request::EVENT_NONE,
+            'event' => \PHP\BitTorrent\Tracker\Request::EVENT_NONE,
         );
     }
 }

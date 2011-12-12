@@ -28,6 +28,8 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 
+namespace PHP\BitTorrent\Tracker;
+
 /**
  * Class representing a response from the tracker
  *
@@ -36,7 +38,7 @@
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-class PHP_BitTorrent_Tracker_Response {
+class Response {
     /**
      * Interval in the response
      *
@@ -47,7 +49,7 @@ class PHP_BitTorrent_Tracker_Response {
     /**
      * Peers in the response
      *
-     * @var array Array of PHP_BitTorrent_Tracker_Response objects
+     * @var array Array of PHP\BitTorrent\Tracker\Peer objects
      */
     protected $peers = array();
 
@@ -69,7 +71,7 @@ class PHP_BitTorrent_Tracker_Response {
      * Set the interval in the response
      *
      * @param int $interval
-     * @return PHP_BitTorrent_Tracker_Response
+     * @return PHP\BitTorrent\Tracker\Response
      */
     public function setInterval($interval) {
         $this->interval = (int) $interval;
@@ -81,7 +83,7 @@ class PHP_BitTorrent_Tracker_Response {
      * Set the noPeerId flag
      *
      * @param boolean $flag
-     * @return PHP_BitTorrent_Tracker_Response
+     * @return PHP\BitTorrent\Tracker\Response
      */
     public function setNoPeerId($flag) {
         $this->noPeerId = (bool) $flag;
@@ -102,7 +104,7 @@ class PHP_BitTorrent_Tracker_Response {
      * Set the compatct flag
      *
      * @param boolean $flag
-     * @return PHP_BitTorrent_Tracker_Response
+     * @return PHP\BitTorrent\Tracker\Response
      */
     public function setCompact($flag) {
         $this->compact = (bool) $flag;
@@ -131,10 +133,10 @@ class PHP_BitTorrent_Tracker_Response {
     /**
      * Add a peer to the response
      *
-     * @param PHP_BitTorrent_Tracker_Peer $peer
-     * @return PHP_BitTorrent_Tracker_Response
+     * @param \PHP\BitTorrent\Tracker\Peer $peer
+     * @return \PHP\BitTorrent\Tracker\Response
      */
-    public function addPeer(PHP_BitTorrent_Tracker_Peer $peer) {
+    public function addPeer(\PHP\BitTorrent\Tracker\Peer $peer) {
         $this->peers[] = $peer;
 
         return $this;
@@ -144,7 +146,7 @@ class PHP_BitTorrent_Tracker_Response {
      * Add peers
      *
      * @param array $peers Array of PHP_BitTorrent_Tracker_Peer objects
-     * @return PHP_BitTorrent_Tracker_Response
+     * @return \PHP\BitTorrent\Tracker\Response
      */
     public function addPeers($peers = array()) {
         foreach ($peers as $peer) {
@@ -222,6 +224,6 @@ class PHP_BitTorrent_Tracker_Response {
         );
 
         // Return the encoded the response
-        return PHP_BitTorrent_Encoder::encodeDictionary($response);
+        return \PHP\BitTorrent\Encoder::encodeDictionary($response);
     }
 }

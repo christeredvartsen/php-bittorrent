@@ -28,6 +28,9 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 
+namespace PHP\BitTorrent\Tracker\StorageAdapter\Sqlite;
+
+use \PHP\BitTorrent\Tracker\StorageAdapter\Exception as BaseException;
 /**
  * Exception class for the Sqlite storage adapter
  *
@@ -36,6 +39,6 @@
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-class PHP_BitTorrent_Tracker_StorageAdapter_Sqlite_Exception extends PHP_BitTorrent_Tracker_StorageAdapter_Exception {
+class Exception extends BaseException {
 
 }

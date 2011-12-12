@@ -28,6 +28,8 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 
+namespace PHP\BitTorrent;
+
 /**
  * BitTorrent tracker
  *
@@ -36,18 +38,18 @@
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-class PHP_BitTorrent_Tracker {
+class Tracker {
     /**
      * The peer currently talking to the tracker
      *
-     * @var PHP_BitTorrent_Tracker_Peer
+     * @var \PHP\BitTorrent\Tracker\Peer
      */
     protected $peer = null;
 
     /**
      * The storage adapter
      *
-     * @var PHP_BitTorrent_Tracker_StorageAdapter_Abstract
+     * @var PHP\BitTorrent\Tracker\StorageAdapter\AbstractStorage
      */
     protected $storageAdapter = null;
 
@@ -61,14 +63,14 @@ class PHP_BitTorrent_Tracker {
     /**
      * Response to the client
      *
-     * @var PHP_BitTorrent_Tracker_Response
+     * @var PHP\BitTorrent\Tracker\Response
      */
     protected $response = null;
 
     /**
      * The current request from the client
      *
-     * @var PHP_BitTorrent_Tracker_Request
+     * @var \PHP\BitTorrent\Tracker\Request
      */
     protected $request = null;
 
@@ -98,21 +100,21 @@ class PHP_BitTorrent_Tracker {
      * Class constructor
      *
      * @param array $params Parameters for the tracker
-     * @param PHP_BitTorrent_Tracker_Request $request If not set, the request will be generated
+     * @param \PHP\BitTorrent\Tracker\Request $request If not set, the request will be generated
      *                                                based on the content of the $_GET
      *                                                superglobal.
      */
     public function __construct($params = null,
-                                PHP_BitTorrent_Tracker_Request $request = null) {
+                                \PHP\BitTorrent\Tracker\Request $request = null) {
         if ($params !== null) {
             $this->setParams($params);
         }
 
         // If the request is null or is not a valid object, create a new object based on the $_GET
         // superglobal
-        if ($request === null || !($request instanceof PHP_BitTorrent_Tracker_Request)) {
+        if ($request === null || !($request instanceof \PHP\BitTorrent\Tracker\Request)) {
             // @codeCoverageIgnoreStart
-            $request = new PHP_BitTorrent_Tracker_Request($_GET);
+            $request = new \PHP\BitTorrent\Tracker\Request($_GET);
         }
         // @codeCoverageIgnoreEnd
 
@@ -123,10 +125,10 @@ class PHP_BitTorrent_Tracker {
     /**
      * Add a single event listener
      *
-     * @param PHP_BitTorrent_Tracker_EventListener $eventListener
-     * @return PHP_BitTorrent_Tracker
+     * @param \PHP\BitTorrent\Tracker\EventListener $eventListener
+     * @return \PHP\BitTorrent\Tracker
      */
-    public function addEventListener(PHP_BitTorrent_Tracker_EventListener $eventListener) {
+    public function addEventListener(\PHP\BitTorrent\Tracker\EventListener $eventListener) {
         $eventListener->setTracker($this);
         $this->eventListeners[] = $eventListener;
 
@@ -137,7 +139,7 @@ class PHP_BitTorrent_Tracker {
      * Add several event listeners
      *
      * @param array $eventListeners
-     * @return PHP_BitTorrent_Tracker
+     * @return PHP\BitTorrent\Tracker
      */
     public function addEventListeners(array $eventListeners) {
         foreach ($eventListeners as $eventListener) {
@@ -150,10 +152,10 @@ class PHP_BitTorrent_Tracker {
     /**
      * Set the storage adapter
      *
-     * @param PHP_BitTorrent_Tracker_StorageAdapter_Abstract $storageAdapter
-     * @return PHP_BitTorrent_Tracker
+     * @param \PHP\BitTorrent\Tracker\StorageAdapter\AbstractStorage $storageAdapter
+     * @return \PHP\BitTorrent\Tracker
      */
-    public function setStorageAdapter(PHP_BitTorrent_Tracker_StorageAdapter_Abstract $storageAdapter) {
+    public function setStorageAdapter(\PHP\BitTorrent\Tracker\StorageAdapter\AbstractStorage $storageAdapter) {
         $storageAdapter->setTracker($this);
         $this->storageAdapter = $storageAdapter;
 
@@ -163,12 +165,12 @@ class PHP_BitTorrent_Tracker {
     /**
      * Get the storage adapter
      *
-     * @throws PHP_BitTorrent_Tracker_Exception
-     * @return PHP_BitTorrent_Tracker_StorageAdapter_Abstract
+     * @throws \PHP\BitTorrent\Tracker_Exception
+     * @return \PHP\BitTorrent\Tracker\StorageAdapter\AbstractStorage
      */
     public function getStorageAdapter() {
         if ($this->storageAdapter === null) {
-            throw new PHP_BitTorrent_Tracker_Exception('No storage adapter set');
+            throw new \PHP\BitTorrent\Tracker\Exception('No storage adapter set');
         }
 
         return $this->storageAdapter;
@@ -202,7 +204,7 @@ class PHP_BitTorrent_Tracker {
      *
      * @param string $key
      * @param mixed $value
-     * @return PHP_BitTorrent_Tracker
+     * @return PHP\BitTorrent\Tracker
      */
     public function setParam($key, $value) {
         $this->params[$key] = $value;
@@ -214,7 +216,7 @@ class PHP_BitTorrent_Tracker {
      * Set the params array
      *
      * @param array $params
-     * @return PHP_BitTorrent_Tracker
+     * @return PHP\BitTorrent\Tracker
      */
     public function setParams(array $params) {
         foreach ($params as $key => $value) {
@@ -227,7 +229,7 @@ class PHP_BitTorrent_Tracker {
     /**
      * Get the request
      *
-     * @return PHP_BitTorrent_Tracker_Request
+     * @return PHP\BitTorrent\Tracker\Request
      */
     public function getRequest() {
         return $this->request;
@@ -236,10 +238,10 @@ class PHP_BitTorrent_Tracker {
     /**
      * Set the request object
      *
-     * @param PHP_BitTorrent_Tracker_Request $request
-     * @return PHP_BitTorrent_Tracker
+     * @param \PHP\BitTorrent\Tracker\Request $request
+     * @return \PHP\BitTorrent\Tracker
      */
-    public function setRequest(PHP_BitTorrent_Tracker_Request $request) {
+    public function setRequest(\PHP\BitTorrent\Tracker\Request $request) {
         $this->request = $request;
 
         return $this;
@@ -263,11 +265,11 @@ class PHP_BitTorrent_Tracker {
      * client.
      *
      * @param boolean $returnResponse Set this to true to return the response as a
-     *                                PHP_BitTorrent_Tracker_Response object instead of printing
+     *                                \PHP\BitTorrent\Tracker_Response object instead of printing
      *                                the response to the client. Setting this to true will also
      *                                omit the headers.
-     * @return null|PHP_BitTorrent_Tracker_Response
-     * @throws PHP_BitTorrent_Tracker_Exception
+     * @return null|\PHP\BitTorrent\Tracker_Response
+     * @throws \PHP\BitTorrent\Tracker\Exception
      */
     public function serve($returnResponse = false) {
         $this->triggerEvent('preValidateRequest');
@@ -275,8 +277,8 @@ class PHP_BitTorrent_Tracker {
         // Validate the request
         try {
             $this->request->validate();
-        } catch (PHP_BitTorrent_Tracker_Request_Exception $e) {
-            throw new PHP_BitTorrent_Tracker_Exception('Invalid request: ' . $e->getMessage());
+        } catch (\PHP\BitTorrent\Tracker\Request\Exception $e) {
+            throw new \PHP\BitTorrent\Tracker\Exception('Invalid request: ' . $e->getMessage());
         }
 
         $this->triggerEvent('postValidateRequest');
@@ -292,7 +294,7 @@ class PHP_BitTorrent_Tracker {
                 $storageAdapter->addTorrent($this->request->info_hash);
                 $this->triggerEvent('torrentAutomaticallyRegistered');
             } else {
-                throw new PHP_BitTorrent_Tracker_Exception('Torrent not found on this tracker');
+                throw new \PHP\BitTorrent\Tracker\Exception('Torrent not found on this tracker');
             }
         }
 
@@ -300,7 +302,7 @@ class PHP_BitTorrent_Tracker {
         $peerExists = $storageAdapter->torrentPeerExists($this->request->info_hash, $this->request->peer_id);
 
         // Create a peer object based on the request
-        $this->peer = new PHP_BitTorrent_Tracker_Peer();
+        $this->peer = new \PHP\BitTorrent\Tracker\Peer();
         $this->peer->setIp($this->request->ip)
                    ->setId($this->request->peer_id)
                    ->setPort($this->request->port)
@@ -310,15 +312,15 @@ class PHP_BitTorrent_Tracker {
 
         $this->triggerEvent('postCreatedPeer');
 
-        if ($this->request->event === PHP_BitTorrent_Tracker_Request::EVENT_STOPPED && $peerExists) {
+        if ($this->request->event === \PHP\BitTorrent\Tracker\Request::EVENT_STOPPED && $peerExists) {
             // If 'stopped' the client has stopped the torrent. If info about the peer exist, delete the peer
             $this->triggerEvent('eventStopped');
             $storageAdapter->deleteTorrentPeer($this->request->info_hash, $this->peer);
-        } else if ($this->request->event === PHP_BitTorrent_Tracker_Request::EVENT_COMPLETED && $peerExists) {
+        } else if ($this->request->event === \PHP\BitTorrent\Tracker\Request::EVENT_COMPLETED && $peerExists) {
             // If 'completed' the user has downloaded the file
             $this->triggerEvent('eventCompleted');
             $storageAdapter->torrentComplete($this->request->info_hash, $this->peer);
-        } else if($this->request->event === PHP_BitTorrent_Tracker_Request::EVENT_STARTED){
+        } else if($this->request->event === \PHP\BitTorrent\Tracker\Request::EVENT_STARTED){
             // If 'started' the client has just started the download. The peer does not exist yet
             $this->triggerEvent('eventStarted');
             $storageAdapter->addTorrentPeer($this->request->info_hash, $this->peer);
@@ -327,7 +329,7 @@ class PHP_BitTorrent_Tracker {
                 $this->triggerEvent('eventAnnouncement');
                 $storageAdapter->updateTorrentPeer($this->request->info_hash, $this->peer);
             } else {
-                throw new PHP_BitTorrent_Tracker_Exception('Unexpected error');
+                throw new \PHP\BitTorrent\Tracker\Exception('Unexpected error');
             }
         }
 
@@ -343,7 +345,7 @@ class PHP_BitTorrent_Tracker {
         $this->triggerEvent('preCreateResponse');
 
         // Initialize a response
-        $response = new PHP_BitTorrent_Tracker_Response();
+        $response = new \PHP\BitTorrent\Tracker\Response();
         $response->addPeers($allPeers)
                  ->setInterval((int) $this->getParam('interval'));
 
@@ -389,7 +391,7 @@ class PHP_BitTorrent_Tracker {
     /**
      * Get the response to the client
      *
-     * @return PHP_BitTorrent_Tracker_Response
+     * @return \PHP\BitTorrent\Tracker\Response
      */
     public function getResponse() {
         return $this->response;
@@ -398,7 +400,7 @@ class PHP_BitTorrent_Tracker {
     /**
      * Get the current peer
      *
-     * @return PHP_BitTorrent_Tracker_Peer
+     * @return \PHP\BitTorrent\Tracker\Peer
      */
     public function getPeer() {
         return $this->peer;

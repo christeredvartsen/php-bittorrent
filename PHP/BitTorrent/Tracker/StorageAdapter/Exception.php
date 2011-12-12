@@ -28,6 +28,10 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 
+namespace PHP\BitTorrent\Tracker\StorageAdapter;
+
+use \PHP\BitTorrent\Tracker\Exception as BaseException;
+
 /**
  * Exception class for the storage adapter
  *
@@ -36,6 +40,6 @@
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-class PHP_BitTorrent_Tracker_StorageAdapter_Exception extends PHP_BitTorrent_Tracker_Exception {
+class Exception extends BaseException {
 
 }

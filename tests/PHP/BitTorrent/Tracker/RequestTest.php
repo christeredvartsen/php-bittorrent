@@ -29,6 +29,8 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 
+namespace PHP\BitTorrent\Tests\Tracker;
+
 /**
  * @package PHP_BitTorrent
  * @subpackage UnitTests
@@ -36,7 +38,7 @@
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-class PHP_BitTorrent_Tracker_RequestTest extends PHPUnit_Framework_TestCase {
+class RequestTest extends \PHPUnit_Framework_TestCase {
     /**
      * Request object
      *
@@ -45,7 +47,7 @@ class PHP_BitTorrent_Tracker_RequestTest extends PHPUnit_Framework_TestCase {
     protected $request = null;
 
     public function setUp() {
-        $this->request = new PHP_BitTorrent_Tracker_Request();
+        $this->request = new \PHP\BitTorrent\Tracker\Request();
     }
 
     public function tearDown() {
@@ -101,7 +103,7 @@ class PHP_BitTorrent_Tracker_RequestTest extends PHPUnit_Framework_TestCase {
     }
 
     public function testSetGetEvent() {
-        $event = PHP_BitTorrent_Tracker_Request::EVENT_COMPLETED;
+        $event = \PHP\BitTorrent\Tracker\Request::EVENT_COMPLETED;
         $this->request->event = $event;
         $this->assertSame($event, $this->request->event);
     }
@@ -128,43 +130,43 @@ class PHP_BitTorrent_Tracker_RequestTest extends PHPUnit_Framework_TestCase {
 
     public function testSetInvalidInfoHash() {
         $infoHash = 'asd';
-        $this->setExpectedException('PHP_BitTorrent_Tracker_Request_Exception');
+        $this->setExpectedException('\PHP\BitTorrent\Tracker\Request\Exception');
         $this->request->info_hash = $infoHash;
 
     }
 
     public function testSetInvalidPeerId() {
         $peerId = 'asd';
-        $this->setExpectedException('PHP_BitTorrent_Tracker_Request_Exception');
+        $this->setExpectedException('\PHP\BitTorrent\Tracker\Request\Exception');
         $this->request->peer_id = $peerId;
 
     }
 
     public function testSetInvalidEvent() {
-        $this->setExpectedException('PHP_BitTorrent_Tracker_Request_Exception');
+        $this->setExpectedException('\PHP\BitTorrent\Tracker\Request\Exception');
         $this->request->event = 'foobar';
     }
 
     public function testSetInvalidPort() {
-        $this->setExpectedException('PHP_BitTorrent_Tracker_Request_Exception');
+        $this->setExpectedException('\PHP\BitTorrent\Tracker\Request\Exception');
         $this->request->port = 0;
     }
 
     public function testIsSeederWithMissingData() {
-        $this->setExpectedException('PHP_BitTorrent_Tracker_Request_Exception');
+        $this->setExpectedException('\PHP\BitTorrent\Tracker\Request\Exception');
         $this->request->isSeeder();
     }
 
     public function testGetClientIpWithHttpXForwardedForPresent() {
         $_SERVER['HTTP_X_FORWARDED_FOR'] = '1.1.1.1';
-        $request = new PHP_BitTorrent_Tracker_Request();
+        $request = new \PHP\BitTorrent\Tracker\Request();
         $this->assertSame($_SERVER['HTTP_X_FORWARDED_FOR'], $request->ip);
         unset($_SERVER['HTTP_X_FORWARDED_FOR']);
     }
 
     public function testGetClientIpWithRemoteAddrPresent() {
         $_SERVER['REMOTE_ADDR'] = '2.2.2.2';
-        $request = new PHP_BitTorrent_Tracker_Request();
+        $request = new \PHP\BitTorrent\Tracker\Request();
         $this->assertSame($_SERVER['REMOTE_ADDR'], $request->ip);
         unset($_SERVER['REMOTE_ADDR']);
     }
@@ -197,7 +199,7 @@ class PHP_BitTorrent_Tracker_RequestTest extends PHPUnit_Framework_TestCase {
             $this->request->$key = $val;
         }
 
-        $this->setExpectedException('PHP_BitTorrent_Tracker_Request_Exception');
+        $this->setExpectedException('\PHP\BitTorrent\Tracker\Request\Exception');
         $this->request->validate();
     }
 
@@ -206,7 +208,7 @@ class PHP_BitTorrent_Tracker_RequestTest extends PHPUnit_Framework_TestCase {
             'foo' => 'bar',
             'bar' => 'foo',
         );
-        $request = new PHP_BitTorrent_Tracker_Request($data);
+        $request = new \PHP\BitTorrent\Tracker\Request($data);
         $this->assertSame($data['foo'], $request->foo);
         $this->assertSame($data['bar'], $request->bar);
     }

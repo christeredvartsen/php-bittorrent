@@ -28,6 +28,8 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 
+namespace PHP\BitTorrent\Tracker\StorageAdapter;
+
 /**
  * Abstract storage adapter class
  *
@@ -36,7 +38,7 @@
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-abstract class PHP_BitTorrent_Tracker_StorageAdapter_Abstract {
+abstract class AbstractStorage {
     /**
      * Parameters for the adapter
      *
@@ -132,10 +134,10 @@ abstract class PHP_BitTorrent_Tracker_StorageAdapter_Abstract {
     /**
      * Set the current request
      *
-     * @param PHP_BitTorrent_Tracker_Request $request
-     * @return PHP_BitTorrent_Tracker_StorageAdapter_Abstract
+     * @param \PHP\BitTorrent\Tracker\Request $request
+     * @return \PHP\BitTorrent\Tracker\StorageAdapter\AbstractStorage
      */
-    public function setRequest(PHP_BitTorrent_Tracker_Request $request) {
+    public function setRequest(\PHP\BitTorrent\Tracker\Request $request) {
         $this->request = $request;
 
         return $this;
@@ -153,10 +155,10 @@ abstract class PHP_BitTorrent_Tracker_StorageAdapter_Abstract {
     /**
      * Set the tracker instance
      *
-     * @param PHP_BitTorrent_Tracker $tracker
-     * @return PHP_BitTorrent_Tracker_StorageAdapter_Abstract
+     * @param \PHP\BitTorrent\Tracker $tracker
+     * @return \PHP\BitTorrent\Tracker\StorageAdapter\AbstractStorage
      */
-    public function setTracker(PHP_BitTorrent_Tracker $tracker) {
+    public function setTracker(\PHP\BitTorrent\Tracker $tracker) {
         $this->tracker = $tracker;
 
         return $this;
@@ -184,47 +186,47 @@ abstract class PHP_BitTorrent_Tracker_StorageAdapter_Abstract {
      *
      * @param string $infoHash
      * @param boolean $connectable If we only want connectable peers set this to true. If false we will only get peers that can not be connected to
-     * @param int $maxGive Max. number of peers to return
-     * @param PHP_BitTorrent_Tracker_Peer $excludePeer Peer to exclude from the list
+     * @param int $limit Max. number of peers to return
+     * @param \PHP\BitTorrent\Tracker\Peer $excludePeer Peer to exclude from the list
      * @return array An array of PHP_BitTorrent_Tracker_Peer objects
      */
-    abstract public function getTorrentPeers($infoHash, $connectable = null, $limit = null, PHP_BitTorrent_Tracker_Peer $excludePeer = null);
+    abstract public function getTorrentPeers($infoHash, $connectable = null, $limit = null, \PHP\BitTorrent\Tracker\Peer $excludePeer = null);
 
     /**
      * Delete a peer connected to a torrent from the database
      *
      * @param string $infoHash The info hash of the torrent
-     * @param PHP_BitTorrent_Tracker_Peer $peer The peer to delete
+     * @param \PHP\BitTorrent\Tracker\Peer $peer The peer to delete
      * @return boolean
      */
-    abstract public function deleteTorrentPeer($infoHash, PHP_BitTorrent_Tracker_Peer $peer);
+    abstract public function deleteTorrentPeer($infoHash, \PHP\BitTorrent\Tracker\Peer $peer);
 
     /**
      * Add a peer to a torrent
      *
      * @param string $infoHash The info hash of the torrent
-     * @param PHP_BitTorrent_Tracker_Peer $peer The peer to add
+     * @param \PHP\BitTorrent\Tracker\Peer $peer The peer to add
      * @return boolean Returns true if the peer is added or false otherwise
      */
-    abstract public function addTorrentPeer($infoHash, PHP_BitTorrent_Tracker_Peer $peer);
+    abstract public function addTorrentPeer($infoHash, \PHP\BitTorrent\Tracker\Peer $peer);
 
     /**
      * Update information about a peer
      *
      * @param string $infoHash The info hash of the torrent
-     * @param PHP_BitTorrent_Tracker_Peer $peer The peer making the request
+     * @param \PHP\BitTorrent\Tracker\Peer $peer The peer making the request
      * @return boolean Returns true if the peer is updated or false otherwise
      */
-    abstract public function updateTorrentPeer($infoHash, PHP_BitTorrent_Tracker_Peer $peer);
+    abstract public function updateTorrentPeer($infoHash, \PHP\BitTorrent\Tracker\Peer $peer);
 
     /**
      * A peer has finished downloading a torrent
      *
      * @param string $infoHash The info hash of the torrent
-     * @param PHP_BitTorrent_Tracker_Peer $peer The peer that completed the torrent
+     * @param \PHP\BitTorrent\Tracker\Peer $peer The peer that completed the torrent
      * @return boolean Returns false on success or false otherwise
      */
-    abstract public function torrentComplete($infoHash, PHP_BitTorrent_Tracker_Peer $peer);
+    abstract public function torrentComplete($infoHash, \PHP\BitTorrent\Tracker\Peer $peer);
 
     /**
      * Add a torrent to the tracker

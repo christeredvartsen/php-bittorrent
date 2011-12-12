@@ -29,6 +29,8 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 
+namespace PHP\BitTorrent\Tests\Tracker\StorageAdapter;
+
 /**
  * @package PHP_BitTorrent
  * @subpackage UnitTests
@@ -36,14 +38,14 @@
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-class PHP_BitTorrent_Tracker_StorageAdapter_AbstractTest extends PHPUnit_Framework_TestCase {
+class AbstractStorageTest extends \PHPUnit_Framework_TestCase {
     /**
-     * @var PHP_BitTorrent_Tracker_StorageAdapter_Abstract
+     * @var \PHP\BitTorrent\Tracker\StorageAdapter\AbstractStorage
      */
     protected $adapter = null;
 
     public function setUp() {
-        $this->adapter = $this->getMockForAbstractClass('PHP_BitTorrent_Tracker_StorageAdapter_Abstract');
+        $this->adapter = $this->getMockForAbstractClass('PHP\BitTorrent\Tracker\StorageAdapter\AbstractStorage');
     }
 
     public function tearDown() {
@@ -67,13 +69,13 @@ class PHP_BitTorrent_Tracker_StorageAdapter_AbstractTest extends PHPUnit_Framewo
     }
 
     public function testSetGetRequest() {
-        $request = $this->getMock('PHP_BitTorrent_Tracker_Request');
+        $request = $this->getMock('\PHP\BitTorrent\Tracker\Request');
         $this->adapter->setRequest($request);
         $this->assertSame($request, $this->adapter->getRequest());
     }
 
     public function testSetGetTracker() {
-        $tracker = $this->getMock('PHP_BitTorrent_Tracker');
+        $tracker = $this->getMock('\PHP\BitTorrent\Tracker');
         $this->adapter->setTracker($tracker);
         $this->assertSame($tracker, $this->adapter->getTracker());
     }

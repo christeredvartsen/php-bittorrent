@@ -29,6 +29,8 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 
+namespace PHP\BitTorrent\Tests\Tracker;
+
 /**
  * @package PHP_BitTorrent
  * @subpackage UnitTests
@@ -36,7 +38,7 @@
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-class PHP_BitTorrent_Tracker_PeerTest extends PHPUnit_Framework_TestCase {
+class PeerTest extends \PHPUnit_Framework_TestCase {
     /**
      * Peer object
      *
@@ -48,7 +50,7 @@ class PHP_BitTorrent_Tracker_PeerTest extends PHPUnit_Framework_TestCase {
      * Set up method that creates a fresh peer objet before each test
      */
     public function setUp() {
-        $this->peer = new PHP_BitTorrent_Tracker_Peer();
+        $this->peer = new \PHP\BitTorrent\Tracker\Peer();
     }
 
     /**

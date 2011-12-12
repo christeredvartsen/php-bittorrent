@@ -28,6 +28,8 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 
+namespace PHP\BitTorrent\Tracker;
+
 /**
  * Base event listener class
  *
@@ -39,14 +41,14 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @codeCoverageIgnore
  */
-class PHP_BitTorrent_Tracker_EventListener {
+class EventListener {
     /**
      * Instance of the tracker
      *
      * Each event listener will have an instance of the tracker that can be used to fetch data
      * stored in the tracker like for instance the current peer or the current request.
      *
-     * @var PHP_BitTorrent_Tracker
+     * @var PHP\BitTorrent\Tracker
      */
     protected $tracker = null;
 
@@ -67,10 +69,10 @@ class PHP_BitTorrent_Tracker_EventListener {
     /**
      * Set the tracker instance
      *
-     * @param PHP_BitTorrent_Tracker $tracker
-     * @return PHP_BitTorrent_Tracker_EventListener_Abstract
+     * @param \PHP\BitTorrent\Tracker $tracker
+     * @return \PHP\BitTorrent\Tracker_EventListener_Abstract
      */
-    public function setTracker(PHP_BitTorrent_Tracker $tracker) {
+    public function setTracker(\PHP\BitTorrent\Tracker $tracker) {
         $this->tracker = $tracker;
 
         return $this;

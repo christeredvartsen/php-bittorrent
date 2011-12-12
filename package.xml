@@ -40,7 +40,6 @@ http://pear.php.net/dtd/package-2.0.xsd">
      <dir name="Torrent">
       <file baseinstalldir="/" name="Exception.php" role="php" />
      </dir>
-     <file baseinstalldir="/" name="Autoload.php" role="php" />
      <file baseinstalldir="/" name="Decoder.php" role="php" />
      <file baseinstalldir="/" name="Encoder.php" role="php" />
      <file baseinstalldir="/" name="Exception.php" role="php" />
