@@ -7,17 +7,10 @@
     <mkdir dir="${basedir}/build/code-browser" />
   </target>
 
-  <target name="phpab">
-    <exec executable="phpab">
-      <arg line="-o ${basedir}/PHP/BitTorrent/Autoload.php 
-                 -t ${basedir}/PHP/BitTorrent/Autoload.php.in 
-                 --indent '        ' 
-                 ${basedir}/PHP" />
-    </exec>
-  </target>
-
   <target name="phpunit">
-    <exec executable="phpunit" failonerror="true" />
+    <exec executable="phpunit" failonerror="true">
+      <arg line="-c ${basedir}/phpunit.xml tests" />
+    </exec>
   </target>
   
   <target name="phpdoc">
@@ -45,5 +38,5 @@
     </exec>
   </target>
   
-  <target name="build" depends="clean,phpab,phpunit,phpdoc,phploc,phpcb" />
+  <target name="build" depends="clean,phpunit,phpdoc,phploc,phpcb" />
 </project>

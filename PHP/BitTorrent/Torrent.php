@@ -28,6 +28,8 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 
+namespace PHP\BitTorrent;
+
 /**
  * A class that represents a single torrent file
  *
@@ -38,7 +40,7 @@
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-class PHP_BitTorrent_Torrent {
+class Torrent {
     /**
      * The exponent to use when making the pieces
      *
@@ -82,6 +84,16 @@ class PHP_BitTorrent_Torrent {
     protected $info = null;
 
     /**
+     * @var string
+     */
+    protected $commend;
+
+    /**
+     * @var string
+     */
+    protected $created;
+
+    /**
      * Reset information in the object
      *
      * This method is called when someone triggers {@see loadFromTorrentFile} or
@@ -97,12 +109,12 @@ class PHP_BitTorrent_Torrent {
     /**
      * Populate the instance of the object based on a torrent file
      *
-     * @param string $pathToFile Path to the torrent file
+     * @param $path Path to the torrent file
      */
     public function loadFromTorrentFile($path) {
         $this->reset();
 
-        $decodedFile = PHP_BitTorrent_Decoder::decodeFile($path);
+        $decodedFile = \PHP\BitTorrent\Decoder::decodeFile($path);
 
         // Populate the object with data from the file
         if (isset($decodedFile['announce'])) {
@@ -134,7 +146,7 @@ class PHP_BitTorrent_Torrent {
      *
      * @param string $path Path to a directory or a single file
      * @param string $announceUrl URL to the announce
-     * @return PHP_BitTorrent_Torrent
+     * @return \PHP\BitTorrent\Torrent
      */
     public function loadFromPath($path) {
         $this->reset();
@@ -154,8 +166,8 @@ class PHP_BitTorrent_Torrent {
                 'filesize' => filesize($absolutePath)
             );
         } else if (is_dir($absolutePath)) {
-            $dir = new RecursiveDirectoryIterator($absolutePath);
-            $iterator = new RecursiveIteratorIterator($dir);
+            $dir = new \RecursiveDirectoryIterator($absolutePath);
+            $iterator = new \RecursiveIteratorIterator($dir);
 
             foreach ($iterator as $entry) {
                 $filename = $entry->getFilename();
@@ -320,7 +332,7 @@ class PHP_BitTorrent_Torrent {
      * Set the announce url
      *
      * @param string $announceUrl
-     * @return PHP_BitTorrent_Torrent
+     * @return \PHP\BitTorrent\Torrent
      */
     public function setAnnounce($announceUrl) {
         $this->announce = $announceUrl;
@@ -341,7 +353,7 @@ class PHP_BitTorrent_Torrent {
      * Set the comment
      *
      * @param string $comment
-     * @return PHP_BitTorrent_Torrent
+     * @return \PHP\BitTorrent\Torrent
      */
     public function setComment($comment) {
         $this->comment = $comment;
@@ -362,7 +374,7 @@ class PHP_BitTorrent_Torrent {
      * Set the created by property
      *
      * @param string $createdBy
-     * @return PHP_BitTorrent_Torrent
+     * @return \PHP\BitTorrent\Torrent
      */
     public function setCreatedBy($createdBy) {
         $this->createdBy = $createdBy;
@@ -383,7 +395,7 @@ class PHP_BitTorrent_Torrent {
      * Set the creation timestamp
      *
      * @param int $createdAt
-     * @return PHP_BitTorrent_Torrent
+     * @return \PHP\BitTorrent\Torrent
      */
     public function setCreatedAt($createdAt) {
         $this->createdAt = (int) $createdAt;
@@ -404,7 +416,7 @@ class PHP_BitTorrent_Torrent {
      * Set the info part of the torrent
      *
      * @param array $info
-     * @return PHP_BitTorrent_Torrent
+     * @return \PHP\BitTorrent\Torrent
      */
     public function setInfo(array $info) {
         $this->info = $info;
@@ -427,24 +439,24 @@ class PHP_BitTorrent_Torrent {
      * This method will save the current object to a file. If the file specified exists it will be overwritten.
      *
      * @param string $filename
-     * @throws PHP_BitTorrent_Torrent_Exception
-     * @return PHP_BitTorrent_Torrent
+     * @throws \PHP\BitTorrent\Torrent\Exception
+     * @return \PHP\BitTorrent\Torrent
      */
     public function save($filename) {
         if (!is_writable($filename) && !is_writable(dirname($filename))) {
-            throw new PHP_BitTorrent_Torrent_Exception('Could not open file "' . $filename . '" for writing.');
+            throw new \PHP\BitTorrent\Torrent\Exception('Could not open file "' . $filename . '" for writing.');
         }
 
         $announce = $this->getAnnounce();
 
         if (empty($announce)) {
-            throw new PHP_BitTorrent_Torrent_Exception('Announce URL is missing.');
+            throw new \PHP\BitTorrent\Torrent\Exception('Announce URL is missing.');
         }
 
         $info = $this->getInfo();
 
         if (empty($info)) {
-            throw new PHP_BitTorrent_Torrent_Exception('The info part of the torrent is empty.');
+            throw new \PHP\BitTorrent\Torrent\Exception('The info part of the torrent is empty.');
         }
 
         $createdAt = $this->getCreatedAt();
@@ -468,7 +480,7 @@ class PHP_BitTorrent_Torrent {
         }
 
         // Create the encoded dictionary
-        $dictionary = PHP_BitTorrent_Encoder::encodeDictionary($torrent);
+        $dictionary = \PHP\BitTorrent\Encoder::encodeDictionary($torrent);
 
         // Write the encoded data to the file
         file_put_contents($filename, $dictionary);
@@ -489,7 +501,7 @@ class PHP_BitTorrent_Torrent {
         $info = $this->getInfo();
 
         if ($info === null) {
-            throw new PHP_BitTorrent_Torrent_Exception('The info part of the torrent is not set.');
+            throw new \PHP\BitTorrent\Torrent\Exception('The info part of the torrent is not set.');
         }
 
         if (isset($info['length'])) {
@@ -509,7 +521,7 @@ class PHP_BitTorrent_Torrent {
     	$info = $this->getInfo();
 
         if ($info === null) {
-            throw new PHP_BitTorrent_Torrent_Exception('The info part of the torrent is not set.');
+            throw new \PHP\BitTorrent\Torrent\Exception('The info part of the torrent is not set.');
         }
 
         // If the length element is set, return that one. If not, loop through the files and generate the total
@@ -537,7 +549,7 @@ class PHP_BitTorrent_Torrent {
     	$info = $this->getInfo();
 
         if ($info === null) {
-            throw new PHP_BitTorrent_Torrent_Exception('The info part of the torrent is not set.');
+            throw new \PHP\BitTorrent\Torrent\Exception('The info part of the torrent is not set.');
         }
 
         return $info['name'];

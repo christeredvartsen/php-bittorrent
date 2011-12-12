@@ -28,6 +28,7 @@
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
+namespace PHP\BitTorrent\Tests;
 
 /**
  * @package PHP_BitTorrent
@@ -36,35 +37,35 @@
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-class PHP_BitTorrent_DecoderTest extends PHPUnit_Framework_TestCase {
+class DecoderTest extends \PHPUnit_Framework_TestCase {
     public function testDecoderInteger() {
         $encoded = array('i1e', 'i-1e', 'i0e');
         $decoded = array(1, -1, 0);
 
         for ($i = 0; $i < count($encoded); $i++) {
-            $this->assertSame($decoded[$i], PHP_BitTorrent_Decoder::decodeInteger($encoded[$i]));
+            $this->assertSame($decoded[$i], \PHP\BitTorrent\Decoder::decodeInteger($encoded[$i]));
         }
     }
 
     public function testDecodeInvalidInteger() {
-        $this->setExpectedException('PHP_BitTorrent_Decoder_Exception');
-        PHP_BitTorrent_Decoder::decodeInteger('i01e');
+        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
+        \PHP\BitTorrent\Decoder::decodeInteger('i01e');
 
-        $this->setExpectedException('PHP_BitTorrent_Decoder_Exception');
-        PHP_BitTorrent_Decoder::decodeInteger('i-01e');
+        $this->setExpectedException('\PHP\BitTorrent\Decoder_Exception');
+        \PHP\BitTorrent\Decoder::decodeInteger('i-01e');
 
-        $this->setExpectedException('PHP_BitTorrent_Decoder_Exception');
-        PHP_BitTorrent_Decoder::decodeInteger('ifoobare');
+        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
+        \PHP\BitTorrent\Decoder::decodeInteger('ifoobare');
     }
 
     public function testDecodeStringAsInteger() {
-        $this->setExpectedException('PHP_BitTorrent_Decoder_Exception');
-        PHP_BitTorrent_Decoder::decodeInteger('4:spam');
+        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
+        \PHP\BitTorrent\Decoder::decodeInteger('4:spam');
     }
 
     public function testDecodePartialInteger() {
-        $this->setExpectedException('PHP_BitTorrent_Decoder_Exception');
-        PHP_BitTorrent_Decoder::decodeInteger('i10');
+        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
+        \PHP\BitTorrent\Decoder::decodeInteger('i10');
     }
 
     public function testDecodeString() {
@@ -72,46 +73,46 @@ class PHP_BitTorrent_DecoderTest extends PHPUnit_Framework_TestCase {
         $decoded = array('spam', 'test string');
 
         for ($i = 0; $i < count($encoded); $i++) {
-            $this->assertSame($decoded[$i], PHP_BitTorrent_Decoder::decodeString($encoded[$i]));
+            $this->assertSame($decoded[$i], \PHP\BitTorrent\Decoder::decodeString($encoded[$i]));
         }
     }
 
     public function testDecodeInvalidString() {
-        $this->setExpectedException('PHP_BitTorrent_Decoder_Exception');
-        PHP_BitTorrent_Decoder::decodeString('4spam');
+        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
+        \PHP\BitTorrent\Decoder::decodeString('4spam');
     }
 
     public function testDecodeStringWithInvalidLength() {
-        $this->setExpectedException('PHP_BitTorrent_Decoder_Exception');
-        PHP_BitTorrent_Decoder::decodeString('6:spam');
+        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
+        \PHP\BitTorrent\Decoder::decodeString('6:spam');
     }
 
     public function testDecodeStringWithTruncation() {
-        $this->assertSame('foo', PHP_BitTorrent_Decoder::decodeString('3:foobar'));
+        $this->assertSame('foo', \PHP\BitTorrent\Decoder::decodeString('3:foobar'));
     }
 
     public function testDecodeList() {
         $encoded = 'li1ei2ei3ee';
         $decoded = array(1, 2, 3);
 
-        $this->assertSame($decoded, PHP_BitTorrent_Decoder::decodeList($encoded));
+        $this->assertSame($decoded, \PHP\BitTorrent\Decoder::decodeList($encoded));
     }
 
     public function testDecodeInvalidList() {
-        $this->setExpectedException('PHP_BitTorrent_Decoder_Exception');
-        PHP_BitTorrent_Decoder::decodeList('4:spam');
+        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
+        \PHP\BitTorrent\Decoder::decodeList('4:spam');
     }
 
     public function testDecodeDictionary() {
         $encoded = 'd3:foo3:bar4:spam4:eggse';
         $decoded = array('foo' => 'bar', 'spam' => 'eggs');
 
-        $this->assertSame($decoded, PHP_BitTorrent_Decoder::decodeDictionary($encoded));
+        $this->assertSame($decoded, \PHP\BitTorrent\Decoder::decodeDictionary($encoded));
     }
 
     public function testDecodeInvalidDictionary() {
-        $this->setExpectedException('PHP_BitTorrent_Decoder_Exception');
-        PHP_BitTorrent_Decoder::decodeDictionary('4:spam');
+        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
+        \PHP\BitTorrent\Decoder::decodeDictionary('4:spam');
     }
 
     public function testGenericDecode() {
@@ -119,34 +120,34 @@ class PHP_BitTorrent_DecoderTest extends PHPUnit_Framework_TestCase {
         $decoded = array(1, 'spam', array(1, 2, 3), array('foo' => 'bar'));
 
         for ($i = 0; $i < count($encoded); $i++) {
-            $this->assertSame($decoded[$i], PHP_BitTorrent_Decoder::decode($encoded[$i]));
+            $this->assertSame($decoded[$i], \PHP\BitTorrent\Decoder::decode($encoded[$i]));
         }
     }
 
     public function testGenericDecodeWithInvalidData() {
-        $this->setExpectedException('PHP_BitTorrent_Decoder_Exception');
-        PHP_BitTorrent_Decoder::decode('foo');
+        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
+        \PHP\BitTorrent\Decoder::decode('foo');
     }
 
     public function testDecodeTorrentFileStrictWithMissingAnnounce() {
         $file = __DIR__ . '/_files/testMissingAnnounce.torrent';
-        $this->setExpectedException('PHP_BitTorrent_Decoder_Exception');
-        PHP_BitTorrent_Decoder::decodeFile($file, true);
+        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
+        \PHP\BitTorrent\Decoder::decodeFile($file, true);
     }
 
     public function testDecodeTorrentFileStrictWithMissingInfo() {
         $file = __DIR__ . '/_files/testMissingInfo.torrent';
-        $this->setExpectedException('PHP_BitTorrent_Decoder_Exception');
-        PHP_BitTorrent_Decoder::decodeFile($file, true);
+        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
+        \PHP\BitTorrent\Decoder::decodeFile($file, true);
     }
 
     public function testDecodeNonReadableFile() {
         $file = __DIR__ . '/' . uniqid(null, true);
-        $this->setExpectedException('PHP_BitTorrent_Decoder_Exception');
-        PHP_BitTorrent_Decoder::decodeFile($file);
+        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
+        \PHP\BitTorrent\Decoder::decodeFile($file);
     }
 
     public function testDecodeFileWithStrictChecksEnabled() {
-        $list = PHP_BitTorrent_Decoder::decodeFile(__DIR__ . '/_files/valid.torrent', true);
+        $list = \PHP\BitTorrent\Decoder::decodeFile(__DIR__ . '/_files/valid.torrent', true);
     }
 }

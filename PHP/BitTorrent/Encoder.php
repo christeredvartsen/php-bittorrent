@@ -28,6 +28,8 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 
+namespace PHP\BitTorrent;
+
 /**
  * Encode encodable PHP variables to the BitTorrent counterpart
  *
@@ -36,13 +38,13 @@
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-class PHP_BitTorrent_Encoder {
+class Encoder {
     /**
      * Encode any encodable variable
      *
      * @param mixed $var
      * @return string
-     * @throws PHP_BitTorrent_Encoder_Exception
+     * @throws PHP\BitTorrent\Encoder\Exception
      */
     static public function encode($var) {
         if (is_int($var)) {
@@ -61,7 +63,7 @@ class PHP_BitTorrent_Encoder {
             return static::encodeList($var);
         }
 
-        throw new PHP_BitTorrent_Encoder_Exception('Variables of type ' . gettype($var) . ' can not be encoded.');
+        throw new \PHP\BitTorrent\Encoder\Exception('Variables of type ' . gettype($var) . ' can not be encoded.');
     }
 
     /**
@@ -69,11 +71,11 @@ class PHP_BitTorrent_Encoder {
      *
      * @param int $integer
      * @return string
-     * @throws PHP_BitTorrent_Encoder_Exception
+     * @throws \PHP\BitTorrent\Encoder\Exception
      */
     static public function encodeInteger($integer) {
         if (!is_int($integer)) {
-            throw new PHP_BitTorrent_Encoder_Exception('Expected integer, got: ' . gettype($integer) . '.');
+            throw new \PHP\BitTorrent\Encoder\Exception('Expected integer, got: ' . gettype($integer) . '.');
         }
 
         return 'i' . $integer . 'e';
@@ -84,11 +86,11 @@ class PHP_BitTorrent_Encoder {
      *
      * @param string $string
      * @return string
-     * @throws PHP_BitTorrent_Encoder_Exception
+     * @throws \PHP\BitTorrent\Encoder\Exception
      */
     static public function encodeString($string) {
         if (!is_string($string)) {
-            throw new PHP_BitTorrent_Encoder_Exception('Expected string, got: ' . gettype($string) . '.');
+            throw new \PHP\BitTorrent\Encoder\Exception('Expected string, got: ' . gettype($string) . '.');
         }
 
         return strlen($string) . ':' . $string;
@@ -99,11 +101,11 @@ class PHP_BitTorrent_Encoder {
      *
      * @param array $list
      * @return string
-     * @throws PHP_BitTorrent_Encoder_Exception
+     * @throws PHP\BitTorrent\Encoder\Exception
      */
     static public function encodeList($list) {
         if (!is_array($list)) {
-            throw new PHP_BitTorrent_Encoder_Exception('Expected array, got: ' . gettype($list) . '.');
+            throw new \PHP\BitTorrent\Encoder\Exception('Expected array, got: ' . gettype($list) . '.');
         }
 
         $ret = 'l';
@@ -120,11 +122,11 @@ class PHP_BitTorrent_Encoder {
      *
      * @param array $dictionary
      * @return string
-     * @throws PHP_BitTorrent_Encoder_Exception
+     * @throws \PHP\BitTorrent\Encoder\Exception
      */
     static public function encodeDictionary($dictionary) {
         if (!is_array($dictionary)) {
-            throw new PHP_BitTorrent_Encoder_Exception('Expected array, got: ' . gettype($dictionary) . '.');
+            throw new \PHP\BitTorrent\Encoder\Exception('Expected array, got: ' . gettype($dictionary) . '.');
         }
 
         $ret = 'd';
