@@ -28,6 +28,10 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 
+namespace PHP\BitTorrent\Decoder;
+
+use \PHP\BitTorrent\Exception as BaseException;
+
 /**
  * Decoder exception
  *
@@ -36,6 +40,6 @@
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-class PHP_BitTorrent_Decoder_Exception extends PHP_BitTorrent_Exception {
+class Exception extends BaseException {
 
 }

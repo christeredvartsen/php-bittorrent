@@ -29,6 +29,8 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 
+namespace PHP\BitTorrent\Tests;
+
 /**
  * @package PHP_BitTorrent
  * @subpackage UnitTests
@@ -36,16 +38,16 @@
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-class PHP_BitTorrent_TorrentTest extends PHPUnit_Framework_TestCase  {
+class TorrentTest extends \PHPUnit_Framework_TestCase  {
     /**
      * Torrent object
      *
-     * @var PHP_BitTorrent_Torrent
+     * @var \PHP\BitTorrent\Torrent
      */
     protected $torrent = null;
 
     public function setUp() {
-        $this->torrent = new PHP_BitTorrent_Torrent();
+        $this->torrent = new \PHP\BitTorrent\Torrent();
     }
 
     public function tearDown() {
@@ -89,21 +91,21 @@ class PHP_BitTorrent_TorrentTest extends PHPUnit_Framework_TestCase  {
     }
 
     /**
-     * @expectedException PHP_BitTorrent_Torrent_Exception
+     * @expectedException \PHP\BitTorrent\Torrent\Exception
      */
     public function testGetNameWithNoInfoBlockAdded() {
         $this->torrent->getName();
     }
 
     /**
-     * @expectedException PHP_BitTorrent_Torrent_Exception
+     * @expectedException \PHP\BitTorrent\Torrent\Exception
      */
     public function testGetSizeWithNoInfoBlockAdded() {
         $this->torrent->getSize();
     }
 
     /**
-     * @expectedException PHP_BitTorrent_Torrent_Exception
+     * @expectedException \PHP\BitTorrent\Torrent\Exception
      */
     public function testGetFileListWithNoInfoBlockAdded() {
         $this->torrent->getFileList();
@@ -184,7 +186,7 @@ class PHP_BitTorrent_TorrentTest extends PHPUnit_Framework_TestCase  {
         $announce  = 'http://tracker/';
         $comment   = 'Some comment';
         $createdBy = 'PHPUnit';
-        $target    = tempnam(sys_get_temp_dir(), 'PHP_BitTorrent');
+        $target    = tempnam(sys_get_temp_dir(), '\PHP\BitTorrent');
 
         if (!$target) {
             $this->fail('Could not create file: ' . $target);
@@ -197,7 +199,7 @@ class PHP_BitTorrent_TorrentTest extends PHPUnit_Framework_TestCase  {
                       ->save($target);
 
         // Now load the file and make sure the values are correct
-        $torrent = new PHP_BitTorrent_Torrent();
+        $torrent = new \PHP\BitTorrent\Torrent();
         $torrent->loadFromTorrentFile($target);
         $this->assertSame($announce, $torrent->getAnnounce());
         $this->assertSame($comment, $torrent->getComment());
@@ -217,12 +219,12 @@ class PHP_BitTorrent_TorrentTest extends PHPUnit_Framework_TestCase  {
      */
     public function testSaveWithNoAnnounce() {
         $this->torrent->loadFromPath(__FILE__);
-        $this->setExpectedException('PHP_BitTorrent_Torrent_Exception');
+        $this->setExpectedException('\PHP\BitTorrent\Torrent\Exception');
         $this->torrent->save('/tmp/file');
     }
 
     /**
-     * @expectedException PHP_BitTorrent_Torrent_Exception
+     * @expectedException \PHP\BitTorrent\Torrent\Exception
      */
     public function testSaveWithNoInfoBlock() {
         $this->torrent->setAnnounce('http://tracker/')->save('some path');
@@ -233,7 +235,7 @@ class PHP_BitTorrent_TorrentTest extends PHPUnit_Framework_TestCase  {
 
         $this->torrent->loadFromPath(__FILE__)
                       ->setAnnounce('http://tracker/');
-        $this->setExpectedException('PHP_BitTorrent_Torrent_Exception');
+        $this->setExpectedException('\PHP\BitTorrent\Torrent\Exception');
         $this->torrent->save($target);
     }
 }

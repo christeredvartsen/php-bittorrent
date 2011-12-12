@@ -28,6 +28,10 @@
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 
+namespace PHP\BitTorrent;
+
+use \Exception as BaseException;
+
 /**
  * Base Exception class for PHP_BitTorrent
  *
@@ -36,6 +40,6 @@
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-class PHP_BitTorrent_Exception extends Exception {
+class Exception extends BaseException {
 
 }
