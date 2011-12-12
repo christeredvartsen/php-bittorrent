@@ -30,7 +30,7 @@
 
 namespace PHP\BitTorrent;
 
-use PHP\BitTorrent\Decoder\Exception as DecoderException;
+use InvalidArgumentException;
 
 /**
  * Decode bittorrent strings to it's PHP variable counterpart
@@ -42,25 +42,41 @@ use PHP\BitTorrent\Decoder\Exception as DecoderException;
  */
 class Decoder {
     /**
+     * Encoder instance
+     *
+     * @var PHP\BitTorrent\Encoder
+     */
+    private $encoder;
+
+    /**
+     * Class constructor
+     *
+     * @param PHP\BitTorrent\Encoder $encoder An instance of an encoder
+     */
+    public function __construct(Encoder $encoder) {
+        $this->encoder = $encoder;
+    }
+
+    /**
      * Decode a file
      *
      * @param string $file Path to the torrent file we want to decode
      * @param boolean $strict If set to true this method will check for certain elements in the dictionary.
      * @return array
-     * @throws PHP\BitTorrent\Decoder\Exception
+     * @throws InvalidArgumentException
      */
-    static public function decodeFile($file, $strict = false) {
+    public function decodeFile($file, $strict = false) {
         if (!is_readable($file)) {
-            throw new DecoderException('File ' . $file . ' does not exist or can not be read.');
+            throw new InvalidArgumentException('File ' . $file . ' does not exist or can not be read.');
         }
 
-        $dictionary = static::decodeDictionary(file_get_contents($file, true));
+        $dictionary = $this->decodeDictionary(file_get_contents($file, true));
 
         if ($strict) {
             if (!isset($dictionary['announce']) || !is_string($dictionary['announce'])) {
-                throw new DecoderException('Missing "announce" key.');
+                throw new InvalidArgumentException('Missing "announce" key.');
             } else if (!isset($dictionary['info']) || !is_array($dictionary['info'])) {
-                throw new DecoderException('Missing "info" key.');
+                throw new InvalidArgumentException('Missing "info" key.');
             }
         }
 
@@ -72,20 +88,20 @@ class Decoder {
      *
      * @param string $string
      * @return mixed
-     * @throws PHP\BitTorrent\Decoder\Exception
+     * @throws InvalidArgumentException
      */
-    static public function decode($string) {
+    public function decode($string) {
         if ($string[0] === 'i') {
-            return static::decodeInteger($string);
+            return $this->decodeInteger($string);
         } else if ($string[0] === 'l') {
-            return static::decodeList($string);
+            return $this->decodeList($string);
         } else if ($string[0] === 'd') {
-            return static::decodeDictionary($string);
+            return $this->decodeDictionary($string);
         } else if (preg_match('/^\d+:/', $string)) {
-            return static::decodeString($string);
+            return $this->decodeString($string);
         }
 
-        throw new DecoderException('Parameter is not correctly encoded.');
+        throw new InvalidArgumentException('Parameter is not correctly encoded.');
     }
 
     /**
@@ -93,18 +109,18 @@ class Decoder {
      *
      * @param string $integer
      * @return int
-     * @throws PHP\BitTorrent\Decoder\Exception
+     * @throws InvalidArgumentException
      */
-    static public function decodeInteger($integer) {
+    public function decodeInteger($integer) {
         if ($integer[0] !== 'i' || (!$ePos = strpos($integer, 'e'))) {
-            throw new DecoderException('Invalid integer. Inteers must start wth "i" and end with "e".');
+            throw new InvalidArgumentException('Invalid integer. Inteers must start wth "i" and end with "e".');
         }
 
         $int = substr($integer, 1, ($ePos - 1));
         $intLen = strlen($int);
 
         if (($int[0] === '0' && $intLen > 1) || ($int[0] === '-' && $int[1] === '0') || !is_numeric($int)) {
-            throw new DecoderException('Invalid integer value.');
+            throw new InvalidArgumentException('Invalid integer value.');
         }
 
         return (int) $int;
@@ -115,21 +131,21 @@ class Decoder {
      *
      * @param string $string
      * @return string
-     * @throws PHP\BitTorrent\Decoder\Exception
+     * @throws InvalidArgumentException
      */
-    static public function decodeString($string) {
+    public function decodeString($string) {
         $stringParts = explode(':', $string, 2);
 
         // The string must have two parts
         if (count($stringParts) !== 2) {
-            throw new DecoderException('Invalid string. Strings consist of two parts separated by ":".');
+            throw new InvalidArgumentException('Invalid string. Strings consist of two parts separated by ":".');
         }
 
         $length = (int) $stringParts[0];
         $lengthLen = strlen($length);
 
         if (($lengthLen + 1 + $length) > strlen($string)) {
-            throw new DecoderException('The length of the string does not match the prefix of the encoded data.');
+            throw new InvalidArgumentException('The length of the string does not match the prefix of the encoded data.');
         }
 
         return substr($string, ($lengthLen + 1), $length);
@@ -140,11 +156,11 @@ class Decoder {
      *
      * @param string $list
      * @return array
-     * @throws PHP\BitTorrent\Decoder\Exception
+     * @throws InvalidArgumentException
      */
-    static public function decodeList($list) {
+    public function decodeList($list) {
         if ($list[0] !== 'l') {
-            throw new DecoderException('Parameter is not an encoded list.');
+            throw new InvalidArgumentException('Parameter is not an encoded list.');
         }
 
         $ret = array();
@@ -158,9 +174,9 @@ class Decoder {
             }
 
             $part = substr($list, $i);
-            $decodedPart = static::decode($part);
+            $decodedPart = $this->decode($part);
             $ret[] = $decodedPart;
-            $i += strlen(Encoder::encode($decodedPart));
+            $i += strlen($this->encoder->encode($decodedPart));
         }
 
         return $ret;
@@ -171,11 +187,11 @@ class Decoder {
      *
      * @param string $dictionary
      * @return array
-     * @throws PHP\BitTorrent\Decoder\Exception
+     * @throws InvalidArgumentException
      */
-    static public function decodeDictionary($dictionary) {
+    public function decodeDictionary($dictionary) {
         if ($dictionary[0] !== 'd') {
-            throw new DecoderException('Parameter is not an encoded dictionary.');
+            throw new InvalidArgumentException('Parameter is not an encoded dictionary.');
         }
 
         $length = strlen($dictionary);
@@ -188,12 +204,12 @@ class Decoder {
             }
 
             $keyPart = substr($dictionary, $i);
-            $key = static::decodeString($keyPart);
-            $keyPartLength = strlen(Encoder::encodeString($key));
+            $key = $this->decodeString($keyPart);
+            $keyPartLength = strlen($this->encoder->encodeString($key));
 
             $valuePart = substr($dictionary, ($i + $keyPartLength));
-            $value = static::decode($valuePart);
-            $valuePartLength = strlen(Encoder::encode($value));
+            $value = $this->decode($valuePart);
+            $valuePartLength = strlen($this->encoder->encode($value));
 
             $ret[$key] = $value;
             $i += ($keyPartLength + $valuePartLength);

@@ -1,6 +1,6 @@
 <?php
 /**
- * PHP_BitTorrent
+ * PHP BitTorrent
  *
  * Copyright (c) 2011 Christer Edvartsen <cogo@starzinger.net>
  *
@@ -22,132 +22,251 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  *
- * @package PHP_BitTorrent
  * @subpackage UnitTests
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-namespace PHP\BitTorrent\Tests;
+
+namespace PHP\BitTorrent;
 
 /**
- * @package PHP_BitTorrent
  * @subpackage UnitTests
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 class DecoderTest extends \PHPUnit_Framework_TestCase {
-    public function testDecoderInteger() {
-        $encoded = array('i1e', 'i-1e', 'i0e');
-        $decoded = array(1, -1, 0);
+    /**
+     * Decoder instance
+     *
+     * @var PHP\BitTorrent\Decoder
+     */
+    private $decoder;
 
-        for ($i = 0; $i < count($encoded); $i++) {
-            $this->assertSame($decoded[$i], \PHP\BitTorrent\Decoder::decodeInteger($encoded[$i]));
-        }
+    /**
+     * Set up the decoder
+     */
+    public function setUp() {
+        $this->decoder = new Decoder(new Encoder());
     }
 
-    public function testDecodeInvalidInteger() {
-        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
-        \PHP\BitTorrent\Decoder::decodeInteger('i01e');
-
-        $this->setExpectedException('\PHP\BitTorrent\Decoder_Exception');
-        \PHP\BitTorrent\Decoder::decodeInteger('i-01e');
-
-        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
-        \PHP\BitTorrent\Decoder::decodeInteger('ifoobare');
+    /**
+     * Tear down the decoder
+     */
+    public function tearDown() {
+        $this->decoder = null;
     }
 
+    /**
+     * Data provider
+     *
+     * @return array
+     */
+    public function getDecodeIntegerData() {
+        return array(
+            array('i1e', 1),
+            array('i-1e', -1),
+            array('i0e', 0),
+        );
+    }
+
+    /**
+     * @dataProvider getDecodeIntegerData()
+     */
+    public function testDecoderInteger($encoded, $value) {
+        $this->assertSame($value, $this->decoder->decodeInteger($encoded));
+    }
+
+    /**
+     * Data provider
+     *
+     * @return array
+     */
+    public function getDecodeInvalidIntegerData() {
+        return array(
+            array('i01e'),
+            array('i-01e'),
+            array('ifoobare'),
+        );
+    }
+
+    /**
+     * @dataProvider getDecodeInvalidIntegerData()
+     * @expectedException InvalidArgumentException
+     */
+    public function testDecodeInvalidInteger($value) {
+        $this->decoder->decodeInteger($value);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
     public function testDecodeStringAsInteger() {
-        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
-        \PHP\BitTorrent\Decoder::decodeInteger('4:spam');
+        $this->decoder->decodeInteger('4:spam');
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     */
     public function testDecodePartialInteger() {
-        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
-        \PHP\BitTorrent\Decoder::decodeInteger('i10');
+        $this->decoder->decodeInteger('i10');
     }
 
-    public function testDecodeString() {
-        $encoded = array('4:spam', '11:test string');
-        $decoded = array('spam', 'test string');
-
-        for ($i = 0; $i < count($encoded); $i++) {
-            $this->assertSame($decoded[$i], \PHP\BitTorrent\Decoder::decodeString($encoded[$i]));
-        }
+    /**
+     * Data provider
+     *
+     * @return array
+     */
+    public function getDecodeStringData() {
+        return array(
+            array('4:spam', 'spam'),
+            array('11:test string', 'test string'),
+            array('3:foobar', 'foo'),
+        );
     }
 
+    /**
+     * @dataProvider getDecodeStringData()
+     */
+    public function testDecodeString($encoded, $value) {
+        $this->assertSame($value, $this->decoder->decodeString($encoded));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
     public function testDecodeInvalidString() {
-        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
-        \PHP\BitTorrent\Decoder::decodeString('4spam');
+        $this->decoder->decodeString('4spam');
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     */
     public function testDecodeStringWithInvalidLength() {
-        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
-        \PHP\BitTorrent\Decoder::decodeString('6:spam');
+        $this->decoder->decodeString('6:spam');
     }
 
-    public function testDecodeStringWithTruncation() {
-        $this->assertSame('foo', \PHP\BitTorrent\Decoder::decodeString('3:foobar'));
+    /**
+     * Data provider
+     *
+     * @return array
+     */
+    public function getDecodeListData() {
+        return array(
+            array('li1ei2ei3ee', array(1, 2, 3)),
+        );
     }
 
-    public function testDecodeList() {
-        $encoded = 'li1ei2ei3ee';
-        $decoded = array(1, 2, 3);
-
-        $this->assertSame($decoded, \PHP\BitTorrent\Decoder::decodeList($encoded));
+    /**
+     * @dataProvider getDecodeListData()
+     */
+    public function testDecodeList($encoded, $value) {
+        $this->assertSame($value, $this->decoder->decodeList($encoded));
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     */
     public function testDecodeInvalidList() {
-        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
-        \PHP\BitTorrent\Decoder::decodeList('4:spam');
+        $this->decoder->decodeList('4:spam');
     }
 
-    public function testDecodeDictionary() {
-        $encoded = 'd3:foo3:bar4:spam4:eggse';
-        $decoded = array('foo' => 'bar', 'spam' => 'eggs');
-
-        $this->assertSame($decoded, \PHP\BitTorrent\Decoder::decodeDictionary($encoded));
+    /**
+     * Data provider
+     *
+     * @return array
+     */
+    public function getDecodeDictionaryData() {
+        return array(
+            array('d3:foo3:bar4:spam4:eggse', array('foo' => 'bar', 'spam' => 'eggs')),
+        );
     }
 
+    /**
+     * @dataProvider getDecodeDictionaryData()
+     */
+    public function testDecodeDictionary($encoded, $value) {
+        $this->assertSame($value, $this->decoder->decodeDictionary($encoded));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
     public function testDecodeInvalidDictionary() {
-        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
-        \PHP\BitTorrent\Decoder::decodeDictionary('4:spam');
+        $this->decoder->decodeDictionary('4:spam');
     }
 
-    public function testGenericDecode() {
-        $encoded = array('i1e', '4:spam', 'li1ei2ei3ee', 'd3:foo3:bare');
-        $decoded = array(1, 'spam', array(1, 2, 3), array('foo' => 'bar'));
-
-        for ($i = 0; $i < count($encoded); $i++) {
-            $this->assertSame($decoded[$i], \PHP\BitTorrent\Decoder::decode($encoded[$i]));
-        }
+    /**
+     * Data provider
+     *
+     * @return array
+     */
+    public function getGenericDecodeData() {
+        return array(
+            array('i1e', 1),
+            array('4:spam', 'spam'),
+            array('li1ei2ei3ee', array(1, 2, 3)),
+            array('d3:foo3:bare', array('foo' => 'bar')),
+        );
     }
 
+    /**
+     * @dataProvider getGenericDecodeData()
+     */
+    public function testGenericDecode($encoded, $value) {
+        $this->assertSame($value, $this->decoder->decode($encoded));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
     public function testGenericDecodeWithInvalidData() {
-        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
-        \PHP\BitTorrent\Decoder::decode('foo');
+        $this->decoder->decode('foo');
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Missing "announce" key
+     */
     public function testDecodeTorrentFileStrictWithMissingAnnounce() {
         $file = __DIR__ . '/_files/testMissingAnnounce.torrent';
-        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
-        \PHP\BitTorrent\Decoder::decodeFile($file, true);
+        $this->decoder->decodeFile($file, true);
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Missing "info" key
+     */
     public function testDecodeTorrentFileStrictWithMissingInfo() {
         $file = __DIR__ . '/_files/testMissingInfo.torrent';
-        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
-        \PHP\BitTorrent\Decoder::decodeFile($file, true);
+        $this->decoder->decodeFile($file, true);
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage File
+     */
     public function testDecodeNonReadableFile() {
-        $file = __DIR__ . '/' . uniqid(null, true);
-        $this->setExpectedException('\PHP\BitTorrent\Decoder\Exception');
-        \PHP\BitTorrent\Decoder::decodeFile($file);
+        $file = __DIR__ . '/nonExistingFile';
+        $this->decoder->decodeFile($file);
     }
 
     public function testDecodeFileWithStrictChecksEnabled() {
-        $list = \PHP\BitTorrent\Decoder::decodeFile(__DIR__ . '/_files/valid.torrent', true);
+        $list = $this->decoder->decodeFile(__DIR__ . '/_files/valid.torrent', true);
+
+        $this->assertInternalType('array', $list);
+        $this->assertArrayHasKey('announce', $list);
+        $this->assertSame('http://trackerurl', $list['announce']);
+        $this->assertArrayHasKey('comment', $list);
+        $this->assertSame('This is a comment', $list['comment']);
+        $this->assertArrayHasKey('creation date', $list);
+        $this->assertSame(1323713688, $list['creation date']);
+        $this->assertArrayHasKey('info', $list);
+        $this->assertInternalType('array', $list['info']);
+        $this->assertArrayHasKey('files', $list['info']);
+        $this->assertSame(5, count($list['info']['files']));
+        $this->assertArrayHasKey('name', $list['info']);
+        $this->assertSame('PHP', $list['info']['name']);
     }
 }
