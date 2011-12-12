@@ -29,20 +29,25 @@ Using the PHP BitTorrent API
 **Encode PHP variables**
 
     <?php
-    var_dump(PHP\BitTorrent\Encoder::encodeString('Some string')); // string(14) "11:Some string"
-    var_dump(PHP\BitTorrent\Encoder::encodeInteger(42)); // string(4) "i42e"
-    var_dump(PHP\BitTorrent\Encoder::encodeList(array(1, 2, 3)); // string(11) "li1ei2ei3ee"
-    var_dump(PHP\BitTorrent\Encoder::encodeDictionary(array('foo' => 'bar', 'bar' => 'foo')); // string(22) "d3:foo3:bar3:bar3:fooe"
+    $encoder = new PHP\BitTorrent\Encoder();
+
+    var_dump($encoder->encodeString('Some string')); // string(14) "11:Some string"
+    var_dump($encoder->encodeInteger(42)); // string(4) "i42e"
+    var_dump($encoder->encodeList(array(1, 2, 3)); // string(11) "li1ei2ei3ee"
+    var_dump($encoder->encodeDictionary(array('foo' => 'bar', 'bar' => 'foo')); // string(22) "d3:foo3:bar3:bar3:fooe"
 
 There is also a convenience method simply called `encode` in the `PHP\BitTorrent\Encoder` class that can be used to encode all encodable variables (integers, strings and arrays).
 
 **Decode BitTorrent encoded data**
 
     <?php
-    var_dump(PHP\BitTorrent\Decoder::decodeString('11:Some string')); // string(11) "Some string"
-    var_dump(PHP\BitTorrent\Decoder::decodeInteger('i42e')); // int(42)
-    var_dump(PHP\BitTorrent\Decoder::decodeList('li1ei2ei3ee'); // array(3) { [0]=> int(1) [1]=> int(2) [2]=> int(3) }
-    var_dump(PHP\BitTorrent\Decoder::decodeDictionary('d3:foo3:bar3:bar3:fooe'); // array(2) { ["foo"]=> string(3) "bar" ["bar"]=> string(3) "foo" }
+    $encoder = new PHP\BitTorrent\Encoder();
+    $decoder = new PHP\BitTorrent\Decoder($encoder); // The decoder needs an encoder for some methods
+
+    var_dump($decoder->decodeString('11:Some string')); // string(11) "Some string"
+    var_dump($decoder->decodeInteger('i42e')); // int(42)
+    var_dump($decoder->decodeList('li1ei2ei3ee'); // array(3) { [0]=> int(1) [1]=> int(2) [2]=> int(3) }
+    var_dump($decoder->decodeDictionary('d3:foo3:bar3:bar3:fooe'); // array(2) { ["foo"]=> string(3) "bar" ["bar"]=> string(3) "foo" }
 
 There is also a convenience method called `decode` that can decode any BitTorrent encoded data.
 
@@ -51,7 +56,10 @@ There is also a convenience method called `decode` that can decode any BitTorren
 The decoder class also has a method for decoding a torrent file (which is an encoded dictionary):
 
     <?php
-    $decodedFile = PHP\BitTorrent\Decoder::decodeFile('/path/to/file.torrent');
+    $encoder = new PHP\BitTorrent\Encoder();
+    $decoder = new PHP\BitTorrent\Decoder($encoder);
+
+    $decodedFile = $decoder->decodeFile('/path/to/file.torrent');
 
 **Create new torrent files and open existing ones**
 
