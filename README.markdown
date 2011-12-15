@@ -66,17 +66,16 @@ The decoder class also has a method for decoding a torrent file (which is an enc
 The `PHP\BitTorrent\Torrent` class represents a torrent file and can be used to create torrent files.
 
     <?php
-    $torrent = new PHP\BitTorrent\Torrent();
-    $torrent->setAnnounce('http://tracker/announce.php')
-            ->setComment('Some comment')
-            ->loadFromPath('/path/to/files')
-            ->save('/save/path/file.torrent');
+    $torrent = PHP\BitTorrent\Torrent::createFromPath('/path/to/files', 'http://tracker/announce.php');
+
+    $torrent->setComment('Some comment')
+            ->save('/save/to/path/file.torrent');
 
 The class can also load a torrent file:
 
     <?php
-    $torrent = new PHP\BitTorrent\Torrent();
-    $torrent->loadFromTorrentFile('/path/to/file.torrent')
-            ->setAnnounce('http://tracker/announce.php') // Override announce in original file
+    $torrent = PHP\BitTorrent\Torrent::createFromTorrentFile('/path/to/file.torrent');
+
+    $torrent->setAnnounce('http://tracker/announce.php') // Override announce in original file
             ->setComment('Some comment') // Override commend in original file
-            ->save('/save/path/file.torrent'); // Save to a new file
+            ->save('/save/to/path/file.torrent'); // Save to a new file
