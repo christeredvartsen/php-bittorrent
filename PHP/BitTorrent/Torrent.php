@@ -109,13 +109,13 @@ class Torrent {
      * @throws InvalidArgumentException
      */
     static public function createFromTorrentFile($path, Decoder $decoder = null) {
+        if (!is_file($path)) {
+            throw new InvalidArgumentException($path . ' does not exist.');
+        }
+
         // Make sure we have a decoder
         if ($decoder === null) {
             $decoder = new Decoder();
-        }
-
-        if (!is_file($path)) {
-            throw new InvalidArgumentException($path . ' does not exist.');
         }
 
         $decodedFile = $decoder->decodeFile($path);

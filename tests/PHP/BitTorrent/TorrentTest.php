@@ -247,4 +247,20 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
         $torrent = Torrent::createFromPath(__FILE__, 'http://tracker/');
         $torrent->save($target);
     }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage foobar does not exist
+     */
+    public function testCreateFromTorrentFileWithUnexistingTorrentFile() {
+        Torrent::createFromTorrentFile('foobar');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Invalid path: foobar
+     */
+    public function testCreateFromPathWithInvalidPath() {
+        Torrent::createFromPath('foobar', 'http://trackerurl');
+    }
 }
