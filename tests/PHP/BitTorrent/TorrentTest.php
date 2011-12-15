@@ -1,6 +1,6 @@
 <?php
 /**
- * PHP_BitTorrent
+ * PHP BitTorrent
  *
  * Copyright (c) 2011 Christer Edvartsen <cogo@starzinger.net>
  *
@@ -22,32 +22,30 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  *
- * @package PHP_BitTorrent
  * @subpackage UnitTests
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
 
-namespace PHP\BitTorrent\Tests;
+namespace PHP\BitTorrent;
 
 /**
- * @package PHP_BitTorrent
  * @subpackage UnitTests
  * @author Christer Edvartsen <cogo@starzinger.net>
  * @copyright Copyright (c) 2011, Christer Edvartsen
  * @license http://www.opensource.org/licenses/mit-license MIT License
  */
-class TorrentTest extends \PHPUnit_Framework_TestCase  {
+class TorrentTest extends \PHPUnit_Framework_TestCase {
     /**
      * Torrent object
      *
-     * @var \PHP\BitTorrent\Torrent
+     * @var PHP\BitTorrent\Torrent
      */
-    protected $torrent = null;
+    private $torrent;
 
     public function setUp() {
-        $this->torrent = new \PHP\BitTorrent\Torrent();
+        $this->torrent = new Torrent();
     }
 
     public function tearDown() {
@@ -56,56 +54,56 @@ class TorrentTest extends \PHPUnit_Framework_TestCase  {
 
     public function testSetGetComment() {
         $comment = 'This is my comment';
-        $this->torrent->setComment($comment);
+        $this->assertSame($this->torrent, $this->torrent->setComment($comment));
         $this->assertSame($comment, $this->torrent->getComment());
     }
 
     public function testSetGetCreatedBy() {
         $createdBy = 'Some client name';
-        $this->torrent->setCreatedBy($createdBy);
+        $this->assertSame($this->torrent, $this->torrent->setCreatedBy($createdBy));
         $this->assertSame($createdBy, $this->torrent->getCreatedBy());
     }
 
     public function testSetGetCreationDate() {
         $timestamp = time();
-        $this->torrent->setCreatedAt($timestamp);
+        $this->assertSame($this->torrent, $this->torrent->setCreatedAt($timestamp));
         $this->assertSame($timestamp, $this->torrent->getCreatedAt());
     }
 
     public function testSetGetInfo() {
         $info = array('some' => 'data');
-        $this->torrent->setInfo($info);
+        $this->assertSame($this->torrent, $this->torrent->setInfo($info));
         $this->assertSame($info, $this->torrent->getInfo());
     }
 
     public function testSetGetAnnounce() {
         $announce = 'http://tracker/';
-        $this->torrent->setAnnounce($announce);
+        $this->assertSame($this->torrent, $this->torrent->setAnnounce($announce));
         $this->assertSame($announce, $this->torrent->getAnnounce());
     }
 
     public function testSetGetPieceLengthExp() {
         $exp = 6;
-        $this->torrent->setPieceLengthExp($exp);
+        $this->assertSame($this->torrent, $this->torrent->setPieceLengthExp($exp));
         $this->assertSame($exp, $this->torrent->getPieceLengthExp());
     }
 
     /**
-     * @expectedException \PHP\BitTorrent\Torrent\Exception
+     * @expectedException RuntimeException
      */
     public function testGetNameWithNoInfoBlockAdded() {
         $this->torrent->getName();
     }
 
     /**
-     * @expectedException \PHP\BitTorrent\Torrent\Exception
+     * @expectedException RuntimeException
      */
     public function testGetSizeWithNoInfoBlockAdded() {
         $this->torrent->getSize();
     }
 
     /**
-     * @expectedException \PHP\BitTorrent\Torrent\Exception
+     * @expectedException RuntimeException
      */
     public function testGetFileListWithNoInfoBlockAdded() {
         $this->torrent->getFileList();
@@ -118,7 +116,7 @@ class TorrentTest extends \PHPUnit_Framework_TestCase  {
         $this->assertSame($name, $this->torrent->getName());
     }
 
-    public function testGetSizeWhenLengtIsPresentInTheInfoBlock() {
+    public function testGetSizeWhenLengthIsPresentInTheInfoBlock() {
         $length = 123;
         $info = array('length' => $length);
         $this->torrent->setInfo($info);
@@ -154,31 +152,37 @@ class TorrentTest extends \PHPUnit_Framework_TestCase  {
         $this->assertSame(167, $this->torrent->getSize());
     }
 
-    public function testLoadFromTorrentFile() {
-        $this->torrent->loadFromTorrentFile(__DIR__ . '/_files/valid.torrent');
+    public function testCreateFromTorrentFile() {
+        $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_files/valid.torrent');
 
-        $this->assertSame('http://tracker/', $this->torrent->getAnnounce());
-        $this->assertSame('Some comment', $this->torrent->getComment());
-        $this->assertSame('PHP_BitTorrent', $this->torrent->getCreatedBy());
-        $this->assertSame(1295819822, $this->torrent->getCreatedAt());
-        $this->assertSame(1546389, $this->torrent->getSize());
-        $this->assertSame(269, count($this->torrent->getFileList()));
+        $this->assertSame('http://trackerurl', $torrent->getAnnounce());
+        $this->assertSame('This is a comment', $torrent->getComment());
+        $this->assertSame('PHP BitTorrent', $torrent->getCreatedBy());
+        $this->assertSame(1323713688, $torrent->getCreatedAt());
+        $this->assertSame(30243, $torrent->getSize());
+        $this->assertSame(5, count($torrent->getFileList()));
     }
 
-    public function testLoadFromPathWhenUsingADirectoryAsArgument() {
+    public function testCreateFromPathWhenUsingADirectoryAsArgument() {
         $path = __DIR__ . '/_files';
-        $this->torrent->loadFromPath($path);
-        $this->assertSame('_files', $this->torrent->getName());
-        $this->assertSame(18308, $this->torrent->getSize());
-        $this->assertSame(3, count($this->torrent->getFileList()));
+        $trackerUrl = 'http://trackerurl';
+        $torrent = Torrent::createFromPath($path, $trackerUrl);
+
+        $this->assertSame($trackerUrl, $torrent->getAnnounce());
+        $this->assertSame('_files', $torrent->getName());
+        $this->assertSame(482, $torrent->getSize());
+        $this->assertSame(3, count($torrent->getFileList()));
     }
 
-    public function testLoadFromPathWhenUsingAFileAsArgument() {
+    public function testCreateFromPathWhenUsingAFileAsArgument() {
         $path = __DIR__ . '/_files/valid.torrent';
-        $this->torrent->loadFromPath($path);
-        $this->assertSame('valid.torrent', $this->torrent->getName());
-        $this->assertSame(18266, $this->torrent->getSize());
-        $this->assertSame(1, count($this->torrent->getFileList()));
+        $trackerUrl = 'http://trackerurl';
+        $torrent = Torrent::createFromPath($path, $trackerUrl);
+
+        $this->assertSame($trackerUrl, $torrent->getAnnounce());
+        $this->assertSame('valid.torrent', $torrent->getName());
+        $this->assertSame(440, $torrent->getSize());
+        $this->assertSame(1, count($torrent->getFileList()));
     }
 
     public function testSaveTorrent() {
@@ -186,26 +190,25 @@ class TorrentTest extends \PHPUnit_Framework_TestCase  {
         $announce  = 'http://tracker/';
         $comment   = 'Some comment';
         $createdBy = 'PHPUnit';
-        $target    = tempnam(sys_get_temp_dir(), '\PHP\BitTorrent');
+        $target    = tempnam(sys_get_temp_dir(), 'PHP\BitTorrent');
 
         if (!$target) {
             $this->fail('Could not create file: ' . $target);
         }
 
-        $this->torrent->loadFromPath($path)
-                      ->setAnnounce($announce)
-                      ->setComment($comment)
-                      ->setCreatedBy($createdBy)
-                      ->save($target);
+        $torrent = Torrent::createFromPath($path, $announce);
+        $torrent->setComment($comment)
+                ->setCreatedBy($createdBy)
+                ->save($target);
 
         // Now load the file and make sure the values are correct
-        $torrent = new \PHP\BitTorrent\Torrent();
-        $torrent->loadFromTorrentFile($target);
+        $torrent = Torrent::createFromTorrentFile($target);
+
         $this->assertSame($announce, $torrent->getAnnounce());
         $this->assertSame($comment, $torrent->getComment());
         $this->assertSame($createdBy, $torrent->getCreatedBy());
         $this->assertSame('_files', $torrent->getName());
-        $this->assertSame(18308, $torrent->getSize());
+        $this->assertSame(482, $torrent->getSize());
         $this->assertSame(3, count($torrent->getFileList()));
 
         // Remove the saved file
@@ -216,26 +219,32 @@ class TorrentTest extends \PHPUnit_Framework_TestCase  {
      * Try to save when no announce has been given. The code we are testing is AFTER the code that
      * checks if the file specified is writeable, so make sure the argument to save() is a file that
      * is writeable.
+     *
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Announce URL is missing
      */
     public function testSaveWithNoAnnounce() {
-        $this->torrent->loadFromPath(__FILE__);
-        $this->setExpectedException('\PHP\BitTorrent\Torrent\Exception');
-        $this->torrent->save('/tmp/file');
+        $target = tempnam(sys_get_temp_dir(), 'PHP\BitTorrent');
+        $this->torrent->save($target);
     }
 
     /**
-     * @expectedException \PHP\BitTorrent\Torrent\Exception
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage The info part of the torrent is empty
      */
     public function testSaveWithNoInfoBlock() {
-        $this->torrent->setAnnounce('http://tracker/')->save('some path');
+        $target = tempnam(sys_get_temp_dir(), 'PHP\BitTorrent');
+        $this->torrent->setAnnounce('http://tracker')->save($target);
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Could not open file
+     */
     public function testSaveToUnwritableFile() {
         $target = uniqid() . DIRECTORY_SEPARATOR . uniqid();
 
-        $this->torrent->loadFromPath(__FILE__)
-                      ->setAnnounce('http://tracker/');
-        $this->setExpectedException('\PHP\BitTorrent\Torrent\Exception');
-        $this->torrent->save($target);
+        $torrent = Torrent::createFromPath(__FILE__, 'http://tracker/');
+        $torrent->save($target);
     }
 }
