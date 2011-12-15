@@ -53,7 +53,11 @@ class Decoder {
      *
      * @param PHP\BitTorrent\Encoder $encoder An instance of an encoder
      */
-    public function __construct(Encoder $encoder) {
+    public function __construct(Encoder $encoder = null) {
+        if ($encoder === null) {
+            $encoder = new Encoder();
+        }
+
         $this->encoder = $encoder;
     }
 
