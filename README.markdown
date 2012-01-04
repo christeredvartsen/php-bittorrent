@@ -27,6 +27,7 @@ This has to be done only once. Now, to install the package:
 Using the PHP BitTorrent API
 ----------------------------
 **Autoloader**
+
 PHP BitTorrent does **not** come with its own autoloader, so you will need to use a PSR-0 compatible autoloader for everything to work as expected, or provide your own `require[_once]` statements. An example of such an autoloader can be found [here](https://gist.github.com/1234504).
 
 **Encode PHP variables**
