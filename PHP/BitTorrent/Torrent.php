@@ -57,7 +57,7 @@ class Torrent {
     private $pieceLengthExp = 18;
 
     /**
-     * The announce url
+     * The announce URL
      *
      * @var string
      */
@@ -94,7 +94,7 @@ class Torrent {
     /**
      * Class constructor
      *
-     * @param string $announceUrl The announce URL
+     * @param string $announceUrl Optional announce URL
      */
     public function __construct($announceUrl = null) {
         if ($announceUrl !== null) {
@@ -107,8 +107,8 @@ class Torrent {
      *
      * @param string $path Path to the torrent file
      * @param PHP\BitTorrent\Decoder $decoder The decoder to use to decode the file
-     * @return PHP\BitTorrent\Torrent
      * @throws InvalidArgumentException
+     * @return PHP\BitTorrent\Torrent Returns a new instance of this class
      */
     static public function createFromTorrentFile($path, Decoder $decoder = null) {
         if (!is_file($path)) {
@@ -157,7 +157,7 @@ class Torrent {
      *
      * @param string $path Path to a directory or a single file
      * @param string $announceUrl URL to the announce
-     * @return PHP\BitTorrent\Torrent
+     * @return PHP\BitTorrent\Torrent Returns a new instance of this class
      */
     static public function createFromPath($path, $announceUrl) {
         // Create a new torrent instance
@@ -319,7 +319,7 @@ class Torrent {
      * Set the piece length exponent
      *
      * @param int $pieceLengthExp The exponent to set
-     * @return PHP\BitTorrent\Torrent
+     * @return PHP\BitTorrent\Torrent Returns self for a fluent interface
      */
     public function setPieceLengthExp($pieceLengthExp) {
         $this->pieceLengthExp = (int) $pieceLengthExp;
@@ -330,17 +330,18 @@ class Torrent {
     /**
      * Get the piece length exponent
      *
-     * @return int
+     * @return int Returns the piece length exponent used when creating a torrent instance from a
+     *             path
      */
     public function getPieceLengthExp() {
         return $this->pieceLengthExp;
     }
 
     /**
-     * Set the announce url
+     * Set the announce URL
      *
      * @param string $announceUrl The URL to set
-     * @return PHP\BitTorrent\Torrent
+     * @return PHP\BitTorrent\Torrent Returns self for a fluent interface
      */
     public function setAnnounce($announceUrl) {
         $this->announce = $announceUrl;
@@ -349,9 +350,9 @@ class Torrent {
     }
 
     /**
-     * Get the announce url
+     * Get the announce URL
      *
-     * @return string
+     * @return string Returns the URL to the tracker (if set)
      */
     public function getAnnounce() {
         return $this->announce;
@@ -361,7 +362,7 @@ class Torrent {
      * Set the comment
      *
      * @param string $comment Comment to attach to the torrent file
-     * @return PHP\BitTorrent\Torrent
+     * @return PHP\BitTorrent\Torrent Returns self for a fluent interface
      */
     public function setComment($comment) {
         $this->comment = $comment;
@@ -372,7 +373,7 @@ class Torrent {
     /**
      * Get the comment
      *
-     * @return string
+     * @return string Returns an optional comment
      */
     public function getComment() {
         return $this->comment;
@@ -382,7 +383,7 @@ class Torrent {
      * Set the created by property
      *
      * @param string $createdBy Who/what created the torrent file
-     * @return PHP\BitTorrent\Torrent
+     * @return PHP\BitTorrent\Torrent Returns self for a fluent interface
      */
     public function setCreatedBy($createdBy) {
         $this->createdBy = $createdBy;
@@ -393,7 +394,7 @@ class Torrent {
     /**
      * Get the created by property
      *
-     * @return string
+     * @return string Returns who created the torrent (if set)
      */
     public function getCreatedBy() {
         return $this->createdBy;
@@ -403,7 +404,7 @@ class Torrent {
      * Set the creation timestamp
      *
      * @param int $createdAt Unix timestamp
-     * @return PHP\BitTorrent\Torrent
+     * @return PHP\BitTorrent\Torrent Returns self for a fluent interface
      */
     public function setCreatedAt($createdAt) {
         $this->createdAt = (int) $createdAt;
@@ -424,7 +425,7 @@ class Torrent {
      * Set the info part of the torrent
      *
      * @param array $info Array with information about the torrent file
-     * @return PHP\BitTorrent\Torrent
+     * @return PHP\BitTorrent\Torrent Returns self for a fluent interface
      */
     public function setInfo(array $info) {
         $this->info = $info;
@@ -435,7 +436,7 @@ class Torrent {
     /**
      * Get the info part
      *
-     * @return array
+     * @return array Returns the info part of the torrent
      */
     public function getInfo() {
         return $this->info;
@@ -444,13 +445,14 @@ class Torrent {
     /**
      * Save the current torrent object to the specified filename
      *
-     * This method will save the current object to a file. If the file specified exists it will be overwritten.
+     * This method will save the current object to a file. If the file specified exists it will be
+     * overwritten.
      *
      * @param string $filename Path to the torrent file we want to save
-     * @param Encoder $encoder Encoder used to encode the information
+     * @param PHP\BitTorrent\Encoder $encoder Encoder used to encode the information
      * @throws InvalidArgumentException
      * @throws RuntimeException
-     * @return PHP\BitTorrent\Torrent
+     * @return PHP\BitTorrent\Torrent Returns self for a fluent interface
      */
     public function save($filename, Encoder $encoder = null) {
         if (!is_writable($filename) && !is_writable(dirname($filename))) {
@@ -529,7 +531,7 @@ class Torrent {
     /**
      * Get the size of the files in the torrent
      *
-     * @return int
+     * @return int Returns the size of the files in the torrent in bytes
      * @throws RuntimeException
      */
     public function getSize() {
@@ -557,7 +559,7 @@ class Torrent {
     /**
      * Get the name that the content will be saved as
      *
-     * @return string
+     * @return string The name of the torrent
      * @throws RuntimeException
      */
     public function getName() {

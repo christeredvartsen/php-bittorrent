@@ -66,9 +66,18 @@ class Decoder {
     /**
      * Decode a file
      *
+     * This method can use a strict method that requires certain elements to be present in the
+     * encoded file. The two required elements are:
+     *
+     * - announce
+     * - info
+     *
+     * Pr. default the method does not check for these elements.
+     *
      * @param string $file Path to the torrent file we want to decode
-     * @param boolean $strict If set to true this method will check for certain elements in the dictionary.
-     * @return array
+     * @param boolean $strict If set to true this method will check for certain elements in the
+     *                        dictionary.
+     * @return array Returns the decoded version of the file as an array
      * @throws InvalidArgumentException
      */
     public function decodeFile($file, $strict = false) {
@@ -92,8 +101,8 @@ class Decoder {
     /**
      * Decode any bittorrent encoded string
      *
-     * @param string $string
-     * @return mixed
+     * @param string $string The string to decode
+     * @return int|string|array Returns the native PHP counterpart of the encoded string
      * @throws InvalidArgumentException
      */
     public function decode($string) {
@@ -113,13 +122,13 @@ class Decoder {
     /**
      * Decode an encoded PHP integer
      *
-     * @param string $integer
-     * @return int
+     * @param string $integer The integer to decode
+     * @return int Returns the decoded integer
      * @throws InvalidArgumentException
      */
     public function decodeInteger($integer) {
         if ($integer[0] !== 'i' || (!$ePos = strpos($integer, 'e'))) {
-            throw new InvalidArgumentException('Invalid integer. Inteers must start wth "i" and end with "e".');
+            throw new InvalidArgumentException('Invalid integer. Integers must start wth "i" and end with "e".');
         }
 
         $int = substr($integer, 1, ($ePos - 1));
@@ -135,8 +144,8 @@ class Decoder {
     /**
      * Decode an encoded PHP string
      *
-     * @param string $string
-     * @return string
+     * @param string $string The string to decode
+     * @return string Returns the decoded string value
      * @throws InvalidArgumentException
      */
     public function decodeString($string) {
@@ -160,8 +169,8 @@ class Decoder {
     /**
      * Decode an encoded PHP array
      *
-     * @param string $list
-     * @return array
+     * @param string $list Encoded list
+     * @return array Returns a numerical array
      * @throws InvalidArgumentException
      */
     public function decodeList($list) {
@@ -191,8 +200,8 @@ class Decoder {
     /**
      * Decode an encoded PHP associative array
      *
-     * @param string $dictionary
-     * @return array
+     * @param string $dictionary Encoded dictionary
+     * @return array Returns an associative array
      * @throws InvalidArgumentException
      */
     public function decodeDictionary($dictionary) {

@@ -46,8 +46,8 @@ class Encoder {
     /**
      * Encode any encodable variable
      *
-     * @param mixed $var
-     * @return string
+     * @param int|string|array $var The variable to encode
+     * @return string Returns the encoded string
      * @throws InvalidArgumentException
      */
     public function encode($var) {
@@ -73,8 +73,8 @@ class Encoder {
     /**
      * Encode an integer
      *
-     * @param int $integer
-     * @return string
+     * @param int $integer The integer to encoded
+     * @return string Returns the encoded string
      * @throws InvalidArgumentException
      */
     public function encodeInteger($integer) {
@@ -88,8 +88,8 @@ class Encoder {
     /**
      * Encode a string
      *
-     * @param string $string
-     * @return string
+     * @param string $string The string to encode
+     * @return string Returns the encoded string
      * @throws InvalidArgumentException
      */
     public function encodeString($string) {
@@ -101,10 +101,10 @@ class Encoder {
     }
 
     /**
-     * Encode a list (regular PHP array)
+     * Encode a list (numerically indexed array)
      *
-     * @param array $list
-     * @return string
+     * @param array $list The array to encode
+     * @return string Returns the encoded string
      * @throws InvalidArgumentException
      */
     public function encodeList($list) {
@@ -124,8 +124,8 @@ class Encoder {
     /**
      * Encode a dictionary (associative PHP array)
      *
-     * @param array $dictionary
-     * @return string
+     * @param array $dictionary The array to encode
+     * @return string Returns the encoded string
      * @throws InvalidArgumentException
      */
     public function encodeDictionary($dictionary) {
