@@ -7,7 +7,7 @@ __2011-01-29__
 
 * Initial release
 
-Version 0.2
+Version 0.2.0
 -------------
 __2012-01-04__
 

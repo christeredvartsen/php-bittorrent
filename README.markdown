@@ -20,8 +20,8 @@ This has to be done only once. Now, to install the package:
 
     christer@aurora:~$ sudo pear install stz/PHP_BitTorrent-beta
     downloading PHP_BitTorrent-0.2.0.tgz ...
-    Starting to download PHP_BitTorrent-0.2.0.tgz (8,098 bytes)
-    .....done: 8,098 bytes
+    Starting to download PHP_BitTorrent-0.2.0.tgz (8,249 bytes)
+    .....done: 8,249 bytes
     install ok: channel://pear.starzinger.net/PHP_BitTorrent-0.2.0
 
 Using the PHP BitTorrent API
