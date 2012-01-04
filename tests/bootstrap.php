@@ -2,7 +2,7 @@
 /**
  * PHP BitTorrent
  *
- * Copyright (c) 2011 Christer Edvartsen <cogo@starzinger.net>
+ * Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -22,10 +22,11 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  *
- * @package Decoder
+ * @package UnitTests
  * @author Christer Edvartsen <cogo@starzinger.net>
- * @copyright Copyright (c) 2011, Christer Edvartsen
+ * @copyright Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
  * @license http://www.opensource.org/licenses/mit-license MIT License
+ * @link https://github.com/christeredvartsen/php-bittorrent
  */
 
 // Autoloader for namespaced classes in the include_path
