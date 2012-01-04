@@ -1,8 +1,8 @@
 <?php
 /**
- * PHP_BitTorrent
+ * PHP BitTorrent
  *
- * Copyright (c) 2011-2012 Christer Edvartsen <cogo@starzinger.net>
+ * Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -22,20 +22,23 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  *
- * @package PHP_BitTorrent
+ * @package UnitTests
  * @author Christer Edvartsen <cogo@starzinger.net>
- * @copyright Copyright (c) 2011-2012, Christer Edvartsen
+ * @copyright Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
  * @license http://www.opensource.org/licenses/mit-license MIT License
+ * @link https://github.com/christeredvartsen/php-bittorrent
  */
 
-/**
- * Encoder exception
- *
- * @package PHP_BitTorrent
- * @author Christer Edvartsen <cogo@starzinger.net>
- * @copyright Copyright (c) 2011-2012, Christer Edvartsen
- * @license http://www.opensource.org/licenses/mit-license MIT License
- */
-class PHP_BitTorrent_Encoder_Exception extends PHP_BitTorrent_Exception {
+// Autoloader for namespaced classes in the include_path
+spl_autoload_register(function($className) {
+    $filename = str_replace('\\', '/', $className) . '.php';
 
-}
+    foreach (explode(PATH_SEPARATOR, get_include_path()) as $path) {
+        $absPath = rtrim($path, '/') . '/' . $filename;
+
+        if (is_file($absPath)) {
+            require $absPath;
+            return true;
+        }
+    }
+});
