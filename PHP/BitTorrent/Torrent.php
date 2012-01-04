@@ -24,8 +24,9 @@
  *
  * @package Torrent
  * @author Christer Edvartsen <cogo@starzinger.net>
- * @copyright Copyright (c) 2011-2012, Christer Edvartsen
+ * @copyright Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
  * @license http://www.opensource.org/licenses/mit-license MIT License
+ * @link https://github.com/christeredvartsen/php-bittorrent
  */
 
 namespace PHP\BitTorrent;
@@ -43,8 +44,9 @@ use RecursiveDirectoryIterator,
  *
  * @package Torrent
  * @author Christer Edvartsen <cogo@starzinger.net>
- * @copyright Copyright (c) 2011-2012, Christer Edvartsen
+ * @copyright Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
  * @license http://www.opensource.org/licenses/mit-license MIT License
+ * @link https://github.com/christeredvartsen/php-bittorrent
  */
 class Torrent {
     /**

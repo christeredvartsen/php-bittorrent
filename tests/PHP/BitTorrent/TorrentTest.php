@@ -22,19 +22,21 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  *
- * @subpackage UnitTests
+ * @package UnitTests
  * @author Christer Edvartsen <cogo@starzinger.net>
- * @copyright Copyright (c) 2011-2012, Christer Edvartsen
+ * @copyright Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
  * @license http://www.opensource.org/licenses/mit-license MIT License
+ * @link https://github.com/christeredvartsen/php-bittorrent
  */
 
 namespace PHP\BitTorrent;
 
 /**
- * @subpackage UnitTests
+ * @package UnitTests
  * @author Christer Edvartsen <cogo@starzinger.net>
- * @copyright Copyright (c) 2011-2012, Christer Edvartsen
+ * @copyright Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
  * @license http://www.opensource.org/licenses/mit-license MIT License
+ * @link https://github.com/christeredvartsen/php-bittorrent
  */
 class TorrentTest extends \PHPUnit_Framework_TestCase {
     /**
