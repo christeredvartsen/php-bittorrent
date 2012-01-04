@@ -1,10 +1,10 @@
 {
     "name": "christeredvartsen/php-bittorrent",
     "type": "library",
-    "description": "PHP classes for encoding/decoding data to/from the BitTorrent format, creating torrent files and running your own tracker.",
-    "keywords": ["bittorrent", "torrent", "tracker"],
+    "description": "PHP_BitTorrent is a set of components that can be used to interact with torrent files (read+write) and classes that can encode/decode to/from the BitTorrent format.",
+    "keywords": ["bittorrent", "torrent"],
     "homepage": "https://github.com/christeredvartsen/php-bittorrent",
-    "version": "1.0.0",
+    "version": "0.2",
     "license": "MIT",
     "authors": [
         {

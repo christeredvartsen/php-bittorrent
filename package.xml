@@ -5,7 +5,7 @@
          xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
 http://pear.php.net/dtd/tasks-1.0.xsd
 http://pear.php.net/dtd/package-2.0
-http://pear.php.net/dtd/package-2.0.xsd">                             
+http://pear.php.net/dtd/package-2.0.xsd">
  <name>PHP_BitTorrent</name>
  <channel>pear.starzinger.net</channel>
  <summary>Components for working with torrent files and the BitTorrent format in PHP</summary>
@@ -16,14 +16,14 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>cogo@starzinger.net</email>
   <active>yes</active>
  </lead>
- <date>2011-01-29</date>
+ <date>2012-01-04</date>
  <version>
-  <release>0.0.1</release>
-  <api>0.0.1</api>
+  <release>0.2</release>
+  <api>0.2</api>
  </version>
  <stability>
-  <release>alpha</release>
-  <api>alpha</api>
+  <release>beta</release>
+  <api>beta</api>
  </stability>
  <license uri="http://www.opensource.org/licenses/mit-license">MIT License</license>
  <notes>http://github.com/christeredvartsen/php-bittorrent/blob/master/README.markdown</notes>
@@ -31,18 +31,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <dir name="/">
    <dir name="PHP">
     <dir name="BitTorrent">
-     <dir name="Decoder">
-      <file baseinstalldir="/" name="Exception.php" role="php" />
-     </dir>
-     <dir name="Encoder">
-      <file baseinstalldir="/" name="Exception.php" role="php" />
-     </dir>
-     <dir name="Torrent">
-      <file baseinstalldir="/" name="Exception.php" role="php" />
-     </dir>
      <file baseinstalldir="/" name="Decoder.php" role="php" />
      <file baseinstalldir="/" name="Encoder.php" role="php" />
-     <file baseinstalldir="/" name="Exception.php" role="php" />
      <file baseinstalldir="/" name="Torrent.php" role="php" />
     </dir>
    </dir>
