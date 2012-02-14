@@ -563,7 +563,7 @@ class Torrent {
      * @throws RuntimeException
      */
     public function getName() {
-    	$info = $this->getInfo();
+        $info = $this->getInfo();
 
         if ($info === null) {
             throw new RuntimeException('The info part of the torrent is not set.');
