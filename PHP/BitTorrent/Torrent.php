@@ -106,11 +106,11 @@ class Torrent {
      * Populate the instance of the object based on a torrent file
      *
      * @param string $path Path to the torrent file
-     * @param PHP\BitTorrent\Decoder $decoder The decoder to use to decode the file
+     * @param PHP\BitTorrent\DecoderInterface $decoder The decoder to use to decode the file
      * @throws InvalidArgumentException
      * @return PHP\BitTorrent\Torrent Returns a new instance of this class
      */
-    static public function createFromTorrentFile($path, Decoder $decoder = null) {
+    static public function createFromTorrentFile($path, DecoderInterface $decoder = null) {
         if (!is_file($path)) {
             throw new InvalidArgumentException($path . ' does not exist.');
         }
@@ -449,12 +449,12 @@ class Torrent {
      * overwritten.
      *
      * @param string $filename Path to the torrent file we want to save
-     * @param PHP\BitTorrent\Encoder $encoder Encoder used to encode the information
+     * @param PHP\BitTorrent\EncoderInterface $encoder Encoder used to encode the information
      * @throws InvalidArgumentException
      * @throws RuntimeException
      * @return PHP\BitTorrent\Torrent Returns self for a fluent interface
      */
-    public function save($filename, Encoder $encoder = null) {
+    public function save($filename, EncoderInterface $encoder = null) {
         if (!is_writable($filename) && !is_writable(dirname($filename))) {
             throw new InvalidArgumentException('Could not open file "' . $filename . '" for writing.');
         }

@@ -42,20 +42,20 @@ use InvalidArgumentException;
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/php-bittorrent
  */
-class Decoder {
+class Decoder implements DecoderInterface {
     /**
      * Encoder instance
      *
-     * @var PHP\BitTorrent\Encoder
+     * @var PHP\BitTorrent\EncoderInterface
      */
     private $encoder;
 
     /**
      * Class constructor
      *
-     * @param PHP\BitTorrent\Encoder $encoder An instance of an encoder
+     * @param PHP\BitTorrent\EncoderInterface $encoder An instance of an encoder
      */
-    public function __construct(Encoder $encoder = null) {
+    public function __construct(EncoderInterface $encoder = null) {
         if ($encoder === null) {
             $encoder = new Encoder();
         }
@@ -64,21 +64,7 @@ class Decoder {
     }
 
     /**
-     * Decode a file
-     *
-     * This method can use a strict method that requires certain elements to be present in the
-     * encoded file. The two required elements are:
-     *
-     * - announce
-     * - info
-     *
-     * Pr. default the method does not check for these elements.
-     *
-     * @param string $file Path to the torrent file we want to decode
-     * @param boolean $strict If set to true this method will check for certain elements in the
-     *                        dictionary.
-     * @return array Returns the decoded version of the file as an array
-     * @throws InvalidArgumentException
+     * {@inheritDoc}
      */
     public function decodeFile($file, $strict = false) {
         if (!is_readable($file)) {
@@ -99,11 +85,7 @@ class Decoder {
     }
 
     /**
-     * Decode any bittorrent encoded string
-     *
-     * @param string $string The string to decode
-     * @return int|string|array Returns the native PHP counterpart of the encoded string
-     * @throws InvalidArgumentException
+     * {@inheritDoc}
      */
     public function decode($string) {
         if ($string[0] === 'i') {
@@ -120,11 +102,7 @@ class Decoder {
     }
 
     /**
-     * Decode an encoded PHP integer
-     *
-     * @param string $integer The integer to decode
-     * @return int Returns the decoded integer
-     * @throws InvalidArgumentException
+     * {@inheritDoc}
      */
     public function decodeInteger($integer) {
         if ($integer[0] !== 'i' || (!$ePos = strpos($integer, 'e'))) {
@@ -142,11 +120,7 @@ class Decoder {
     }
 
     /**
-     * Decode an encoded PHP string
-     *
-     * @param string $string The string to decode
-     * @return string Returns the decoded string value
-     * @throws InvalidArgumentException
+     * {@inheritDoc}
      */
     public function decodeString($string) {
         $stringParts = explode(':', $string, 2);
@@ -167,11 +141,7 @@ class Decoder {
     }
 
     /**
-     * Decode an encoded PHP array
-     *
-     * @param string $list Encoded list
-     * @return array Returns a numerical array
-     * @throws InvalidArgumentException
+     * {@inheritDoc}
      */
     public function decodeList($list) {
         if ($list[0] !== 'l') {
@@ -198,11 +168,7 @@ class Decoder {
     }
 
     /**
-     * Decode an encoded PHP associative array
-     *
-     * @param string $dictionary Encoded dictionary
-     * @return array Returns an associative array
-     * @throws InvalidArgumentException
+     * {@inheritDoc}
      */
     public function decodeDictionary($dictionary) {
         if ($dictionary[0] !== 'd') {
