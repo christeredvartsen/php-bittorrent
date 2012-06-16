@@ -42,13 +42,10 @@ use InvalidArgumentException;
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/php-bittorrent
  */
-class Encoder {
+class Encoder implements EncoderInterface {
+
     /**
-     * Encode any encodable variable
-     *
-     * @param int|string|array $var The variable to encode
-     * @return string Returns the encoded string
-     * @throws InvalidArgumentException
+     * {@inheritDoc}
      */
     public function encode($var) {
         if (is_int($var)) {
@@ -71,11 +68,7 @@ class Encoder {
     }
 
     /**
-     * Encode an integer
-     *
-     * @param int $integer The integer to encoded
-     * @return string Returns the encoded string
-     * @throws InvalidArgumentException
+     * {@inheritDoc}
      */
     public function encodeInteger($integer) {
         if (!is_int($integer)) {
@@ -86,11 +79,7 @@ class Encoder {
     }
 
     /**
-     * Encode a string
-     *
-     * @param string $string The string to encode
-     * @return string Returns the encoded string
-     * @throws InvalidArgumentException
+     * {@inheritDoc}
      */
     public function encodeString($string) {
         if (!is_string($string)) {
@@ -101,11 +90,7 @@ class Encoder {
     }
 
     /**
-     * Encode a list (numerically indexed array)
-     *
-     * @param array $list The array to encode
-     * @return string Returns the encoded string
-     * @throws InvalidArgumentException
+     * {@inheritDoc}
      */
     public function encodeList($list) {
         if (!is_array($list)) {
@@ -122,11 +107,7 @@ class Encoder {
     }
 
     /**
-     * Encode a dictionary (associative PHP array)
-     *
-     * @param array $dictionary The array to encode
-     * @return string Returns the encoded string
-     * @throws InvalidArgumentException
+     * {@inheritDoc}
      */
     public function encodeDictionary($dictionary) {
         if (!is_array($dictionary)) {
