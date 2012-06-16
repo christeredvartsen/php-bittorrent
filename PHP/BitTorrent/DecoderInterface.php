@@ -31,8 +31,6 @@
 
 namespace PHP\BitTorrent;
 
-use InvalidArgumentException;
-
 /**
  * Decode bittorrent strings to it's PHP variable counterpart
  *
@@ -59,7 +57,7 @@ interface DecoderInterface {
      * @param boolean $strict If set to true this method will check for certain elements in the
      *                        dictionary.
      * @return array Returns the decoded version of the file as an array
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     function decodeFile($file, $strict = false);
 
@@ -68,7 +66,7 @@ interface DecoderInterface {
      *
      * @param string $string The string to decode
      * @return int|string|array Returns the native PHP counterpart of the encoded string
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     function decode($string);
 
@@ -77,7 +75,7 @@ interface DecoderInterface {
      *
      * @param string $integer The integer to decode
      * @return int Returns the decoded integer
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     function decodeInteger($integer);
 
@@ -86,7 +84,7 @@ interface DecoderInterface {
      *
      * @param string $string The string to decode
      * @return string Returns the decoded string value
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     function decodeString($string);
 
@@ -95,7 +93,7 @@ interface DecoderInterface {
      *
      * @param string $list Encoded list
      * @return array Returns a numerical array
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     function decodeList($list);
 
@@ -104,7 +102,7 @@ interface DecoderInterface {
      *
      * @param string $dictionary Encoded dictionary
      * @return array Returns an associative array
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     function decodeDictionary($dictionary);
 }
