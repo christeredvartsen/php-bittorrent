@@ -106,9 +106,9 @@ class Torrent {
      * Populate the instance of the object based on a torrent file
      *
      * @param string $path Path to the torrent file
-     * @param PHP\BitTorrent\DecoderInterface $decoder The decoder to use to decode the file
+     * @param DecoderInterface $decoder The decoder to use to decode the file
      * @throws InvalidArgumentException
-     * @return PHP\BitTorrent\Torrent Returns a new instance of this class
+     * @return Torrent Returns a new instance of this class
      */
     static public function createFromTorrentFile($path, DecoderInterface $decoder = null) {
         if (!is_file($path)) {
@@ -157,7 +157,7 @@ class Torrent {
      *
      * @param string $path Path to a directory or a single file
      * @param string $announceUrl URL to the announce
-     * @return PHP\BitTorrent\Torrent Returns a new instance of this class
+     * @return Torrent Returns a new instance of this class
      */
     static public function createFromPath($path, $announceUrl) {
         // Create a new torrent instance
@@ -319,7 +319,7 @@ class Torrent {
      * Set the piece length exponent
      *
      * @param int $pieceLengthExp The exponent to set
-     * @return PHP\BitTorrent\Torrent Returns self for a fluent interface
+     * @return Torrent Returns self for a fluent interface
      */
     public function setPieceLengthExp($pieceLengthExp) {
         $this->pieceLengthExp = (int) $pieceLengthExp;
@@ -341,7 +341,7 @@ class Torrent {
      * Set the announce URL
      *
      * @param string $announceUrl The URL to set
-     * @return PHP\BitTorrent\Torrent Returns self for a fluent interface
+     * @return Torrent Returns self for a fluent interface
      */
     public function setAnnounce($announceUrl) {
         $this->announce = $announceUrl;
@@ -362,7 +362,7 @@ class Torrent {
      * Set the comment
      *
      * @param string $comment Comment to attach to the torrent file
-     * @return PHP\BitTorrent\Torrent Returns self for a fluent interface
+     * @return Torrent Returns self for a fluent interface
      */
     public function setComment($comment) {
         $this->comment = $comment;
@@ -383,7 +383,7 @@ class Torrent {
      * Set the created by property
      *
      * @param string $createdBy Who/what created the torrent file
-     * @return PHP\BitTorrent\Torrent Returns self for a fluent interface
+     * @return Torrent Returns self for a fluent interface
      */
     public function setCreatedBy($createdBy) {
         $this->createdBy = $createdBy;
@@ -404,7 +404,7 @@ class Torrent {
      * Set the creation timestamp
      *
      * @param int $createdAt Unix timestamp
-     * @return PHP\BitTorrent\Torrent Returns self for a fluent interface
+     * @return Torrent Returns self for a fluent interface
      */
     public function setCreatedAt($createdAt) {
         $this->createdAt = (int) $createdAt;
@@ -425,7 +425,7 @@ class Torrent {
      * Set the info part of the torrent
      *
      * @param array $info Array with information about the torrent file
-     * @return PHP\BitTorrent\Torrent Returns self for a fluent interface
+     * @return Torrent Returns self for a fluent interface
      */
     public function setInfo(array $info) {
         $this->info = $info;
@@ -449,10 +449,10 @@ class Torrent {
      * overwritten.
      *
      * @param string $filename Path to the torrent file we want to save
-     * @param PHP\BitTorrent\EncoderInterface $encoder Encoder used to encode the information
+     * @param EncoderInterface $encoder Encoder used to encode the information
      * @throws InvalidArgumentException
      * @throws RuntimeException
-     * @return PHP\BitTorrent\Torrent Returns self for a fluent interface
+     * @return Torrent Returns self for a fluent interface
      */
     public function save($filename, EncoderInterface $encoder = null) {
         if (!is_writable($filename) && !is_writable(dirname($filename))) {
