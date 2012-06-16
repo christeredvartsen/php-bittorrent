@@ -64,6 +64,13 @@ class Torrent {
     private $announce;
 
     /**
+     * The list of announce URLs
+     *
+     * @var array
+     */
+    private $announceList;
+
+    /**
      * Optional comment
      *
      * @var string
@@ -128,6 +135,10 @@ class Torrent {
         // Populate the object with data from the file
         if (isset($decodedFile['announce'])) {
             $torrent->setAnnounce($decodedFile['announce']);
+        }
+
+        if (isset($decodedFile['announce-list'])) {
+            $torrent->setAnnounceList($decodedFile['announce-list']);
         }
 
         if (isset($decodedFile['comment'])) {
@@ -359,6 +370,27 @@ class Torrent {
     }
 
     /**
+     * Set the announce list
+     *
+     * @param array $announceList The array of URLs to set
+     * @return Torrent Returns self for a fluent interface
+     */
+    public function setAnnounceList($announceList) {
+        $this->announceList = $announceList;
+
+        return $this;
+    }
+
+    /**
+     * Get the announce list
+     *
+     * @return array Returns the URL to the tracker (if set)
+     */
+    public function getAnnounceList() {
+        return $this->announceList;
+    }
+
+    /**
      * Set the comment
      *
      * @param string $comment Comment to attach to the torrent file
@@ -486,6 +518,10 @@ class Torrent {
             'creation date' => $createdAt,
             'info'          => $info,
         );
+
+        if (($announceList = $this->getAnnounceList()) !== null) {
+            $torrent['announce-list'] = $announceList;
+        }
 
         if (($comment = $this->getComment()) !== null) {
             $torrent['comment'] = $comment;
