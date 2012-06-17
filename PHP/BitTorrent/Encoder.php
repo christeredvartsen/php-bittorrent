@@ -43,7 +43,6 @@ use InvalidArgumentException;
  * @link https://github.com/christeredvartsen/php-bittorrent
  */
 class Encoder implements EncoderInterface {
-
     /**
      * {@inheritDoc}
      */

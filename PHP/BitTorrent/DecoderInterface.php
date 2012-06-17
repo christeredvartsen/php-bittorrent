@@ -41,7 +41,6 @@ namespace PHP\BitTorrent;
  * @link https://github.com/christeredvartsen/php-bittorrent
  */
 interface DecoderInterface {
-
     /**
      * Decode a file
      *
