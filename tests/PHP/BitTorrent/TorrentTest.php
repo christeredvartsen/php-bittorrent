@@ -84,6 +84,12 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame($announce, $this->torrent->getAnnounce());
     }
 
+    public function testSetGetAnnounceList() {
+        $announceList = array('http://tracker1/', 'http://tracker2/');
+        $this->assertSame($this->torrent, $this->torrent->setAnnounceList($announceList));
+        $this->assertSame($announceList, $this->torrent->getAnnounceList());
+    }
+
     public function testSetGetPieceLengthExp() {
         $exp = 6;
         $this->assertSame($this->torrent, $this->torrent->setPieceLengthExp($exp));
@@ -165,6 +171,23 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame(5, count($torrent->getFileList()));
     }
 
+    public function testCreateFromTorrentFileWithLists() {
+        $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_extra_files/extra.torrent');
+
+        // we expect an array of arrays, according to the spec
+        $announceList = array(
+            array(
+                'http://tracker/',
+                'http://tracker2/',
+                'http://tracker3/'
+            )
+        );
+
+        $this->assertSame('http://tracker/', $torrent->getAnnounce());
+        $this->assertEquals($announceList, $torrent->getAnnounceList());
+        $this->assertSame(1, count($torrent->getFileList()));
+    }
+
     public function testCreateFromPathWhenUsingADirectoryAsArgument() {
         $path = __DIR__ . '/_files';
         $trackerUrl = 'http://trackerurl';
@@ -212,6 +235,7 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame('_files', $torrent->getName());
         $this->assertSame(482, $torrent->getSize());
         $this->assertSame(3, count($torrent->getFileList()));
+        $this->assertNull($torrent->getAnnounceList());
 
         // Remove the saved file
         unlink($target);
