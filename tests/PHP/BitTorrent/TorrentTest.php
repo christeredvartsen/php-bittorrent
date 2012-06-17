@@ -188,6 +188,21 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame(1, count($torrent->getFileList()));
     }
 
+    public function testCreateFromTorrentFileWithExtra() {
+        $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_extra_files/extra.torrent');
+
+        $webSeeds = array(
+            'url-list' =>
+                array(
+                    'http://seed/',
+                    'http://seed2/',
+                    'http://seed3/'
+                )
+        );
+
+        $this->assertEquals($webSeeds, $torrent->getExtraMeta());
+    }
+
     public function testCreateFromPathWhenUsingADirectoryAsArgument() {
         $path = __DIR__ . '/_files';
         $trackerUrl = 'http://trackerurl';
@@ -236,6 +251,37 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame(482, $torrent->getSize());
         $this->assertSame(3, count($torrent->getFileList()));
         $this->assertNull($torrent->getAnnounceList());
+
+        // Remove the saved file
+        unlink($target);
+    }
+
+    public function testSaveWithExtra() {
+        $path      = __DIR__ . '/_files';
+        $announce  = 'http://tracker/';
+        $target    = tempnam(sys_get_temp_dir(), 'PHP\BitTorrent');
+
+        if (!$target) {
+            $this->fail('Could not create file: ' . $target);
+        }
+
+        $webSeeds = array(
+            'url-list' =>
+            array(
+                'http://seed/',
+                'http://seed2/',
+                'http://seed3/'
+            )
+        );
+
+        $torrent = Torrent::createFromPath($path, $announce);
+        $torrent->setExtraMeta($webSeeds)
+                ->save($target);
+
+        // Now load the file and make sure the values are correct
+        $torrent = Torrent::createFromTorrentFile($target);
+
+        $this->assertEquals($webSeeds, $torrent->getExtraMeta());
 
         // Remove the saved file
         unlink($target);

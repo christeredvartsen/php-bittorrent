@@ -99,6 +99,13 @@ class Torrent {
     private $info;
 
     /**
+     * Any non-standard fields in the torrent meta data
+     *
+     * @var array
+     */
+    private $extraMeta;
+
+    /**
      * Class constructor
      *
      * @param string $announceUrl Optional announce URL
@@ -135,26 +142,37 @@ class Torrent {
         // Populate the object with data from the file
         if (isset($decodedFile['announce'])) {
             $torrent->setAnnounce($decodedFile['announce']);
+            unset($decodedFile['announce']);
         }
 
         if (isset($decodedFile['announce-list'])) {
             $torrent->setAnnounceList($decodedFile['announce-list']);
+            unset($decodedFile['announce-list']);
         }
 
         if (isset($decodedFile['comment'])) {
             $torrent->setComment($decodedFile['comment']);
+            unset($decodedFile['comment']);
         }
 
         if (isset($decodedFile['created by'])) {
             $torrent->setCreatedBy($decodedFile['created by']);
+            unset($decodedFile['created by']);
         }
 
         if (isset($decodedFile['creation date'])) {
             $torrent->setCreatedAt($decodedFile['creation date']);
+            unset($decodedFile['creation date']);
         }
 
         if (isset($decodedFile['info'])) {
             $torrent->setInfo($decodedFile['info']);
+            unset($decodedFile['info']);
+        }
+
+        // add any extra meta info fields that were left in this file
+        if (count($decodedFile) > 0) {
+            $torrent->setExtraMeta($decodedFile);
         }
 
         return $torrent;
@@ -475,6 +493,27 @@ class Torrent {
     }
 
     /**
+     * Set an array of non-standard meta info that will be encoded in this torrent
+     *
+     * @param array $extra Array with information about the torrent file
+     * @return Torrent Returns self for a fluent interface
+     */
+    public function setExtraMeta(array $extra) {
+        $this->extraMeta = $extra;
+
+        return $this;
+    }
+
+    /**
+     * Get extra meta info data
+     *
+     * @return array Returns an array of any non-standard meta info on this torrent
+     */
+    public function getExtraMeta() {
+        return $this->extraMeta;
+    }
+
+    /**
      * Save the current torrent object to the specified filename
      *
      * This method will save the current object to a file. If the file specified exists it will be
@@ -529,6 +568,12 @@ class Torrent {
 
         if (($createdBy = $this->getCreatedBy()) !== null) {
             $torrent['created by'] = $createdBy;
+        }
+
+        if (($extra = $this->getExtraMeta()) !== null && is_array($extra)) {
+            foreach ($extra as $extraKey => $extraValue) {
+                $torrent[$extraKey] = $extraValue;
+            }
         }
 
         // Create the encoded dictionary
