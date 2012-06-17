@@ -1,21 +1,23 @@
 {
-    "name": "christeredvartsen/php-bittorrent",
-    "type": "library",
-    "description": "PHP_BitTorrent is a set of components that can be used to interact with torrent files (read+write) and classes that can encode/decode to/from the BitTorrent format.",
-    "keywords": ["bittorrent", "torrent"],
-    "homepage": "https://github.com/christeredvartsen/php-bittorrent",
-    "version": "0.2",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Christer Edvartsen",
-            "email": "cogo@starzinger.net"
-        }
-    ],
-    "require": {
-        "php": ">=5.3.2"
-    },
-    "autoload": {
-        "psr-0": { "PHP\\BitTorrent": "/" }
+  "name": "christeredvartsen/php-bittorrent",
+  "type": "library",
+  "description": "PHP\\BitTorrent is a set of components that can be used to interact with torrent files (read+write) and classes that can encode/decode to/from the BitTorrent format.",
+  "keywords": ["bittorrent", "torrent"],
+  "homepage": "https://github.com/christeredvartsen/php-bittorrent",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Christer Edvartsen",
+      "email": "cogo@starzinger.net"
     }
+  ],
+  "require": {
+    "php": ">=5.3.2"
+  },
+  "support": [
+    "issues": "https://github.com/christeredvartsen/php-bittorrent/issues",
+  ],
+  "autoload": {
+    "psr-0": { "PHP\\BitTorrent": "/" }
+  }
 }
