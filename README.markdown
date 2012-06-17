@@ -1,36 +1,39 @@
-PHP BitTorrent
-==============
-**PHP BitTorrent** is a set of components that can be used to interact with torrent files (read+write) and encode/decode to/from the BitTorrent format.
+# PHP\_BitTorrent
+**PHP\_BitTorrent** is a set of components that can be used to interact with torrent files (read+write) and encode/decode to/from the BitTorrent format.
 
-Requirements
-------------
-PHP BitTorrent requires PHP 5.3.x or above. The recommended version is 5.3.2 or newer.
+## Requirements
+PHP\_BitTorrent requires PHP 5.3.x or above. The recommended version is 5.3.2 or newer.
 
-Installation
-------------
-PHP BitTorrent should be installed using [PEAR](http://pear.php.net/).
+## Installation
+PHP\_BitTorrent can be installed using PEAR, Composer or PHAR.
 
-The PEAR channel (`pear.starzinger.net`) that is used to distribute PHP BitTorrent needs to be registered with the local PEAR environment.
+### PEAR
+```
+sudo pear config-set auto_discover 1
+sudo pear install --alldeps pear.starzinger.net/PHP_BitTorrent
+```
 
-    christer@aurora:~$ sudo pear channel-discover pear.starzinger.net
-    Adding Channel "pear.starzinger.net" succeeded
-    Discovery of channel "pear.starzinger.net" succeeded
+### Composer
+Simply specify `christeredvartsen/php-bittorrent` in your dependencies.
 
-This has to be done only once. Now, to install the package:
+### PHAR
+You can also download [php-bittorrent.phar](https://github.com/christeredvartsen/php-bittorrent/raw/master/php-bittorrent.phar) and simply require that file where you want to use PHP_BitTorrent.
 
-    christer@aurora:~$ sudo pear install stz/PHP_BitTorrent-beta
-    downloading PHP_BitTorrent-0.2.0.tgz ...
-    Starting to download PHP_BitTorrent-0.2.0.tgz (8,249 bytes)
-    .....done: 8,249 bytes
-    install ok: channel://pear.starzinger.net/PHP_BitTorrent-0.2.0
+```php
+<?php
+require '/path/to/php-bittorrent.phar';
 
-Using the PHP BitTorrent API
-----------------------------
-**Autoloader**
+$encoder = new PHP\BitTorrent\Encoder();
 
-PHP BitTorrent does **not** come with its own autoloader, so you will need to use a PSR-0 compatible autoloader for everything to work as expected, or provide your own `require[_once]` statements. An example of such an autoloader can be found [here](https://gist.github.com/1234504).
+// ...
+```
 
-**Encode PHP variables**
+## Using the PHP BitTorrent API
+### Autoloader
+
+PHP BitTorrent does **not** come with its own autoloader, so you will need to use a PSR-0 compatible autoloader for everything to work as expected, or provide your own `require[_once]` statements. An example of such an autoloader can be found [here](https://gist.github.com/1234504). When using PHP_BitTorrent as a PHAR archive you will only need to require the archive itself.
+
+### Encode PHP variables
 
 ```php
 <?php
@@ -44,7 +47,7 @@ var_dump($encoder->encodeDictionary(array('foo' => 'bar', 'bar' => 'foo')); // s
 
 There is also a convenience method simply called `encode` in the `PHP\BitTorrent\Encoder` class that can be used to encode all encodable variables (integers, strings and arrays).
 
-**Decode BitTorrent encoded data**
+### Decode BitTorrent encoded data
 
 ```php
 <?php
@@ -59,7 +62,7 @@ var_dump($decoder->decodeDictionary('d3:foo3:bar3:bar3:fooe'); // array(2) { ["f
 
 There is also a convenience method called `decode` that can decode any BitTorrent encoded data.
 
-**Decode torrent files**
+### Decode torrent files
 
 The decoder class also has a method for decoding a torrent file (which is an encoded dictionary):
 
@@ -71,7 +74,7 @@ $decoder = new PHP\BitTorrent\Decoder($encoder);
 $decodedFile = $decoder->decodeFile('/path/to/file.torrent');
 ```
 
-**Create new torrent files and open existing ones**
+### Create new torrent files and open existing ones
 
 The `PHP\BitTorrent\Torrent` class represents a torrent file and can be used to create torrent files.
 
