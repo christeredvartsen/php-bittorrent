@@ -8,6 +8,7 @@ __N/A__
 * Added interfaces for the encoder and the decoder (Matt Drollette)
 * Fixed autoloader issues in composer.json (Matt Drollette)
 * Library is from now on available as a PHAR archive as well
+* Allow getting/setting extra fields from the torrent meta data (Matt Drollette)
 
 Version 0.2.0
 -------------
