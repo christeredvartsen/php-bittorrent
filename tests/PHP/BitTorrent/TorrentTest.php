@@ -265,7 +265,7 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
             $this->fail('Could not create file: ' . $target);
         }
 
-        $webSeeds = array(
+        $extra = array(
             'url-list' =>
             array(
                 'http://seed/',
@@ -275,13 +275,38 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
         );
 
         $torrent = Torrent::createFromPath($path, $announce);
-        $torrent->setExtraMeta($webSeeds)
+        $torrent->setExtraMeta($extra)
                 ->save($target);
 
         // Now load the file and make sure the values are correct
         $torrent = Torrent::createFromTorrentFile($target);
 
-        $this->assertEquals($webSeeds, $torrent->getExtraMeta());
+        $this->assertEquals($extra, $torrent->getExtraMeta());
+
+        // Remove the saved file
+        unlink($target);
+    }
+
+    /**
+     * Try to save extra fields with keys that already exist
+     *
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Duplicate key in extra meta info
+     */
+    public function testSaveWithInvalidExtra() {
+        $path      = __DIR__ . '/_files';
+        $announce  = 'http://tracker/';
+        $target    = tempnam(sys_get_temp_dir(), 'PHP\BitTorrent');
+
+        if (!$target) {
+            $this->fail('Could not create file: ' . $target);
+        }
+
+        $extra = array('announce' => 'http://extratracker');
+
+        $torrent = Torrent::createFromPath($path, $announce);
+        $torrent->setExtraMeta($extra)
+                ->save($target);
 
         // Remove the saved file
         unlink($target);

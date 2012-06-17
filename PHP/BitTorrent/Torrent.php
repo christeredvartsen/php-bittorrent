@@ -572,6 +572,9 @@ class Torrent {
 
         if (($extra = $this->getExtraMeta()) !== null && is_array($extra)) {
             foreach ($extra as $extraKey => $extraValue) {
+                if (array_key_exists($extraKey, $torrent)) {
+                    throw new RuntimeException(sprintf('Duplicate key in extra meta info. "%s" already exists.', $extraKey));
+                }
                 $torrent[$extraKey] = $extraValue;
             }
         }
