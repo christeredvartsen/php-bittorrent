@@ -1,8 +1,7 @@
 language: php
 php:
-  # latest versions
   - 5.3
   - 5.4
-
-  # specific versions
-  - 5.3.2
+before_script:
+  - "sudo gem install nokogiri"
+script: rake travis

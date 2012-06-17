@@ -64,6 +64,13 @@ class Torrent {
     private $announce;
 
     /**
+     * The list of announce URLs
+     *
+     * @var array
+     */
+    private $announceList;
+
+    /**
      * Optional comment
      *
      * @var string
@@ -92,6 +99,13 @@ class Torrent {
     private $info;
 
     /**
+     * Any non-standard fields in the torrent meta data
+     *
+     * @var array
+     */
+    private $extraMeta;
+
+    /**
      * Class constructor
      *
      * @param string $announceUrl Optional announce URL
@@ -106,11 +120,11 @@ class Torrent {
      * Populate the instance of the object based on a torrent file
      *
      * @param string $path Path to the torrent file
-     * @param PHP\BitTorrent\Decoder $decoder The decoder to use to decode the file
+     * @param DecoderInterface $decoder The decoder to use to decode the file
      * @throws InvalidArgumentException
-     * @return PHP\BitTorrent\Torrent Returns a new instance of this class
+     * @return Torrent Returns a new instance of this class
      */
-    static public function createFromTorrentFile($path, Decoder $decoder = null) {
+    static public function createFromTorrentFile($path, DecoderInterface $decoder = null) {
         if (!is_file($path)) {
             throw new InvalidArgumentException($path . ' does not exist.');
         }
@@ -128,22 +142,37 @@ class Torrent {
         // Populate the object with data from the file
         if (isset($decodedFile['announce'])) {
             $torrent->setAnnounce($decodedFile['announce']);
+            unset($decodedFile['announce']);
+        }
+
+        if (isset($decodedFile['announce-list'])) {
+            $torrent->setAnnounceList($decodedFile['announce-list']);
+            unset($decodedFile['announce-list']);
         }
 
         if (isset($decodedFile['comment'])) {
             $torrent->setComment($decodedFile['comment']);
+            unset($decodedFile['comment']);
         }
 
         if (isset($decodedFile['created by'])) {
             $torrent->setCreatedBy($decodedFile['created by']);
+            unset($decodedFile['created by']);
         }
 
         if (isset($decodedFile['creation date'])) {
             $torrent->setCreatedAt($decodedFile['creation date']);
+            unset($decodedFile['creation date']);
         }
 
         if (isset($decodedFile['info'])) {
             $torrent->setInfo($decodedFile['info']);
+            unset($decodedFile['info']);
+        }
+
+        // add any extra meta info fields that were left in this file
+        if (count($decodedFile) > 0) {
+            $torrent->setExtraMeta($decodedFile);
         }
 
         return $torrent;
@@ -157,7 +186,7 @@ class Torrent {
      *
      * @param string $path Path to a directory or a single file
      * @param string $announceUrl URL to the announce
-     * @return PHP\BitTorrent\Torrent Returns a new instance of this class
+     * @return Torrent Returns a new instance of this class
      */
     static public function createFromPath($path, $announceUrl) {
         // Create a new torrent instance
@@ -319,7 +348,7 @@ class Torrent {
      * Set the piece length exponent
      *
      * @param int $pieceLengthExp The exponent to set
-     * @return PHP\BitTorrent\Torrent Returns self for a fluent interface
+     * @return Torrent Returns self for a fluent interface
      */
     public function setPieceLengthExp($pieceLengthExp) {
         $this->pieceLengthExp = (int) $pieceLengthExp;
@@ -341,7 +370,7 @@ class Torrent {
      * Set the announce URL
      *
      * @param string $announceUrl The URL to set
-     * @return PHP\BitTorrent\Torrent Returns self for a fluent interface
+     * @return Torrent Returns self for a fluent interface
      */
     public function setAnnounce($announceUrl) {
         $this->announce = $announceUrl;
@@ -359,10 +388,31 @@ class Torrent {
     }
 
     /**
+     * Set the announce list
+     *
+     * @param array $announceList The array of URLs to set
+     * @return Torrent Returns self for a fluent interface
+     */
+    public function setAnnounceList($announceList) {
+        $this->announceList = $announceList;
+
+        return $this;
+    }
+
+    /**
+     * Get the announce list
+     *
+     * @return array Returns the URL to the tracker (if set)
+     */
+    public function getAnnounceList() {
+        return $this->announceList;
+    }
+
+    /**
      * Set the comment
      *
      * @param string $comment Comment to attach to the torrent file
-     * @return PHP\BitTorrent\Torrent Returns self for a fluent interface
+     * @return Torrent Returns self for a fluent interface
      */
     public function setComment($comment) {
         $this->comment = $comment;
@@ -383,7 +433,7 @@ class Torrent {
      * Set the created by property
      *
      * @param string $createdBy Who/what created the torrent file
-     * @return PHP\BitTorrent\Torrent Returns self for a fluent interface
+     * @return Torrent Returns self for a fluent interface
      */
     public function setCreatedBy($createdBy) {
         $this->createdBy = $createdBy;
@@ -404,7 +454,7 @@ class Torrent {
      * Set the creation timestamp
      *
      * @param int $createdAt Unix timestamp
-     * @return PHP\BitTorrent\Torrent Returns self for a fluent interface
+     * @return Torrent Returns self for a fluent interface
      */
     public function setCreatedAt($createdAt) {
         $this->createdAt = (int) $createdAt;
@@ -425,7 +475,7 @@ class Torrent {
      * Set the info part of the torrent
      *
      * @param array $info Array with information about the torrent file
-     * @return PHP\BitTorrent\Torrent Returns self for a fluent interface
+     * @return Torrent Returns self for a fluent interface
      */
     public function setInfo(array $info) {
         $this->info = $info;
@@ -443,18 +493,39 @@ class Torrent {
     }
 
     /**
+     * Set an array of non-standard meta info that will be encoded in this torrent
+     *
+     * @param array $extra Array with information about the torrent file
+     * @return Torrent Returns self for a fluent interface
+     */
+    public function setExtraMeta(array $extra) {
+        $this->extraMeta = $extra;
+
+        return $this;
+    }
+
+    /**
+     * Get extra meta info data
+     *
+     * @return array Returns an array of any non-standard meta info on this torrent
+     */
+    public function getExtraMeta() {
+        return $this->extraMeta;
+    }
+
+    /**
      * Save the current torrent object to the specified filename
      *
      * This method will save the current object to a file. If the file specified exists it will be
      * overwritten.
      *
      * @param string $filename Path to the torrent file we want to save
-     * @param PHP\BitTorrent\Encoder $encoder Encoder used to encode the information
+     * @param EncoderInterface $encoder Encoder used to encode the information
      * @throws InvalidArgumentException
      * @throws RuntimeException
-     * @return PHP\BitTorrent\Torrent Returns self for a fluent interface
+     * @return Torrent Returns self for a fluent interface
      */
-    public function save($filename, Encoder $encoder = null) {
+    public function save($filename, EncoderInterface $encoder = null) {
         if (!is_writable($filename) && !is_writable(dirname($filename))) {
             throw new InvalidArgumentException('Could not open file "' . $filename . '" for writing.');
         }
@@ -487,12 +558,25 @@ class Torrent {
             'info'          => $info,
         );
 
+        if (($announceList = $this->getAnnounceList()) !== null) {
+            $torrent['announce-list'] = $announceList;
+        }
+
         if (($comment = $this->getComment()) !== null) {
             $torrent['comment'] = $comment;
         }
 
         if (($createdBy = $this->getCreatedBy()) !== null) {
             $torrent['created by'] = $createdBy;
+        }
+
+        if (($extra = $this->getExtraMeta()) !== null && is_array($extra)) {
+            foreach ($extra as $extraKey => $extraValue) {
+                if (array_key_exists($extraKey, $torrent)) {
+                    throw new RuntimeException(sprintf('Duplicate key in extra meta info. "%s" already exists.', $extraKey));
+                }
+                $torrent[$extraKey] = $extraValue;
+            }
         }
 
         // Create the encoded dictionary

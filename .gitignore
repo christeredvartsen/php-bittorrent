@@ -1,7 +1,3 @@
 build
 phpunit.xml
-build.xml
-docblox.xml
-phpmd.xml
-cache.properties
-.idea
+PHP_BitTorrent-*.tgz
