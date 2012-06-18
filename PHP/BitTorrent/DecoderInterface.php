@@ -32,7 +32,7 @@
 namespace PHP\BitTorrent;
 
 /**
- * Decode bittorrent strings to it's PHP variable counterpart
+ * Interface for decoders
  *
  * @package Decoder
  * @author Christer Edvartsen <cogo@starzinger.net>

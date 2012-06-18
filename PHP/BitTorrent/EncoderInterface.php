@@ -32,7 +32,7 @@
 namespace PHP\BitTorrent;
 
 /**
- * Encode encodable PHP variables to the BitTorrent counterpart
+ * Interface for encoders
  *
  * @package Encoder
  * @author Christer Edvartsen <cogo@starzinger.net>
