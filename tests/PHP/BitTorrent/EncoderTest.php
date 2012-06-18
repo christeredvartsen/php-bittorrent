@@ -75,6 +75,7 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @dataProvider getEncodeIntegerData()
+     * @covers PHP\BitTorrent\Encoder::encodeInteger
      */
     public function testEncodeInteger($value, $encoded) {
         $this->assertSame($encoded, $this->encoder->encodeInteger($value));
@@ -82,6 +83,7 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @expectedException InvalidArgumentException
+     * @covers PHP\BitTorrent\Encoder::encodeInteger
      */
     public function testEncodeNonIntegerAsInteger() {
         $this->encoder->encodeInteger('1');
@@ -102,6 +104,7 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @dataProvider getEncodeStringData()
+     * @covers PHP\BitTorrent\Encoder::encodeString
      */
     public function testEncodeString($value, $encoded) {
         $this->assertSame($encoded, $this->encoder->encodeString($value));
@@ -109,6 +112,7 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @expectedException InvalidArgumentException
+     * @covers PHP\BitTorrent\Encoder::encodeString
      */
     public function testEncodeNonStringAsString() {
         $this->encoder->encodeString(1);
@@ -127,6 +131,7 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @dataProvider getEncodeListData()
+     * @covers PHP\BitTorrent\Encoder::encodeList
      */
     public function testEncodeList($value, $encoded) {
         $this->assertSame($encoded, $this->encoder->encodeList($value));
@@ -134,6 +139,7 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @expectedException InvalidArgumentException
+     * @covers PHP\BitTorrent\Encoder::encodeList
      */
     public function testEncodeNonListAsList() {
         $this->encoder->encodeList(1);
@@ -152,6 +158,7 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @dataProvider getEncodeDictionaryData()
+     * @covers PHP\BitTorrent\Encoder::encodeDictionary
      */
     public function testEncodeDictionary($value, $encoded) {
         $this->assertSame($encoded, $this->encoder->encodeDictionary($value));
@@ -159,6 +166,7 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @expectedException InvalidArgumentException
+     * @covers PHP\BitTorrent\Encoder::encodeDictionary
      */
     public function testEncodeDictionaryListAsDictionary() {
         $this->encoder->encodeDictionary('foo');
@@ -180,6 +188,7 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @dataProvider getEncodeData()
+     * @covers PHP\BitTorrent\Encoder::encode
      */
     public function testEncodeUsingGenericMethod($value, $encoded) {
         $this->assertSame($encoded, $this->encoder->encode($value));
@@ -187,6 +196,7 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @expectedException InvalidArgumentException
+     * @covers PHP\BitTorrent\Encoder::encode
      */
     public function testEncodeNonSupportedType() {
         $this->encoder->encode(new \stdClass());

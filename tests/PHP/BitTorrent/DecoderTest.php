@@ -48,6 +48,8 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * Set up the decoder
+     *
+     * @covers PHP\BitTorrent\Decoder::__construct
      */
     public function setUp() {
         $this->decoder = new Decoder(new Encoder());
@@ -75,6 +77,7 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @dataProvider getDecodeIntegerData()
+     * @covers PHP\BitTorrent\Decoder::decodeInteger
      */
     public function testDecoderInteger($encoded, $value) {
         $this->assertSame($value, $this->decoder->decodeInteger($encoded));
@@ -96,6 +99,7 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
     /**
      * @dataProvider getDecodeInvalidIntegerData()
      * @expectedException InvalidArgumentException
+     * @covers PHP\BitTorrent\Decoder::decodeInteger
      */
     public function testDecodeInvalidInteger($value) {
         $this->decoder->decodeInteger($value);
@@ -103,6 +107,7 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @expectedException InvalidArgumentException
+     * @covers PHP\BitTorrent\Decoder::decodeInteger
      */
     public function testDecodeStringAsInteger() {
         $this->decoder->decodeInteger('4:spam');
@@ -110,6 +115,7 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @expectedException InvalidArgumentException
+     * @covers PHP\BitTorrent\Decoder::decodeInteger
      */
     public function testDecodePartialInteger() {
         $this->decoder->decodeInteger('i10');
@@ -130,6 +136,7 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @dataProvider getDecodeStringData()
+     * @covers PHP\BitTorrent\Decoder::decodeString
      */
     public function testDecodeString($encoded, $value) {
         $this->assertSame($value, $this->decoder->decodeString($encoded));
@@ -137,6 +144,7 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @expectedException InvalidArgumentException
+     * @covers PHP\BitTorrent\Decoder::decodeString
      */
     public function testDecodeInvalidString() {
         $this->decoder->decodeString('4spam');
@@ -144,6 +152,7 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @expectedException InvalidArgumentException
+     * @covers PHP\BitTorrent\Decoder::decodeString
      */
     public function testDecodeStringWithInvalidLength() {
         $this->decoder->decodeString('6:spam');
@@ -162,6 +171,7 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @dataProvider getDecodeListData()
+     * @covers PHP\BitTorrent\Decoder::decodeList
      */
     public function testDecodeList($encoded, $value) {
         $this->assertSame($value, $this->decoder->decodeList($encoded));
@@ -169,6 +179,7 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @expectedException InvalidArgumentException
+     * @covers PHP\BitTorrent\Decoder::decodeList
      */
     public function testDecodeInvalidList() {
         $this->decoder->decodeList('4:spam');
@@ -187,6 +198,7 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @dataProvider getDecodeDictionaryData()
+     * @covers PHP\BitTorrent\Decoder::decodeDictionary
      */
     public function testDecodeDictionary($encoded, $value) {
         $this->assertSame($value, $this->decoder->decodeDictionary($encoded));
@@ -194,6 +206,7 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @expectedException InvalidArgumentException
+     * @covers PHP\BitTorrent\Decoder::decodeDictionary
      */
     public function testDecodeInvalidDictionary() {
         $this->decoder->decodeDictionary('4:spam');
@@ -215,6 +228,7 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @dataProvider getGenericDecodeData()
+     * @covers PHP\BitTorrent\Decoder::decode
      */
     public function testGenericDecode($encoded, $value) {
         $this->assertSame($value, $this->decoder->decode($encoded));
@@ -222,6 +236,7 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @expectedException InvalidArgumentException
+     * @covers PHP\BitTorrent\Decoder::decode
      */
     public function testGenericDecodeWithInvalidData() {
         $this->decoder->decode('foo');
@@ -230,6 +245,7 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
     /**
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Missing "announce" key
+     * @covers PHP\BitTorrent\Decoder::decodeFile
      */
     public function testDecodeTorrentFileStrictWithMissingAnnounce() {
         $file = __DIR__ . '/_files/testMissingAnnounce.torrent';
@@ -239,6 +255,7 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
     /**
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Missing "info" key
+     * @covers PHP\BitTorrent\Decoder::decodeFile
      */
     public function testDecodeTorrentFileStrictWithMissingInfo() {
         $file = __DIR__ . '/_files/testMissingInfo.torrent';
@@ -248,12 +265,16 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
     /**
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage File
+     * @covers PHP\BitTorrent\Decoder::decodeFile
      */
     public function testDecodeNonReadableFile() {
         $file = __DIR__ . '/nonExistingFile';
         $this->decoder->decodeFile($file);
     }
 
+    /**
+     * @covers PHP\BitTorrent\Decoder::decodeFile
+     */
     public function testDecodeFileWithStrictChecksEnabled() {
         $list = $this->decoder->decodeFile(__DIR__ . '/_files/valid.torrent', true);
 
