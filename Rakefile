@@ -8,7 +8,7 @@ build   = "#{basedir}/build"
 source  = "#{basedir}/PHP"
 
 desc "Task used by Jenkins-CI"
-task :jenkins => [:prepare, :phpunit, :phploc, :phpcs_ci, :phpcb, :phpcpd, :phpmd, :phpmd_html]
+task :jenkins => [:prepare, :phpunit, :phpdoc, :phploc, :phpcs_ci, :phpcb, :phpcpd, :phpmd, :phpmd_html]
 
 desc "Task used by Travis-CI"
 task :travis => [:phpunit]
