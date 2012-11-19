@@ -3,5 +3,5 @@ php:
   - 5.3
   - 5.4
 before_script:
-  - "sudo gem install nokogiri"
+  - "gem install nokogiri"
 script: rake travis
