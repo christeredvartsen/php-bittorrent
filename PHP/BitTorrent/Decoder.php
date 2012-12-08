@@ -110,13 +110,17 @@ class Decoder implements DecoderInterface {
         }
 
         $int = substr($integer, 1, ($ePos - 1));
+
+        // force double here; 32bit int overflow on big torrents
+        settype($int, "double");
+
         $intLen = strlen($int);
 
         if (($int[0] === '0' && $intLen > 1) || ($int[0] === '-' && $int[1] === '0') || !is_numeric($int)) {
             throw new InvalidArgumentException('Invalid integer value.');
         }
 
-        return (int) $int;
+        return $int;
     }
 
     /**

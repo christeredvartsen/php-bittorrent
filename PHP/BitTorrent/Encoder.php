@@ -47,7 +47,7 @@ class Encoder implements EncoderInterface {
      * {@inheritDoc}
      */
     public function encode($var) {
-        if (is_int($var)) {
+        if (is_int($var) or is_double($var)) {
             return $this->encodeInteger($var);
         } else if (is_string($var)) {
             return $this->encodeString($var);
@@ -70,11 +70,11 @@ class Encoder implements EncoderInterface {
      * {@inheritDoc}
      */
     public function encodeInteger($integer) {
-        if (!is_int($integer)) {
-            throw new InvalidArgumentException('Expected integer, got: ' . gettype($integer) . '.');
+        if (is_int($integer) OR is_double($integer)) {
+            return 'i' . $integer . 'e';
         }
 
-        return 'i' . $integer . 'e';
+        throw new InvalidArgumentException('Expected integer or double, got: ' . gettype($integer) . '.');
     }
 
     /**
