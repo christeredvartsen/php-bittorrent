@@ -3,8 +3,9 @@ Changelog for PHP BitTorrent
 
 Version 0.3.0
 -------------
-__N/A__
+__2012-12-08__
 
+* Fixed parse error in composer.json (Daniel Espendiller)
 * Added interfaces for the encoder and the decoder (Matt Drollette)
 * Fixed autoloader issues in composer.json (Matt Drollette)
 * Library is from now on available as a PHAR archive as well
