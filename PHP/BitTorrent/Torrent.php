@@ -655,4 +655,23 @@ class Torrent {
 
         return $info['name'];
     }
+
+    /**
+     * Get the hash of the torrent file
+     *
+     * @return string The torrent hash
+     * @throws RuntimeException
+     */
+    function getHash() {
+
+        $info = $this->getInfo();
+
+        if ($info === null) {
+            throw new RuntimeException('The info part of the torrent is not set.');
+        }
+
+        $encode = new Encoder();
+        return sha1($encode->encodeDictionary($info));
+    }
+
 }
