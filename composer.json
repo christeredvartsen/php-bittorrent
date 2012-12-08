@@ -18,6 +18,6 @@
     "issues": "https://github.com/christeredvartsen/php-bittorrent/issues"
   },
   "autoload": {
-    "psr-0": { "PHP\\BitTorrent": "/" }
+    "psr-0": { "PHP\\BitTorrent": "" }
   }
 }
