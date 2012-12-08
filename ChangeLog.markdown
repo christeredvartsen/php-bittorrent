@@ -1,6 +1,12 @@
 Changelog for PHP BitTorrent
 =====================
 
+Version 0.4.0
+-------------
+__N/A__
+
+* Added method to get the hash of the torrent file (Daniel Espendiller)
+
 Version 0.3.0
 -------------
 __2012-12-08__
