@@ -67,7 +67,7 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
      *
      * @return array
      */
-    public function getDecodeIntegerData() {
+    public function getDecodeNumberData() {
         return array(
             array('i1e', 1),
             array('i-1e', -1),
@@ -76,11 +76,11 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @dataProvider getDecodeIntegerData()
-     * @covers PHP\BitTorrent\Decoder::decodeInteger
+     * @dataProvider getDecodeNumberData()
+     * @covers PHP\BitTorrent\Decoder::decodeNumber
      */
-    public function testDecoderInteger($encoded, $value) {
-        $this->assertSame($value, $this->decoder->decodeInteger($encoded));
+    public function testDecoderNumber($encoded, $value) {
+        $this->assertEquals($value, $this->decoder->decodeNumber($encoded));
     }
 
     /**
@@ -88,7 +88,7 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
      *
      * @return array
      */
-    public function getDecodeInvalidIntegerData() {
+    public function getDecodeInvalidNumberData() {
         return array(
             array('i01e'),
             array('i-01e'),
@@ -97,28 +97,28 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @dataProvider getDecodeInvalidIntegerData()
+     * @dataProvider getDecodeInvalidNumberData()
      * @expectedException InvalidArgumentException
-     * @covers PHP\BitTorrent\Decoder::decodeInteger
+     * @covers PHP\BitTorrent\Decoder::decodeNumber
      */
-    public function testDecodeInvalidInteger($value) {
-        $this->decoder->decodeInteger($value);
+    public function testDecodeInvalidNumber($value) {
+        $this->decoder->decodeNumber($value);
     }
 
     /**
      * @expectedException InvalidArgumentException
-     * @covers PHP\BitTorrent\Decoder::decodeInteger
+     * @covers PHP\BitTorrent\Decoder::decodeNumber
      */
-    public function testDecodeStringAsInteger() {
-        $this->decoder->decodeInteger('4:spam');
+    public function testDecodeStringAsNumber() {
+        $this->decoder->decodeNumber('4:spam');
     }
 
     /**
      * @expectedException InvalidArgumentException
-     * @covers PHP\BitTorrent\Decoder::decodeInteger
+     * @covers PHP\BitTorrent\Decoder::decodeNumber
      */
-    public function testDecodePartialInteger() {
-        $this->decoder->decodeInteger('i10');
+    public function testDecodePartialNumber() {
+        $this->decoder->decodeNumber('i10');
     }
 
     /**
@@ -174,7 +174,7 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
      * @covers PHP\BitTorrent\Decoder::decodeList
      */
     public function testDecodeList($encoded, $value) {
-        $this->assertSame($value, $this->decoder->decodeList($encoded));
+        $this->assertEquals($value, $this->decoder->decodeList($encoded));
     }
 
     /**
@@ -231,7 +231,7 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
      * @covers PHP\BitTorrent\Decoder::decode
      */
     public function testGenericDecode($encoded, $value) {
-        $this->assertSame($value, $this->decoder->decode($encoded));
+        $this->assertEquals($value, $this->decoder->decode($encoded));
     }
 
     /**
@@ -284,7 +284,7 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
         $this->assertArrayHasKey('comment', $list);
         $this->assertSame('This is a comment', $list['comment']);
         $this->assertArrayHasKey('creation date', $list);
-        $this->assertSame(1323713688, $list['creation date']);
+        $this->assertEquals(1323713688, $list['creation date']);
         $this->assertArrayHasKey('info', $list);
         $this->assertInternalType('array', $list['info']);
         $this->assertArrayHasKey('files', $list['info']);

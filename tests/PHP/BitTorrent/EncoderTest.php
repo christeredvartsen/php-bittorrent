@@ -65,7 +65,7 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
      *
      * @return array
      */
-    public function getEncodeIntegerData() {
+    public function getEncodeNumberData() {
         return array(
             array(-1, 'i-1e'),
             array(0, 'i0e'),
@@ -74,19 +74,19 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @dataProvider getEncodeIntegerData()
-     * @covers PHP\BitTorrent\Encoder::encodeInteger
+     * @dataProvider getEncodeNumberData()
+     * @covers PHP\BitTorrent\Encoder::encodeNumber
      */
-    public function testEncodeInteger($value, $encoded) {
-        $this->assertSame($encoded, $this->encoder->encodeInteger($value));
+    public function testEncodeNumber($value, $encoded) {
+        $this->assertSame($encoded, $this->encoder->encodeNumber($value));
     }
 
     /**
      * @expectedException InvalidArgumentException
-     * @covers PHP\BitTorrent\Encoder::encodeInteger
+     * @covers PHP\BitTorrent\Encoder::encodeNumber
      */
-    public function testEncodeNonIntegerAsInteger() {
-        $this->encoder->encodeInteger('1');
+    public function testEncodeNonNumberAsNumber() {
+        $this->encoder->encodeNumber('one');
     }
 
     /**
@@ -180,8 +180,9 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
     public function getEncodeData() {
         return array(
             array(1, 'i1e'),
+            array(1.0, 'i1e'),
             array('spam', '4:spam'),
-            array(array(1, 2), 'li1ei2ee'),
+            array(array(1, 2, 3.0), 'li1ei2ei3ee'),
             array(array('foo' => 'bar', 'spam' => 'sucks'), 'd3:foo3:bar4:spam5:suckse'),
         );
     }

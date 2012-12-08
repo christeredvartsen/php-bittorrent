@@ -51,13 +51,13 @@ interface EncoderInterface {
     function encode($var);
 
     /**
-     * Encode an integer
+     * Encode a number
      *
-     * @param int $integer The integer to encoded
+     * @param int|float|string $number The number to encode
      * @return string Returns the encoded string
      * @throws \InvalidArgumentException
      */
-    function encodeInteger($integer);
+    function encodeNumber($number);
 
     /**
      * Encode a string

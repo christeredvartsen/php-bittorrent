@@ -89,7 +89,7 @@ class Decoder implements DecoderInterface {
      */
     public function decode($string) {
         if ($string[0] === 'i') {
-            return $this->decodeInteger($string);
+            return $this->decodeNumber($string);
         } else if ($string[0] === 'l') {
             return $this->decodeList($string);
         } else if ($string[0] === 'd') {
@@ -104,23 +104,20 @@ class Decoder implements DecoderInterface {
     /**
      * {@inheritDoc}
      */
-    public function decodeInteger($integer) {
-        if ($integer[0] !== 'i' || (!$ePos = strpos($integer, 'e'))) {
-            throw new InvalidArgumentException('Invalid integer. Integers must start wth "i" and end with "e".');
+    public function decodeNumber($number) {
+        if ($number[0] !== 'i' || (!$ePos = strpos($number, 'e'))) {
+            throw new InvalidArgumentException('Invalid number. Numbers must start wth "i" and end with "e".');
         }
 
-        $int = substr($integer, 1, ($ePos - 1));
+        $number = substr($number, 1, ($ePos - 1));
 
-        // force double here; 32bit int overflow on big torrents
-        settype($int, "double");
+        $len = strlen($number);
 
-        $intLen = strlen($int);
-
-        if (($int[0] === '0' && $intLen > 1) || ($int[0] === '-' && $int[1] === '0') || !is_numeric($int)) {
-            throw new InvalidArgumentException('Invalid integer value.');
+        if (($number[0] === '0' && $len > 1) || ($number[0] === '-' && $number[1] === '0') || !is_numeric($number)) {
+            throw new InvalidArgumentException('Invalid number value.');
         }
 
-        return $int;
+        return $number;
     }
 
     /**
