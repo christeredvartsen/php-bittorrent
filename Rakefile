@@ -14,7 +14,7 @@ desc "Task used by Travis-CI"
 task :travis => [:phpunit]
 
 desc "Default task"
-task :default => [:lint, :phpunit, :phpdoc, :phpcs]
+task :default => [:lint, :prepare, :phpunit, :phpdoc, :phpcs]
 
 desc "Clean up and create artifact directories"
 task :prepare do
