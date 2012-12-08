@@ -70,6 +70,9 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
             array(-1, 'i-1e'),
             array(0, 'i0e'),
             array(1, 'i1e'),
+            array(1.0, 'i1e'),
+            array("1", 'i1e'),
+            array("1.0", 'i1e'),
         );
     }
 
@@ -181,6 +184,8 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
         return array(
             array(1, 'i1e'),
             array(1.0, 'i1e'),
+            array("1", 'i1e'),
+            array("1.0", 'i1e'),
             array('spam', '4:spam'),
             array(array(1, 2, 3.0), 'li1ei2ei3ee'),
             array(array('foo' => 'bar', 'spam' => 'sucks'), 'd3:foo3:bar4:spam5:suckse'),

@@ -71,7 +71,7 @@ class Encoder implements EncoderInterface {
      */
     public function encodeNumber($number) {
         if (is_numeric($number)) {
-            return 'i' . $number . 'e';
+            return 'i' . (double) $number . 'e';
         }
 
         throw new InvalidArgumentException('Expected a number.');
