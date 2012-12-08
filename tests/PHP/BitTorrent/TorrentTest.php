@@ -489,4 +489,20 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
     public function testCreateFromPathWithInvalidPath() {
         Torrent::createFromPath('foobar', 'http://trackerurl');
     }
+
+    /**
+     * @expectedException RuntimeException
+     * @covers PHP\BitTorrent\Torrent::getHash
+     */
+    public function testThrowsExceptionWhenTryingToGenerateHashWithEmptyTorrentFile() {
+        $this->torrent->getHash();
+    }
+
+    /**
+     * @covers PHP\BitTorrent\Torrent::getHash
+     */
+    public function testGetHash() {
+        $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_files/valid.torrent');
+        $this->assertSame('%C7%17%BF%D3%02%11%A5%E3l%94%CA%BA%AB%3B%3C%A0%DC%89%F9%1A', $torrent->getHash());
+    }
 }

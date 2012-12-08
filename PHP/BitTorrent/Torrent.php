@@ -657,21 +657,20 @@ class Torrent {
     }
 
     /**
-     * Get the hash of the torrent file
+     * Get the urlencoded raw hash of the torrent file
      *
      * @return string The torrent hash
      * @throws RuntimeException
      */
-    function getHash() {
-
+    public function getHash() {
         $info = $this->getInfo();
 
         if ($info === null) {
             throw new RuntimeException('The info part of the torrent is not set.');
         }
 
-        $encode = new Encoder();
-        return sha1($encode->encodeDictionary($info));
-    }
+        $encoder = new Encoder();
 
+        return urlencode(sha1($encoder->encodeDictionary($info), true));
+    }
 }
