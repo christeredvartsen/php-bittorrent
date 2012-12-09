@@ -536,11 +536,7 @@ class Torrent {
             throw new RuntimeException('Announce URL is missing.');
         }
 
-        $info = $this->getInfo();
-
-        if (empty($info)) {
-            throw new RuntimeException('The info part of the torrent is empty.');
-        }
+        $info = $this->getInfoPart();
 
         if ($encoder === null) {
             $encoder = new Encoder();
@@ -599,11 +595,7 @@ class Torrent {
      * @throws RuntimeException
      */
     public function getFileList() {
-        $info = $this->getInfo();
-
-        if ($info === null) {
-            throw new RuntimeException('The info part of the torrent is not set.');
-        }
+        $info = $this->getInfoPart();
 
         if (isset($info['length'])) {
             return $info['name'];
@@ -619,11 +611,7 @@ class Torrent {
      * @throws RuntimeException
      */
     public function getSize() {
-        $info = $this->getInfo();
-
-        if ($info === null) {
-            throw new RuntimeException('The info part of the torrent is not set.');
-        }
+        $info = $this->getInfoPart();
 
         // If the length element is set, return that one. If not, loop through the files and generate the total
         if (isset($info['length'])) {
@@ -647,13 +635,23 @@ class Torrent {
      * @throws RuntimeException
      */
     public function getName() {
-        $info = $this->getInfo();
-
-        if ($info === null) {
-            throw new RuntimeException('The info part of the torrent is not set.');
-        }
+        $info = $this->getInfoPart();
 
         return $info['name'];
+    }
+
+    /**
+     * Get the hash of the torrent file
+     *
+     * @return string The torrent hash
+     * @throws RuntimeException
+     */
+    public function getHash() {
+        $info = $this->getInfoPart();
+
+        $encoder = new Encoder();
+
+        return sha1($encoder->encodeDictionary($info));
     }
 
     /**
@@ -662,15 +660,28 @@ class Torrent {
      * @return string The torrent hash
      * @throws RuntimeException
      */
-    public function getHash() {
+    public function getEncodedHash() {
+        $info = $this->getInfoPart();
+        
+        $encoder = new Encoder();
+
+        return urlencode(sha1($encoder->encodeDictionary($info), true));
+    }
+
+    /**
+     * Get the info part of torrent and throw exception if not set
+     *
+     * @return array
+     * @throws \RuntimeException
+     */
+    private function getInfoPart() {
         $info = $this->getInfo();
 
         if ($info === null) {
             throw new RuntimeException('The info part of the torrent is not set.');
         }
 
-        $encoder = new Encoder();
-
-        return urlencode(sha1($encoder->encodeDictionary($info), true));
+        return $info;
     }
+
 }

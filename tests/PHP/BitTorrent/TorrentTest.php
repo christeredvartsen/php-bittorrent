@@ -449,7 +449,7 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @expectedException RuntimeException
-     * @expectedExceptionMessage The info part of the torrent is empty
+     * @expectedExceptionMessage The info part of the torrent is not set.
      * @covers PHP\BitTorrent\Torrent::setAnnounce
      * @covers PHP\BitTorrent\Torrent::save
      */
@@ -499,10 +499,28 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
+     * @expectedException RuntimeException
+     * @covers PHP\BitTorrent\Torrent::getEncodedHash
+     */
+    public function testThrowsExceptionWhenTryingToGenerateEncodedHashWithEmptyTorrentFile()
+    {
+        $this->torrent->getEncodedHash();
+    }
+
+    /**
      * @covers PHP\BitTorrent\Torrent::getHash
      */
     public function testGetHash() {
         $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_files/valid.torrent');
-        $this->assertSame('%C7%17%BF%D3%02%11%A5%E3l%94%CA%BA%AB%3B%3C%A0%DC%89%F9%1A', $torrent->getHash());
+        $this->assertSame('c717bfd30211a5e36c94cabaab3b3ca0dc89f91a', $torrent->getHash());
+    }
+
+    /**
+     * @covers PHP\BitTorrent\Torrent::getEncodedHash
+     */
+    public function testGetEncodedHash()
+    {
+        $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_files/valid.torrent');
+        $this->assertSame('%C7%17%BF%D3%02%11%A5%E3l%94%CA%BA%AB%3B%3C%A0%DC%89%F9%1A', $torrent->getEncodedHash());
     }
 }
