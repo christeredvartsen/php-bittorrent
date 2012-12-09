@@ -5,6 +5,7 @@ Version 0.4.0
 -------------
 __N/A__
 
+* Introduced a getEncodedHash method in the Torrent component to get the URL-encoded hash (Daniel Espendiller)
 * Fix issue with integer overflow on 32-bit platforms
 * Added method to get the hash of the torrent file (Daniel Espendiller)
 

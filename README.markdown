@@ -99,8 +99,8 @@ $torrent->setAnnounce('http://tracker/announce.php') // Override announce in ori
 
 ### 32-bit platforms
 
-On 32-bit platforms these components work slightly different with regards to integers. There are three main differences:
+On 32-bit platforms these components work slightly different with regards to integers:
 
-* The generic `PHP\BitTorrent\Encoder::encode` will encode both integers and strings with numerics (strings with floating points are still treated as regular strings) as integers.
+* The generic `PHP\BitTorrent\Encoder::encode` method will encode both integers and strings containing numerics (strings containing floating point values are still treated as regular strings) as integers.
 * The `PHP\BitTorrent\Decoder::decodeInteger` method will return values as strings, and not integers.
 * The `PHP\BitTorrent\Torrent::getSize` method will use the [bcadd](http://no2.php.net/manual/en/function.bcadd.php) function to calculate the size of the files in the torrent.
