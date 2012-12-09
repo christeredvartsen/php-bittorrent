@@ -220,7 +220,7 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
         );
         $info = array('files' => $files);
         $this->torrent->setInfo($info);
-        $this->assertSame(167, $this->torrent->getSize());
+        $this->assertEquals(167, $this->torrent->getSize());
     }
 
     /**
@@ -240,7 +240,7 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame('This is a comment', $torrent->getComment());
         $this->assertSame('PHP BitTorrent', $torrent->getCreatedBy());
         $this->assertSame(1323713688, $torrent->getCreatedAt());
-        $this->assertSame(30243, $torrent->getSize());
+        $this->assertEquals(30243, $torrent->getSize());
         $this->assertSame(5, count($torrent->getFileList()));
     }
 
@@ -300,7 +300,7 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertSame($trackerUrl, $torrent->getAnnounce());
         $this->assertSame('_files', $torrent->getName());
-        $this->assertSame(902004, $torrent->getSize());
+        $this->assertEquals(902004, $torrent->getSize());
         $this->assertSame(5, count($torrent->getFileList()));
     }
 
@@ -364,7 +364,7 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame($comment, $torrent->getComment());
         $this->assertSame($createdBy, $torrent->getCreatedBy());
         $this->assertSame('_files', $torrent->getName());
-        $this->assertSame(902004, $torrent->getSize());
+        $this->assertEquals(902004, $torrent->getSize());
         $this->assertSame(5, count($torrent->getFileList()));
         $this->assertSame($announceList, $torrent->getAnnounceList());
 
