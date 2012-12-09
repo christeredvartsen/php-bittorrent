@@ -70,13 +70,13 @@ interface DecoderInterface {
     function decode($string);
 
     /**
-     * Decode a encoded PHP number
+     * Decode a encoded PHP integer
      *
-     * @param string $number The number to decode
-     * @return int Returns the decoded number
+     * @param string $integer The integer to decode
+     * @return int|string Returns the decoded integer (as a string on 32-bit platforms)
      * @throws \InvalidArgumentException
      */
-    function decodeNumber($number);
+    function decodeInteger($integer);
 
     /**
      * Decode an encoded PHP string

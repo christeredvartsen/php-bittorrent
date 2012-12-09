@@ -5,7 +5,7 @@ Version 0.4.0
 -------------
 __N/A__
 
-* Fix issue with integer overflow on 32-bit platforms (API BC-break)
+* Fix issue with integer overflow on 32-bit platforms
 * Added method to get the hash of the torrent file (Daniel Espendiller)
 
 Version 0.3.0

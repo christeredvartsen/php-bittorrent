@@ -67,7 +67,7 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
      *
      * @return array
      */
-    public function getDecodeNumberData() {
+    public function getDecodeIntegerData() {
         return array(
             array('i1e', 1),
             array('i-1e', -1),
@@ -76,11 +76,11 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @dataProvider getDecodeNumberData()
-     * @covers PHP\BitTorrent\Decoder::decodeNumber
+     * @dataProvider getDecodeIntegerData()
+     * @covers PHP\BitTorrent\Decoder::decodeInteger
      */
-    public function testDecoderNumber($encoded, $value) {
-        $this->assertEquals($value, $this->decoder->decodeNumber($encoded));
+    public function testDecoderInteger($encoded, $value) {
+        $this->assertEquals($value, $this->decoder->decodeInteger($encoded));
     }
 
     /**
@@ -88,7 +88,7 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
      *
      * @return array
      */
-    public function getDecodeInvalidNumberData() {
+    public function getDecodeInvalidIntegerData() {
         return array(
             array('i01e'),
             array('i-01e'),
@@ -97,28 +97,28 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @dataProvider getDecodeInvalidNumberData()
+     * @dataProvider getDecodeInvalidIntegerData()
      * @expectedException InvalidArgumentException
-     * @covers PHP\BitTorrent\Decoder::decodeNumber
+     * @covers PHP\BitTorrent\Decoder::decodeInteger
      */
-    public function testDecodeInvalidNumber($value) {
-        $this->decoder->decodeNumber($value);
+    public function testDecodeInvalidInteger($value) {
+        $this->decoder->decodeInteger($value);
     }
 
     /**
      * @expectedException InvalidArgumentException
-     * @covers PHP\BitTorrent\Decoder::decodeNumber
+     * @covers PHP\BitTorrent\Decoder::decodeInteger
      */
-    public function testDecodeStringAsNumber() {
-        $this->decoder->decodeNumber('4:spam');
+    public function testDecodeStringAsInteger() {
+        $this->decoder->decodeInteger('4:spam');
     }
 
     /**
      * @expectedException InvalidArgumentException
-     * @covers PHP\BitTorrent\Decoder::decodeNumber
+     * @covers PHP\BitTorrent\Decoder::decodeInteger
      */
-    public function testDecodePartialNumber() {
-        $this->decoder->decodeNumber('i10');
+    public function testDecodePartialInteger() {
+        $this->decoder->decodeInteger('i10');
     }
 
     /**

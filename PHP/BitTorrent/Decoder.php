@@ -89,7 +89,7 @@ class Decoder implements DecoderInterface {
      */
     public function decode($string) {
         if ($string[0] === 'i') {
-            return $this->decodeNumber($string);
+            return $this->decodeInteger($string);
         } else if ($string[0] === 'l') {
             return $this->decodeList($string);
         } else if ($string[0] === 'd') {
@@ -104,20 +104,23 @@ class Decoder implements DecoderInterface {
     /**
      * {@inheritDoc}
      */
-    public function decodeNumber($number) {
-        if ($number[0] !== 'i' || (!$ePos = strpos($number, 'e'))) {
-            throw new InvalidArgumentException('Invalid number. Numbers must start wth "i" and end with "e".');
+    public function decodeInteger($integer) {
+        if ($integer[0] !== 'i' || (!$ePos = strpos($integer, 'e'))) {
+            throw new InvalidArgumentException('Invalid integer. Integers must start wth "i" and end with "e".');
         }
 
-        $number = substr($number, 1, ($ePos - 1));
+        $integer = substr($integer, 1, ($ePos - 1));
+        $len = strlen($integer);
 
-        $len = strlen($number);
-
-        if (($number[0] === '0' && $len > 1) || ($number[0] === '-' && $number[1] === '0') || !is_numeric($number)) {
-            throw new InvalidArgumentException('Invalid number value.');
+        if (($integer[0] === '0' && $len > 1) || ($integer[0] === '-' && $integer[1] === '0') || !is_numeric($integer)) {
+            throw new InvalidArgumentException('Invalid integer value.');
         }
 
-        return $number;
+        if (PHP_INT_SIZE === 8) {
+            return (int) $integer;
+        }
+
+        return $integer;
     }
 
     /**

@@ -47,8 +47,8 @@ class Encoder implements EncoderInterface {
      * {@inheritDoc}
      */
     public function encode($var) {
-        if (is_numeric($var)) {
-            return $this->encodeNumber($var);
+        if ($this->isInt($var)) {
+            return $this->encodeInteger($var);
         } else if (is_string($var)) {
             return $this->encodeString($var);
         } else if (is_array($var)) {
@@ -69,12 +69,12 @@ class Encoder implements EncoderInterface {
     /**
      * {@inheritDoc}
      */
-    public function encodeNumber($number) {
-        if (is_numeric($number)) {
-            return 'i' . (double) $number . 'e';
+    public function encodeInteger($integer) {
+        if ($this->isInt($integer)) {
+            return 'i' . $integer . 'e';
         }
 
-        throw new InvalidArgumentException('Expected a number.');
+        throw new InvalidArgumentException('Expected an integer.');
     }
 
     /**
@@ -120,5 +120,16 @@ class Encoder implements EncoderInterface {
         }
 
         return $ret . 'e';
+    }
+
+    /**
+     * Check if a variable is an integer
+     *
+     * @param int|string
+     * @return boolean
+     */
+    private function isInt($var) {
+        return is_int($var) ||
+               (PHP_INT_SIZE === 4 && is_numeric($var) && (strpos($var, '.') === false));
     }
 }

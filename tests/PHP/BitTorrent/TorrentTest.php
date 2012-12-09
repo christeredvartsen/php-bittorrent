@@ -210,6 +210,7 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
     /**
      * @covers PHP\BitTorrent\Torrent::setInfo
      * @covers PHP\BitTorrent\Torrent::getSize
+     * @covers PHP\BitTorrent\Torrent::add
      */
     public function testGetSizeWhenInfoBlockHasSeveralFiles() {
         $files = array(
@@ -229,6 +230,7 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
      * @covers PHP\BitTorrent\Torrent::getCreatedBy
      * @covers PHP\BitTorrent\Torrent::getCreatedAt
      * @covers PHP\BitTorrent\Torrent::getSize
+     * @covers PHP\BitTorrent\Torrent::add
      * @covers PHP\BitTorrent\Torrent::getFileList
      */
     public function testCreateFromTorrentFile() {
@@ -288,6 +290,7 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
      * @covers PHP\BitTorrent\Torrent::getAnnounce
      * @covers PHP\BitTorrent\Torrent::getName
      * @covers PHP\BitTorrent\Torrent::getSize
+     * @covers PHP\BitTorrent\Torrent::add
      * @covers PHP\BitTorrent\Torrent::getFileList
      */
     public function testCreateFromPathWhenUsingADirectoryAsArgument() {
@@ -297,8 +300,8 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertSame($trackerUrl, $torrent->getAnnounce());
         $this->assertSame('_files', $torrent->getName());
-        $this->assertSame(482, $torrent->getSize());
-        $this->assertSame(3, count($torrent->getFileList()));
+        $this->assertSame(902004, $torrent->getSize());
+        $this->assertSame(5, count($torrent->getFileList()));
     }
 
     /**
@@ -306,6 +309,7 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
      * @covers PHP\BitTorrent\Torrent::getAnnounce
      * @covers PHP\BitTorrent\Torrent::getName
      * @covers PHP\BitTorrent\Torrent::getSize
+     * @covers PHP\BitTorrent\Torrent::add
      * @covers PHP\BitTorrent\Torrent::getFileList
      */
     public function testCreateFromPathWhenUsingAFileAsArgument() {
@@ -331,6 +335,7 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
      * @covers PHP\BitTorrent\Torrent::getCreatedBy
      * @covers PHP\BitTorrent\Torrent::getName
      * @covers PHP\BitTorrent\Torrent::getSize
+     * @covers PHP\BitTorrent\Torrent::add
      * @covers PHP\BitTorrent\Torrent::getFileList
      * @covers PHP\BitTorrent\Torrent::getAnnounceList
      */
@@ -359,8 +364,8 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame($comment, $torrent->getComment());
         $this->assertSame($createdBy, $torrent->getCreatedBy());
         $this->assertSame('_files', $torrent->getName());
-        $this->assertSame(482, $torrent->getSize());
-        $this->assertSame(3, count($torrent->getFileList()));
+        $this->assertSame(902004, $torrent->getSize());
+        $this->assertSame(5, count($torrent->getFileList()));
         $this->assertSame($announceList, $torrent->getAnnounceList());
 
         // Remove the saved file
@@ -504,5 +509,17 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
     public function testGetHash() {
         $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_files/valid.torrent');
         $this->assertSame('%C7%17%BF%D3%02%11%A5%E3l%94%CA%BA%AB%3B%3C%A0%DC%89%F9%1A', $torrent->getHash());
+    }
+
+    /**
+     * @covers PHP\BitTorrent\Torrent::getSize
+     * @covers PHP\BitTorrent\Torrent::add
+     */
+    public function testGetSizeWithLargeValues() {
+        $torrent1 = Torrent::createFromTorrentFile(__DIR__ . '/_files/large_files.torrent');
+        $torrent2 = Torrent::createFromTorrentFile(__DIR__ . '/_files/large_file.img.torrent');
+
+        $this->assertEquals("6442450944", $torrent1->getSize());
+        $this->assertEquals("5368709120", $torrent2->getSize());
     }
 }

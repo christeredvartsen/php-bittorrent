@@ -634,7 +634,7 @@ class Torrent {
         $size  = 0;
 
         foreach ($files as $file) {
-            $size += $file['length'];
+            $size = $this->add($size, $file['length']);
         }
 
         return $size;
@@ -672,5 +672,20 @@ class Torrent {
         $encoder = new Encoder();
 
         return urlencode(sha1($encoder->encodeDictionary($info), true));
+    }
+
+    /**
+     * Add method that should work on both 32 and 64-bit platforms
+     *
+     * @param int $a
+     * @param int $b
+     * @return int|string
+     */
+    private function add($a, $b) {
+        if (PHP_INT_SIZE === 4) {
+            return bcadd($a, $b);
+        }
+
+        return $a + $b;
     }
 }
