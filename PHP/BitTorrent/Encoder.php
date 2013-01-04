@@ -113,6 +113,8 @@ class Encoder implements EncoderInterface {
             throw new InvalidArgumentException('Expected array, got: ' . gettype($dictionary) . '.');
         }
 
+        ksort($dictionary);
+
         $ret = 'd';
 
         foreach ($dictionary as $key => $value) {

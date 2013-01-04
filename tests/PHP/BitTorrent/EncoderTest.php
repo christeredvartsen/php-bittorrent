@@ -153,7 +153,9 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
      */
     public function getEncodeDictionaryData() {
         return array(
-            array(array('1' => 'foo', 'foo' => 'bar', 'list' => array(1, 2, 3)), 'd1:13:foo3:foo3:bar4:listli1ei2ei3eee'),
+            array(array('1' => 'foo', 'foo' => 'bar', 'list' => array(1, 2, 3)), 'd3:foo3:bar4:listli1ei2ei3ee1:13:fooe'),
+            array(array('foo' => 'bar', 'spam' => 'eggs'), 'd3:foo3:bar4:spam4:eggse'),
+            array(array('spam' => 'eggs', 'foo' => 'bar'), 'd3:foo3:bar4:spam4:eggse'),
         );
     }
 
