@@ -159,8 +159,8 @@ task :generate_pear_package, :version do |t, args|
           xml.api version
         }
         xml.stability {
-          xml.release "beta"
-          xml.api "beta"
+          xml.release "stable"
+          xml.api "stable"
         }
         xml.license "MIT", :uri => "http://www.opensource.org/licenses/mit-license.php"
         xml.notes "http://github.com/christeredvartsen/php-bittorrent/blob/#{version}/README.markdown"
