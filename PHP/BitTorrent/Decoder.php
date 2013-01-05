@@ -1,32 +1,11 @@
 <?php
 /**
- * PHP BitTorrent
+ * This file is part of the PHP BitTorrent
  *
- * Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
+ * (c) Christer Edvartsen <cogo@starzinger.net>
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * * The above copyright notice and this permission notice shall be included in
- *   all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
- * @package Decoder
- * @author Christer Edvartsen <cogo@starzinger.net>
- * @copyright Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
- * @license http://www.opensource.org/licenses/mit-license MIT License
- * @link https://github.com/christeredvartsen/php-bittorrent
+ * For the full copyright and license information, please view the LICENSE file that was
+ * distributed with this source code.
  */
 
 namespace PHP\BitTorrent;
@@ -38,22 +17,19 @@ use InvalidArgumentException;
  *
  * @package Decoder
  * @author Christer Edvartsen <cogo@starzinger.net>
- * @copyright Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
- * @license http://www.opensource.org/licenses/mit-license MIT License
- * @link https://github.com/christeredvartsen/php-bittorrent
  */
 class Decoder implements DecoderInterface {
     /**
      * Encoder instance
      *
-     * @var PHP\BitTorrent\EncoderInterface
+     * @var EncoderInterface
      */
     private $encoder;
 
     /**
      * Class constructor
      *
-     * @param PHP\BitTorrent\EncoderInterface $encoder An instance of an encoder
+     * @param EncoderInterface $encoder An instance of an encoder
      */
     public function __construct(EncoderInterface $encoder = null) {
         if ($encoder === null) {
@@ -109,14 +85,18 @@ class Decoder implements DecoderInterface {
             throw new InvalidArgumentException('Invalid integer. Integers must start wth "i" and end with "e".');
         }
 
-        $int = substr($integer, 1, ($ePos - 1));
-        $intLen = strlen($int);
+        $integer = substr($integer, 1, ($ePos - 1));
+        $len = strlen($integer);
 
-        if (($int[0] === '0' && $intLen > 1) || ($int[0] === '-' && $int[1] === '0') || !is_numeric($int)) {
+        if (($integer[0] === '0' && $len > 1) || ($integer[0] === '-' && $integer[1] === '0') || !is_numeric($integer)) {
             throw new InvalidArgumentException('Invalid integer value.');
         }
 
-        return (int) $int;
+        if (PHP_INT_SIZE === 8) {
+            return (int) $integer;
+        }
+
+        return $integer;
     }
 
     /**

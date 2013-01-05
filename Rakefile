@@ -8,13 +8,13 @@ build   = "#{basedir}/build"
 source  = "#{basedir}/PHP"
 
 desc "Task used by Jenkins-CI"
-task :jenkins => [:prepare, :phpunit, :phpdoc, :phploc, :phpcs_ci, :phpcb, :phpcpd, :phpmd, :phpmd_html]
+task :jenkins => [:lint, :prepare, :installdep, :phpunit, :phpdoc, :phploc, :phpcs_ci, :phpcb, :phpcpd, :phpmd, :phpmd_html]
 
 desc "Task used by Travis-CI"
-task :travis => [:phpunit]
+task :travis => [:installdep, :phpunit]
 
 desc "Default task"
-task :default => [:lint, :prepare, :phpunit, :phpdoc, :phpcs]
+task :default => [:lint, :prepare, :installdep, :phpunit, :phpdoc, :phpcs]
 
 desc "Clean up and create artifact directories"
 task :prepare do
@@ -41,29 +41,44 @@ task :lint do
   end
 end
 
-desc "Run PHPUnit tests (config in phpunit.xml)"
+desc "Install dependencies"
+task :installdep do
+  if ENV["TRAVIS"] == "true"
+    system "composer --no-ansi install --dev"
+  else
+    Rake::Task["install_composer"].invoke
+    system "php -d \"apc.enable_cli=0\" composer.phar install --dev"
+  end
+end
+
+desc "Update dependencies"
+task :updatedep do
+  Rake::Task["install_composer"].invoke
+  system "php -d \"apc.enable_cli=0\" composer.phar update --dev"
+end
+
+desc "Install/update composer itself"
+task :install_composer do
+  if File.exists?("composer.phar")
+    system "php -d \"apc.enable_cli=0\" composer.phar self-update"
+  else
+    system "curl -s http://getcomposer.org/installer | php -d \"apc.enable_cli=0\""
+  end
+end
+
+desc "Run unit tests"
 task :phpunit do
-  puts "Run testsuite"
+  config = "phpunit.xml.dist"
 
   if ENV["TRAVIS"] == "true"
-    puts "Opening phpunit.xml.dist"
-    document = Nokogiri::XML(File.open("phpunit.xml.dist"))
-    document.xpath("//phpunit/logging").remove
-
-    puts "Writing edited version of phpunit.xml"
-    File.open("phpunit.xml", "w+") do |f|
-        f.write(document.to_xml)
-    end
+    config = "phpunit.xml.travis"
+  elsif File.exists?("phpunit.xml")
+    config = "phpunit.xml"
   end
 
-  if File.exists?("phpunit.xml")
-    begin
-      sh %{phpunit --verbose -c phpunit.xml}
-    rescue Exception
-      exit 1
-    end
-  else
-    puts "phpunit.xml does not exist"
+  begin
+    sh %{vendor/bin/phpunit --verbose -c #{config}}
+  rescue Exception
     exit 1
   end
 end
@@ -71,7 +86,7 @@ end
 desc "Generate API documentation using phpdoc (config in phpdoc.xml)"
 task :phpdoc do
   puts "Generate API docs"
-  system "phpdoc -d #{source} -t #{build}/docs"
+  system "phpdoc -d #{source} -t #{build}/docs --title \"PHP BitTorrent API Documentation\""
 end
 
 desc "Generate phploc logs"
@@ -144,8 +159,8 @@ task :generate_pear_package, :version do |t, args|
           xml.api version
         }
         xml.stability {
-          xml.release "beta"
-          xml.api "beta"
+          xml.release "stable"
+          xml.api "stable"
         }
         xml.license "MIT", :uri => "http://www.opensource.org/licenses/mit-license.php"
         xml.notes "http://github.com/christeredvartsen/php-bittorrent/blob/#{version}/README.markdown"
@@ -208,7 +223,7 @@ task :generate_phar_archive, :version do |t, args|
 /**
  * PHP BitTorrent
  *
- * Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
+ * Copyright (c) 2011-2013, Christer Edvartsen <cogo@starzinger.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -230,7 +245,7 @@ task :generate_phar_archive, :version do |t, args|
  *
  * @package PHP\BitTorrent
  * @author Christer Edvartsen <cogo@starzinger.net>
- * @copyright Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
+ * @copyright Copyright (c) 2011-2013, Christer Edvartsen <cogo@starzinger.net>
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/php-bittorrent
  * @version #{version}

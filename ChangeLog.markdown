@@ -1,6 +1,15 @@
 Changelog for PHP BitTorrent
 =====================
 
+Version 1.0.0
+-------------
+__2013-01-05__
+
+* Introduced a getEncodedHash method in the Torrent component to get the URL-encoded hash (Daniel Espendiller)
+* Fix issue with integer overflow on 32-bit platforms
+* Added method to get the hash of the torrent file (Daniel Espendiller)
+* Dictionaries are now sorted by keys before they are encoded (as specified in in http://bittorrent.org/beps/bep\_0003.html)
+
 Version 0.3.0
 -------------
 __2012-12-08__
@@ -23,4 +32,3 @@ Version 0.0.1
 __2011-01-29__
 
 * Initial release
-

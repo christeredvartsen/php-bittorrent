@@ -1,32 +1,11 @@
 <?php
 /**
- * PHP BitTorrent
+ * This file is part of the PHP BitTorrent
  *
- * Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
+ * (c) Christer Edvartsen <cogo@starzinger.net>
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * * The above copyright notice and this permission notice shall be included in
- *   all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
- * @package UnitTests
- * @author Christer Edvartsen <cogo@starzinger.net>
- * @copyright Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
- * @license http://www.opensource.org/licenses/mit-license MIT License
- * @link https://github.com/christeredvartsen/php-bittorrent
+ * For the full copyright and license information, please view the LICENSE file that was
+ * distributed with this source code.
  */
 
 namespace PHP\BitTorrent;
@@ -34,22 +13,24 @@ namespace PHP\BitTorrent;
 /**
  * @package UnitTests
  * @author Christer Edvartsen <cogo@starzinger.net>
- * @copyright Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
- * @license http://www.opensource.org/licenses/mit-license MIT License
- * @link https://github.com/christeredvartsen/php-bittorrent
+ * @covers PHP\BitTorrent\Torrent
  */
 class TorrentTest extends \PHPUnit_Framework_TestCase {
     /**
-     * Torrent object
-     *
-     * @var PHP\BitTorrent\Torrent
+     * @var Torrent
      */
     private $torrent;
 
+    /**
+     * Set up the torrent instance
+     */
     public function setUp() {
         $this->torrent = new Torrent();
     }
 
+    /**
+     * Tear down the torrent instance
+     */
     public function tearDown() {
         $this->torrent = null;
     }
@@ -210,6 +191,7 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
     /**
      * @covers PHP\BitTorrent\Torrent::setInfo
      * @covers PHP\BitTorrent\Torrent::getSize
+     * @covers PHP\BitTorrent\Torrent::add
      */
     public function testGetSizeWhenInfoBlockHasSeveralFiles() {
         $files = array(
@@ -219,7 +201,7 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
         );
         $info = array('files' => $files);
         $this->torrent->setInfo($info);
-        $this->assertSame(167, $this->torrent->getSize());
+        $this->assertEquals(167, $this->torrent->getSize());
     }
 
     /**
@@ -229,6 +211,7 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
      * @covers PHP\BitTorrent\Torrent::getCreatedBy
      * @covers PHP\BitTorrent\Torrent::getCreatedAt
      * @covers PHP\BitTorrent\Torrent::getSize
+     * @covers PHP\BitTorrent\Torrent::add
      * @covers PHP\BitTorrent\Torrent::getFileList
      */
     public function testCreateFromTorrentFile() {
@@ -238,7 +221,7 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame('This is a comment', $torrent->getComment());
         $this->assertSame('PHP BitTorrent', $torrent->getCreatedBy());
         $this->assertSame(1323713688, $torrent->getCreatedAt());
-        $this->assertSame(30243, $torrent->getSize());
+        $this->assertEquals(30243, $torrent->getSize());
         $this->assertSame(5, count($torrent->getFileList()));
     }
 
@@ -288,6 +271,7 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
      * @covers PHP\BitTorrent\Torrent::getAnnounce
      * @covers PHP\BitTorrent\Torrent::getName
      * @covers PHP\BitTorrent\Torrent::getSize
+     * @covers PHP\BitTorrent\Torrent::add
      * @covers PHP\BitTorrent\Torrent::getFileList
      */
     public function testCreateFromPathWhenUsingADirectoryAsArgument() {
@@ -297,8 +281,8 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertSame($trackerUrl, $torrent->getAnnounce());
         $this->assertSame('_files', $torrent->getName());
-        $this->assertSame(482, $torrent->getSize());
-        $this->assertSame(3, count($torrent->getFileList()));
+        $this->assertEquals(902004, $torrent->getSize());
+        $this->assertSame(5, count($torrent->getFileList()));
     }
 
     /**
@@ -306,6 +290,7 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
      * @covers PHP\BitTorrent\Torrent::getAnnounce
      * @covers PHP\BitTorrent\Torrent::getName
      * @covers PHP\BitTorrent\Torrent::getSize
+     * @covers PHP\BitTorrent\Torrent::add
      * @covers PHP\BitTorrent\Torrent::getFileList
      */
     public function testCreateFromPathWhenUsingAFileAsArgument() {
@@ -331,8 +316,10 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
      * @covers PHP\BitTorrent\Torrent::getCreatedBy
      * @covers PHP\BitTorrent\Torrent::getName
      * @covers PHP\BitTorrent\Torrent::getSize
+     * @covers PHP\BitTorrent\Torrent::add
      * @covers PHP\BitTorrent\Torrent::getFileList
      * @covers PHP\BitTorrent\Torrent::getAnnounceList
+     * @covers PHP\BitTorrent\Torrent::getInfoPart
      */
     public function testSaveTorrent() {
         $path         = __DIR__ . '/_files';
@@ -359,8 +346,8 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame($comment, $torrent->getComment());
         $this->assertSame($createdBy, $torrent->getCreatedBy());
         $this->assertSame('_files', $torrent->getName());
-        $this->assertSame(482, $torrent->getSize());
-        $this->assertSame(3, count($torrent->getFileList()));
+        $this->assertEquals(902004, $torrent->getSize());
+        $this->assertSame(5, count($torrent->getFileList()));
         $this->assertSame($announceList, $torrent->getAnnounceList());
 
         // Remove the saved file
@@ -449,9 +436,10 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @expectedException RuntimeException
-     * @expectedExceptionMessage The info part of the torrent is empty
+     * @expectedExceptionMessage The info part of the torrent is not set.
      * @covers PHP\BitTorrent\Torrent::setAnnounce
      * @covers PHP\BitTorrent\Torrent::save
+     * @covers PHP\BitTorrent\Torrent::getInfoPart
      */
     public function testSaveWithNoInfoBlock() {
         $target = tempnam(sys_get_temp_dir(), 'PHP\BitTorrent');
@@ -488,5 +476,50 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
      */
     public function testCreateFromPathWithInvalidPath() {
         Torrent::createFromPath('foobar', 'http://trackerurl');
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @covers PHP\BitTorrent\Torrent::getHash
+     */
+    public function testThrowsExceptionWhenTryingToGenerateHashWithEmptyTorrentFile() {
+        $this->torrent->getHash();
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @covers PHP\BitTorrent\Torrent::getEncodedHash
+     */
+    public function testThrowsExceptionWhenTryingToGenerateEncodedHashWithEmptyTorrentFile() {
+        $this->torrent->getEncodedHash();
+    }
+
+    /**
+     * @covers PHP\BitTorrent\Torrent::getHash
+     */
+    public function testGetHash() {
+        $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_files/valid.torrent');
+        $this->assertSame('c717bfd30211a5e36c94cabaab3b3ca0dc89f91a', $torrent->getHash());
+    }
+
+    /**
+     * @covers PHP\BitTorrent\Torrent::getEncodedHash
+     * @covers PHP\BitTorrent\Torrent::getHash
+     */
+    public function testGetEncodedHash() {
+        $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_files/valid.torrent');
+        $this->assertSame('%C7%17%BF%D3%02%11%A5%E3l%94%CA%BA%AB%3B%3C%A0%DC%89%F9%1A', $torrent->getEncodedHash());
+    }
+
+    /**
+     * @covers PHP\BitTorrent\Torrent::getSize
+     * @covers PHP\BitTorrent\Torrent::add
+     */
+    public function testGetSizeWithLargeValues() {
+        $torrent1 = Torrent::createFromTorrentFile(__DIR__ . '/_files/large_files.torrent');
+        $torrent2 = Torrent::createFromTorrentFile(__DIR__ . '/_files/large_file.img.torrent');
+
+        $this->assertEquals("6442450944", $torrent1->getSize());
+        $this->assertEquals("5368709120", $torrent2->getSize());
     }
 }

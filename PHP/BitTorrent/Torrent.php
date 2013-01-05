@@ -1,32 +1,11 @@
 <?php
 /**
- * PHP BitTorrent
+ * This file is part of the PHP BitTorrent
  *
- * Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
+ * (c) Christer Edvartsen <cogo@starzinger.net>
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * * The above copyright notice and this permission notice shall be included in
- *   all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
- * @package Torrent
- * @author Christer Edvartsen <cogo@starzinger.net>
- * @copyright Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
- * @license http://www.opensource.org/licenses/mit-license MIT License
- * @link https://github.com/christeredvartsen/php-bittorrent
+ * For the full copyright and license information, please view the LICENSE file that was
+ * distributed with this source code.
  */
 
 namespace PHP\BitTorrent;
@@ -44,9 +23,6 @@ use RecursiveDirectoryIterator,
  *
  * @package Torrent
  * @author Christer Edvartsen <cogo@starzinger.net>
- * @copyright Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
- * @license http://www.opensource.org/licenses/mit-license MIT License
- * @link https://github.com/christeredvartsen/php-bittorrent
  */
 class Torrent {
     /**
@@ -536,11 +512,7 @@ class Torrent {
             throw new RuntimeException('Announce URL is missing.');
         }
 
-        $info = $this->getInfo();
-
-        if (empty($info)) {
-            throw new RuntimeException('The info part of the torrent is empty.');
-        }
+        $info = $this->getInfoPart();
 
         if ($encoder === null) {
             $encoder = new Encoder();
@@ -599,11 +571,7 @@ class Torrent {
      * @throws RuntimeException
      */
     public function getFileList() {
-        $info = $this->getInfo();
-
-        if ($info === null) {
-            throw new RuntimeException('The info part of the torrent is not set.');
-        }
+        $info = $this->getInfoPart();
 
         if (isset($info['length'])) {
             return $info['name'];
@@ -619,11 +587,7 @@ class Torrent {
      * @throws RuntimeException
      */
     public function getSize() {
-        $info = $this->getInfo();
-
-        if ($info === null) {
-            throw new RuntimeException('The info part of the torrent is not set.');
-        }
+        $info = $this->getInfoPart();
 
         // If the length element is set, return that one. If not, loop through the files and generate the total
         if (isset($info['length'])) {
@@ -634,7 +598,7 @@ class Torrent {
         $size  = 0;
 
         foreach ($files as $file) {
-            $size += $file['length'];
+            $size = $this->add($size, $file['length']);
         }
 
         return $size;
@@ -647,12 +611,64 @@ class Torrent {
      * @throws RuntimeException
      */
     public function getName() {
+        $info = $this->getInfoPart();
+
+        return $info['name'];
+    }
+
+    /**
+     * Get the hash of the torrent file
+     *
+     * @param boolean $raw Set to true to return the raw 20-byte hash
+     * @return string The torrent hash
+     * @throws RuntimeException
+     */
+    public function getHash($raw = false) {
+        $info = $this->getInfoPart();
+
+        $encoder = new Encoder();
+
+        return sha1($encoder->encodeDictionary($info), $raw);
+    }
+
+    /**
+     * Get the urlencoded raw hash of the torrent file
+     *
+     * @return string The torrent hash
+     * @throws RuntimeException
+     */
+    public function getEncodedHash() {
+        return urlencode($this->getHash(true));
+    }
+
+    /**
+     * Get the info part of torrent and throw exception if not set
+     *
+     * @return array
+     * @throws RuntimeException
+     */
+    private function getInfoPart() {
         $info = $this->getInfo();
 
         if ($info === null) {
             throw new RuntimeException('The info part of the torrent is not set.');
         }
 
-        return $info['name'];
+        return $info;
+    }
+
+    /**
+     * Add method that should work on both 32 and 64-bit platforms
+     *
+     * @param int $a
+     * @param int $b
+     * @return int|string
+     */
+    private function add($a, $b) {
+        if (PHP_INT_SIZE === 4) {
+            return bcadd($a, $b);
+        }
+
+        return $a + $b;
     }
 }

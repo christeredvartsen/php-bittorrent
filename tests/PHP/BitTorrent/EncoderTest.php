@@ -1,32 +1,11 @@
 <?php
 /**
- * PHP BitTorrent
+ * This file is part of the PHP BitTorrent
  *
- * Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
+ * (c) Christer Edvartsen <cogo@starzinger.net>
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to
- * deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
- * sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * * The above copyright notice and this permission notice shall be included in
- *   all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
- *
- * @package UnitTests
- * @author Christer Edvartsen <cogo@starzinger.net>
- * @copyright Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
- * @license http://www.opensource.org/licenses/mit-license MIT License
- * @link https://github.com/christeredvartsen/php-bittorrent
+ * For the full copyright and license information, please view the LICENSE file that was
+ * distributed with this source code.
  */
 
 namespace PHP\BitTorrent;
@@ -34,15 +13,11 @@ namespace PHP\BitTorrent;
 /**
  * @package UnitTests
  * @author Christer Edvartsen <cogo@starzinger.net>
- * @copyright Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
- * @license http://www.opensource.org/licenses/mit-license MIT License
- * @link https://github.com/christeredvartsen/php-bittorrent
+ * @covers PHP\BitTorrent\Encoder
  */
 class EncoderTest extends \PHPUnit_Framework_TestCase {
     /**
-     * Encoder instance
-     *
-     * @var PHP\BitTorrent\Encdoder
+     * @var Encdoder
      */
     private $encoder;
 
@@ -63,7 +38,7 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
     /**
      * Data provider
      *
-     * @return array
+     * @return array[]
      */
     public function getEncodeIntegerData() {
         return array(
@@ -76,6 +51,7 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
     /**
      * @dataProvider getEncodeIntegerData()
      * @covers PHP\BitTorrent\Encoder::encodeInteger
+     * @covers PHP\BitTorrent\Encoder::isInt
      */
     public function testEncodeInteger($value, $encoded) {
         $this->assertSame($encoded, $this->encoder->encodeInteger($value));
@@ -86,13 +62,13 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
      * @covers PHP\BitTorrent\Encoder::encodeInteger
      */
     public function testEncodeNonIntegerAsInteger() {
-        $this->encoder->encodeInteger('1');
+        $this->encoder->encodeInteger('one');
     }
 
     /**
      * Data provider
      *
-     * @return array
+     * @return array[]
      */
     public function getEncodeStringData() {
         return array(
@@ -121,7 +97,7 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
     /**
      * Data provider
      *
-     * @return array
+     * @return array[]
      */
     public function getEncodeListData() {
         return array(
@@ -148,11 +124,13 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
     /**
      * Data provider
      *
-     * @return array
+     * @return array[]
      */
     public function getEncodeDictionaryData() {
         return array(
-            array(array('1' => 'foo', 'foo' => 'bar', 'list' => array(1, 2, 3)), 'd1:13:foo3:foo3:bar4:listli1ei2ei3eee'),
+            array(array('1' => 'foo', 'foo' => 'bar', 'list' => array(1, 2, 3)), 'd3:foo3:bar4:listli1ei2ei3ee1:13:fooe'),
+            array(array('foo' => 'bar', 'spam' => 'eggs'), 'd3:foo3:bar4:spam4:eggse'),
+            array(array('spam' => 'eggs', 'foo' => 'bar'), 'd3:foo3:bar4:spam4:eggse'),
         );
     }
 
@@ -175,13 +153,13 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
     /**
      * Data provider
      *
-     * @return array
+     * @return array[]
      */
     public function getEncodeData() {
         return array(
             array(1, 'i1e'),
             array('spam', '4:spam'),
-            array(array(1, 2), 'li1ei2ee'),
+            array(array(1, 2, 3), 'li1ei2ei3ee'),
             array(array('foo' => 'bar', 'spam' => 'sucks'), 'd3:foo3:bar4:spam5:suckse'),
         );
     }
@@ -189,6 +167,7 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
     /**
      * @dataProvider getEncodeData()
      * @covers PHP\BitTorrent\Encoder::encode
+     * @covers PHP\BitTorrent\Encoder::isInt
      */
     public function testEncodeUsingGenericMethod($value, $encoded) {
         $this->assertSame($encoded, $this->encoder->encode($value));
