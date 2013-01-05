@@ -305,6 +305,7 @@ task :publish_pear_package, :version do |t, args|
       system "git commit -am 'Added #{package[0..-5]}'"
       system "git push"
       Dir.chdir(wd)
+      File.unlink(package)
     else
       puts "#{package} does not exist. Run the pear task first to create the package"
     end
