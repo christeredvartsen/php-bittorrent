@@ -66,29 +66,19 @@ task :install_composer do
   end
 end
 
-desc "Run PHPUnit tests (config in phpunit.xml)"
+desc "Run unit tests"
 task :phpunit do
-  puts "Run testsuite"
+  config = "phpunit.xml.dist"
 
   if ENV["TRAVIS"] == "true"
-    puts "Opening phpunit.xml.dist"
-    document = Nokogiri::XML(File.open("phpunit.xml.dist"))
-    document.xpath("//phpunit/logging").remove
-
-    puts "Writing edited version of phpunit.xml"
-    File.open("phpunit.xml", "w+") do |f|
-        f.write(document.to_xml)
-    end
+    config = "phpunit.xml.travis"
+  elsif File.exists?("phpunit.xml")
+    config = "phpunit.xml"
   end
 
-  if File.exists?("phpunit.xml")
-    begin
-      sh %{phpunit --verbose -c phpunit.xml}
-    rescue Exception
-      exit 1
-    end
-  else
-    puts "phpunit.xml does not exist"
+  begin
+    sh %{vendor/bin/phpunit --verbose -c #{config}}
+  rescue Exception
     exit 1
   end
 end
@@ -96,7 +86,7 @@ end
 desc "Generate API documentation using phpdoc (config in phpdoc.xml)"
 task :phpdoc do
   puts "Generate API docs"
-  system "phpdoc -d #{source} -t #{build}/docs"
+  system "phpdoc -d #{source} -t #{build}/docs --title \"PHP BitTorrent API Documentation\""
 end
 
 desc "Generate phploc logs"
@@ -233,7 +223,7 @@ task :generate_phar_archive, :version do |t, args|
 /**
  * PHP BitTorrent
  *
- * Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
+ * Copyright (c) 2011-2013, Christer Edvartsen <cogo@starzinger.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -255,7 +245,7 @@ task :generate_phar_archive, :version do |t, args|
  *
  * @package PHP\BitTorrent
  * @author Christer Edvartsen <cogo@starzinger.net>
- * @copyright Copyright (c) 2011-2012, Christer Edvartsen <cogo@starzinger.net>
+ * @copyright Copyright (c) 2011-2013, Christer Edvartsen <cogo@starzinger.net>
  * @license http://www.opensource.org/licenses/mit-license MIT License
  * @link https://github.com/christeredvartsen/php-bittorrent
  * @version #{version}
