@@ -83,7 +83,7 @@ task :phpunit do
   end
 end
 
-desc "Generate API documentation using phpdoc (config in phpdoc.xml)"
+desc "Generate API documentation using phpdoc"
 task :phpdoc do
   puts "Generate API docs"
   system "phpdoc -d #{source} -t #{build}/docs --title \"PHP BitTorrent API Documentation\""
