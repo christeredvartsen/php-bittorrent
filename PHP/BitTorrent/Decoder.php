@@ -40,7 +40,7 @@ class Decoder implements DecoderInterface {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function decodeFile($file, $strict = false) {
         if (!is_readable($file)) {
@@ -61,7 +61,7 @@ class Decoder implements DecoderInterface {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function decode($string) {
         if ($string[0] === 'i') {
@@ -78,7 +78,7 @@ class Decoder implements DecoderInterface {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function decodeInteger($integer) {
         if ($integer[0] !== 'i' || (!$ePos = strpos($integer, 'e'))) {
@@ -100,7 +100,7 @@ class Decoder implements DecoderInterface {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function decodeString($string) {
         $stringParts = explode(':', $string, 2);
@@ -121,7 +121,7 @@ class Decoder implements DecoderInterface {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function decodeList($list) {
         if ($list[0] !== 'l') {
@@ -148,7 +148,7 @@ class Decoder implements DecoderInterface {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function decodeDictionary($dictionary) {
         if ($dictionary[0] !== 'd') {

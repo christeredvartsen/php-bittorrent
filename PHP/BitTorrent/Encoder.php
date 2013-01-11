@@ -39,7 +39,7 @@ class Encoder implements EncoderInterface {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setParam($key, $value) {
         $this->params[$key] = $value;
@@ -48,7 +48,7 @@ class Encoder implements EncoderInterface {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function encode($var) {
         if ($this->isInt($var)) {
@@ -75,7 +75,7 @@ class Encoder implements EncoderInterface {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function encodeInteger($integer) {
         if ($this->isInt($integer)) {
@@ -86,7 +86,7 @@ class Encoder implements EncoderInterface {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function encodeString($string) {
         if (!is_string($string)) {
@@ -97,7 +97,7 @@ class Encoder implements EncoderInterface {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function encodeList($list) {
         if (!is_array($list)) {
@@ -114,7 +114,7 @@ class Encoder implements EncoderInterface {
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function encodeDictionary($dictionary) {
         if (!is_array($dictionary)) {
