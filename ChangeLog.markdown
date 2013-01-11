@@ -1,6 +1,12 @@
 Changelog for PHP BitTorrent
 =====================
 
+Version 1.1.0
+-------------
+__2013-01-11__
+
+* Added parameters for the Encoder. The only parameter currently used it "encodeEmptyArrayAsDictionary" which will cause the encoder to encode empty arrays as "de" (empty dictionary) instead of "le" (empty list).
+
 Version 1.0.0
 -------------
 __2013-01-05__

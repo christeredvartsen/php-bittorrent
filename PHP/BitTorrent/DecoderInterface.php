@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the PHP BitTorrent
+ * This file is part of the PHP BitTorrent package
  *
  * (c) Christer Edvartsen <cogo@starzinger.net>
  *

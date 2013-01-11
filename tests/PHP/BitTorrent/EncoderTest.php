@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the PHP BitTorrent
+ * This file is part of the PHP BitTorrent package
  *
  * (c) Christer Edvartsen <cogo@starzinger.net>
  *
@@ -179,5 +179,17 @@ class EncoderTest extends \PHPUnit_Framework_TestCase {
      */
     public function testEncodeNonSupportedType() {
         $this->encoder->encode(new \stdClass());
+    }
+
+    /**
+     * @covers PHP\BitTorrent\Encoder::encode
+     * @covers PHP\BitTorrent\Encoder::setParam
+     */
+    public function testCanEncodeEmptyArraysAsDictionaries() {
+        $this->assertSame('le', $this->encoder->encode(array()));
+        $this->assertSame($this->encoder, $this->encoder->setParam('encodeEmptyArrayAsDictionary', true));
+        $this->assertSame('de', $this->encoder->encode(array()));
+        $this->assertSame($this->encoder, $this->encoder->setParam('encodeEmptyArrayAsDictionary', false));
+        $this->assertSame('le', $this->encoder->encode(array()));
     }
 }

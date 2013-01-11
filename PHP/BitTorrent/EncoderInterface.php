@@ -1,6 +1,6 @@
 <?php
 /**
- * This file is part of the PHP BitTorrent
+ * This file is part of the PHP BitTorrent package
  *
  * (c) Christer Edvartsen <cogo@starzinger.net>
  *
@@ -17,6 +17,15 @@ namespace PHP\BitTorrent;
  * @author Christer Edvartsen <cogo@starzinger.net>
  */
 interface EncoderInterface {
+    /**
+     * Set a parameter
+     *
+     * @param string $key The key to set
+     * @param mixed $value The value to set
+     * @return EncoderInterface
+     */
+    function setParam($key, $value);
+
     /**
      * Encode any encodable variable
      *
