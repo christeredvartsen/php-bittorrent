@@ -20,6 +20,34 @@ use InvalidArgumentException;
  */
 class Encoder implements EncoderInterface {
     /**
+     * Parameters for the encoder
+     *
+     * @var array
+     */
+    private $params = array(
+        // Set to true to encode empty arrays as dictionaries ("de") instead of lists ("le")
+        'encodeEmptyArrayAsDictionary' => false,
+    );
+
+    /**
+     * Class constructor
+     *
+     * @param array $params Parameters for the encoder
+     */
+    public function __construct(array $params = array()) {
+        $this->params = array_replace($this->params, $params);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setParam($key, $value) {
+        $this->params[$key] = $value;
+
+        return $this;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function encode($var) {
@@ -29,6 +57,10 @@ class Encoder implements EncoderInterface {
             return $this->encodeString($var);
         } else if (is_array($var)) {
             $size = count($var);
+
+            if (!$size && $this->params['encodeEmptyArrayAsDictionary']) {
+                return $this->encodeDictionary($var);
+            }
 
             for ($i = 0; $i < $size; $i++) {
                 if (!isset($var[$i])) {

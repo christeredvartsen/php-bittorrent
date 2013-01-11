@@ -18,6 +18,15 @@ namespace PHP\BitTorrent;
  */
 interface EncoderInterface {
     /**
+     * Set a parameter
+     *
+     * @param string $key The key to set
+     * @param mixed $value The value to set
+     * @return EncoderInterface
+     */
+    function setParam($key, $value);
+
+    /**
      * Encode any encodable variable
      *
      * @param int|string|array $var The variable to encode
