@@ -656,6 +656,18 @@ class Torrent {
 
         return $info;
     }
+    
+    /**
+     * Get the private tag in the torrent
+     *
+     *
+     * @return boolean
+     */
+    public function getPrivateFlag() {
+        $info = $this->getInfoPart();
+
+        return $info['private'];
+    }
 
     /**
      * Add method that should work on both 32 and 64-bit platforms
