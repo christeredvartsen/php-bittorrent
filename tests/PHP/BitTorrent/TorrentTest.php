@@ -522,4 +522,31 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals("6442450944", $torrent1->getSize());
         $this->assertEquals("5368709120", $torrent2->getSize());
     }
+
+    /**
+     * @covers PHP\BitTorrent\Torrent::isPrivate
+     */
+    public function testIsPrivateWhenFlagDoesNotExist() {
+        $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_files/large_files.torrent');
+
+        $this->assertFalse($torrent->isPrivate());
+    }
+
+    /**
+     * @covers PHP\BitTorrent\Torrent::isPrivate
+     */
+    public function testIsPrivateWhenItExistsAndIs1() {
+        $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_files/file_with_private_set_to_1.torrent');
+
+        $this->assertTrue($torrent->isPrivate());
+    }
+
+    /**
+     * @covers PHP\BitTorrent\Torrent::isPrivate
+     */
+    public function testIsPrivateWhenItExistsAndIsNot1() {
+        $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_files/file_with_private_set_to_0.torrent');
+
+        $this->assertFalse($torrent->isPrivate());
+    }
 }
