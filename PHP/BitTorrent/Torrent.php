@@ -656,17 +656,16 @@ class Torrent {
 
         return $info;
     }
-    
+
     /**
-     * Get the private tag in the torrent
-     *
+     * Check if the torrent is private or not (via the optional private flag)
      *
      * @return boolean
      */
-    public function getPrivateFlag() {
+    public function isPrivate() {
         $info = $this->getInfoPart();
 
-        return $info['private'];
+        return (isset($info['private']) && $info['private'] === 1) ? true : false;
     }
 
     /**
