@@ -281,8 +281,8 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertSame($trackerUrl, $torrent->getAnnounce());
         $this->assertSame('_files', $torrent->getName());
-        $this->assertEquals(902004, $torrent->getSize());
-        $this->assertSame(5, count($torrent->getFileList()));
+        $this->assertEquals(902910, $torrent->getSize());
+        $this->assertSame(7, count($torrent->getFileList()));
     }
 
     /**
@@ -346,8 +346,8 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame($comment, $torrent->getComment());
         $this->assertSame($createdBy, $torrent->getCreatedBy());
         $this->assertSame('_files', $torrent->getName());
-        $this->assertEquals(902004, $torrent->getSize());
-        $this->assertSame(5, count($torrent->getFileList()));
+        $this->assertEquals(902910, $torrent->getSize());
+        $this->assertSame(7, count($torrent->getFileList()));
         $this->assertSame($announceList, $torrent->getAnnounceList());
 
         // Remove the saved file
