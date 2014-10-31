@@ -1,6 +1,12 @@
 Changelog for PHP BitTorrent
 =====================
 
+Version 1.2.0
+-------------
+__N/A__
+
+* Added method to check if the torrent is private (@stormwalkerec)
+
 Version 1.1.0
 -------------
 __2013-01-11__
