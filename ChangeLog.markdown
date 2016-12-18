@@ -1,10 +1,12 @@
 Changelog for PHP BitTorrent
 =====================
 
-Version 1.2.0
+Version 2.0.0
 -------------
 __N/A__
 
+* Bump PHP requirement from 5.3 to 5.6
+* Change namespace from PHP\BitTorrent to BitTorrent
 * Added method to check if the torrent is private (@stormwalkerec)
 
 Version 1.1.0
