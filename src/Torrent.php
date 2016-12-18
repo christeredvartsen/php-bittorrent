@@ -351,7 +351,7 @@ class Torrent {
      * @param array $announceList The array of URLs to set
      * @return Torrent Returns self for a fluent interface
      */
-    public function setAnnounceList($announceList) {
+    public function setAnnounceList(array $announceList) {
         $this->announceList = $announceList;
 
         return $this;
