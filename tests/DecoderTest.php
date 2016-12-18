@@ -221,7 +221,7 @@ class DecoderTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Missing "announce" key
+     * @expectedExceptionMessage Missing or empty "announce" key.
      * @covers ::decodeFile
      */
     public function testDecodeTorrentFileStrictWithMissingAnnounce() {
@@ -230,7 +230,7 @@ class DecoderTest extends PHPUnit_Framework_TestCase {
 
     /**
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Missing "info" key
+     * @expectedExceptionMessage Missing or empty "info" key.
      * @covers ::decodeFile
      */
     public function testDecodeTorrentFileStrictWithMissingInfo() {

@@ -26,15 +26,6 @@ class Encoder implements EncoderInterface {
     /**
      * {@inheritdoc}
      */
-    public function setParam($key, $value) {
-        $this->params[$key] = $value;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function encode($var) {
         if ($this->isInt($var)) {
             return $this->encodeInteger($var);

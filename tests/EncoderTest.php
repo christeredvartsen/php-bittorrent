@@ -166,13 +166,14 @@ class EncoderTest extends PHPUnit_Framework_TestCase {
     /**
      * @covers ::__construct
      * @covers ::encode
-     * @covers ::setParam
      */
     public function testCanEncodeEmptyArraysAsDictionaries() {
-        $this->assertSame('le', $this->encoder->encode([]));
-        $this->assertSame($this->encoder, $this->encoder->setParam('encodeEmptyArrayAsDictionary', true));
-        $this->assertSame('de', $this->encoder->encode([]));
-        $this->assertSame($this->encoder, $this->encoder->setParam('encodeEmptyArrayAsDictionary', false));
-        $this->assertSame('le', $this->encoder->encode([]));
+        $encoder = new Encoder();
+        $this->assertSame('le', $encoder->encode([]));
+
+        $encoder = new Encoder([
+            'encodeEmptyArrayAsDictionary' => true,
+        ]);
+        $this->assertSame('de', $encoder->encode([]));
     }
 }
