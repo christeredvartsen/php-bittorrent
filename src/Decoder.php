@@ -96,7 +96,10 @@ class Decoder implements DecoderInterface {
             return (int) $integer;
         }
 
+        // Return integer as a string on 32-bit systems
+        // @codeCoverageIgnoreStart
         return $integer;
+        // @codeCoverageIgnoreEnd
     }
 
     /**
