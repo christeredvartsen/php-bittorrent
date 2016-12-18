@@ -8,7 +8,9 @@
  * distributed with this source code.
  */
 
-namespace PHP\BitTorrent;
+namespace BitTorrent;
+
+use InvalidArgumentException;
 
 /**
  * Interface for encoders
@@ -31,7 +33,7 @@ interface EncoderInterface {
      *
      * @param int|string|array $var The variable to encode
      * @return string Returns the encoded string
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     function encode($var);
 
@@ -40,7 +42,7 @@ interface EncoderInterface {
      *
      * @param int|string $integer The integer to encode. Strings are supported on 32-bit platforms
      * @return string Returns the encoded string
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     function encodeInteger($integer);
 
@@ -49,7 +51,7 @@ interface EncoderInterface {
      *
      * @param string $string The string to encode
      * @return string Returns the encoded string
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     function encodeString($string);
 
@@ -58,16 +60,16 @@ interface EncoderInterface {
      *
      * @param array $list The array to encode
      * @return string Returns the encoded string
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    function encodeList($list);
+    function encodeList(array $list);
 
     /**
      * Encode a dictionary (associative PHP array)
      *
      * @param array $dictionary The array to encode
      * @return string Returns the encoded string
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
-    function encodeDictionary($dictionary);
+    function encodeDictionary(array $dictionary);
 }
