@@ -1,21 +1,12 @@
 <?php
-/**
- * This file is part of the PHP BitTorrent package
- *
- * (c) Christer Edvartsen <cogo@starzinger.net>
- *
- * For the full copyright and license information, please view the LICENSE file that was
- * distributed with this source code.
- */
+namespace BitTorrent;
 
-namespace PHP\BitTorrent;
+use PHPUnit_Framework_TestCase;
 
 /**
- * @package UnitTests
- * @author Christer Edvartsen <cogo@starzinger.net>
- * @covers PHP\BitTorrent\Decoder
+ * @coversDefaultClass BitTorrent\Decoder
  */
-class DecoderTest extends \PHPUnit_Framework_TestCase {
+class DecoderTest extends PHPUnit_Framework_TestCase {
     /**
      * @var Decoder
      */
@@ -23,18 +14,9 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * Set up the decoder
-     *
-     * @covers PHP\BitTorrent\Decoder::__construct
      */
     public function setUp() {
-        $this->decoder = new Decoder(new Encoder());
-    }
-
-    /**
-     * Tear down the decoder
-     */
-    public function tearDown() {
-        $this->decoder = null;
+        $this->decoder = new Decoder();
     }
 
     /**
@@ -43,16 +25,18 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
      * @return array[]
      */
     public function getDecodeIntegerData() {
-        return array(
-            array('i1e', 1),
-            array('i-1e', -1),
-            array('i0e', 0),
-        );
+        return [
+            ['i1e', 1],
+            ['i-1e', -1],
+            ['i0e', 0],
+        ];
     }
 
     /**
-     * @dataProvider getDecodeIntegerData()
-     * @covers PHP\BitTorrent\Decoder::decodeInteger
+     * @dataProvider getDecodeIntegerData
+     * @covers ::decodeInteger
+     * @param string $encoded
+     * @param int $value
      */
     public function testDecoderInteger($encoded, $value) {
         $this->assertEquals($value, $this->decoder->decodeInteger($encoded));
@@ -64,33 +48,37 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
      * @return array[]
      */
     public function getDecodeInvalidIntegerData() {
-        return array(
-            array('i01e'),
-            array('i-01e'),
-            array('ifoobare'),
-        );
+        return [
+            ['i01e'],
+            ['i-01e'],
+            ['ifoobare'],
+        ];
     }
 
     /**
-     * @dataProvider getDecodeInvalidIntegerData()
+     * @dataProvider getDecodeInvalidIntegerData
+     * @covers ::decodeInteger
      * @expectedException InvalidArgumentException
-     * @covers PHP\BitTorrent\Decoder::decodeInteger
+     * @expectedExceptionMessage Invalid integer value.
+     * @param string $value
      */
     public function testDecodeInvalidInteger($value) {
         $this->decoder->decodeInteger($value);
     }
 
     /**
+     * @covers ::decodeInteger
      * @expectedException InvalidArgumentException
-     * @covers PHP\BitTorrent\Decoder::decodeInteger
+     * @expectedExceptionMessage Invalid integer. Integers must start wth "i" and end with "e".
      */
     public function testDecodeStringAsInteger() {
         $this->decoder->decodeInteger('4:spam');
     }
 
     /**
+     * @covers ::decodeInteger
      * @expectedException InvalidArgumentException
-     * @covers PHP\BitTorrent\Decoder::decodeInteger
+     * @expectedExceptionMessage Invalid integer. Integers must start wth "i" and end with "e".
      */
     public function testDecodePartialInteger() {
         $this->decoder->decodeInteger('i10');
@@ -99,35 +87,39 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
     /**
      * Data provider
      *
-     * @return array
+     * @return array[]
      */
     public function getDecodeStringData() {
-        return array(
-            array('4:spam', 'spam'),
-            array('11:test string', 'test string'),
-            array('3:foobar', 'foo'),
-        );
+        return [
+            ['4:spam', 'spam'],
+            ['11:test string', 'test string'],
+            ['3:foobar', 'foo'],
+        ];
     }
 
     /**
-     * @dataProvider getDecodeStringData()
-     * @covers PHP\BitTorrent\Decoder::decodeString
+     * @dataProvider getDecodeStringData
+     * @covers ::decodeString
+     * @param string $encoded
+     * @param string $value
      */
     public function testDecodeString($encoded, $value) {
         $this->assertSame($value, $this->decoder->decodeString($encoded));
     }
 
     /**
+     * @covers ::decodeString
      * @expectedException InvalidArgumentException
-     * @covers PHP\BitTorrent\Decoder::decodeString
+     * @expectedExceptionMessage Invalid string. Strings consist of two parts separated by ":".
      */
     public function testDecodeInvalidString() {
         $this->decoder->decodeString('4spam');
     }
 
     /**
+     * @covers ::decodeString
      * @expectedException InvalidArgumentException
-     * @covers PHP\BitTorrent\Decoder::decodeString
+     * @expectedExceptionMessage The length of the string does not match the prefix of the encoded data.
      */
     public function testDecodeStringWithInvalidLength() {
         $this->decoder->decodeString('6:spam');
@@ -139,22 +131,25 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
      * @return array[]
      */
     public function getDecodeListData() {
-        return array(
-            array('li1ei2ei3ee', array(1, 2, 3)),
-        );
+        return [
+            ['li1ei2ei3ee', [1, 2, 3]],
+        ];
     }
 
     /**
-     * @dataProvider getDecodeListData()
-     * @covers PHP\BitTorrent\Decoder::decodeList
+     * @dataProvider getDecodeListData
+     * @covers ::decodeList
+     * @param string $encoded
+     * @param array $value
      */
-    public function testDecodeList($encoded, $value) {
+    public function testDecodeList($encoded, array $value) {
         $this->assertEquals($value, $this->decoder->decodeList($encoded));
     }
 
     /**
+     * @covers ::decodeList
      * @expectedException InvalidArgumentException
-     * @covers PHP\BitTorrent\Decoder::decodeList
+     * @expectedExceptionMessage Parameter is not an encoded list.
      */
     public function testDecodeInvalidList() {
         $this->decoder->decodeList('4:spam');
@@ -166,22 +161,25 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
      * @return array[]
      */
     public function getDecodeDictionaryData() {
-        return array(
-            array('d3:foo3:bar4:spam4:eggse', array('foo' => 'bar', 'spam' => 'eggs')),
-        );
+        return [
+            ['d3:foo3:bar4:spam4:eggse', ['foo' => 'bar', 'spam' => 'eggs']],
+        ];
     }
 
     /**
-     * @dataProvider getDecodeDictionaryData()
-     * @covers PHP\BitTorrent\Decoder::decodeDictionary
+     * @dataProvider getDecodeDictionaryData
+     * @covers ::decodeDictionary
+     * @param string $encoded
+     * @param array $value
      */
-    public function testDecodeDictionary($encoded, $value) {
+    public function testDecodeDictionary($encoded, array $value) {
         $this->assertSame($value, $this->decoder->decodeDictionary($encoded));
     }
 
     /**
+     * @covers ::decodeDictionary
      * @expectedException InvalidArgumentException
-     * @covers PHP\BitTorrent\Decoder::decodeDictionary
+     * @expectedExceptionMessage Parameter is not an encoded dictionary.
      */
     public function testDecodeInvalidDictionary() {
         $this->decoder->decodeDictionary('4:spam');
@@ -193,25 +191,29 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
      * @return array[]
      */
     public function getGenericDecodeData() {
-        return array(
-            array('i1e', 1),
-            array('4:spam', 'spam'),
-            array('li1ei2ei3ee', array(1, 2, 3)),
-            array('d3:foo3:bare', array('foo' => 'bar')),
-        );
+        return [
+            ['i1e', 1],
+            ['4:spam', 'spam'],
+            ['li1ei2ei3ee', [1, 2, 3]],
+            ['d3:foo3:bare', ['foo' => 'bar']],
+        ];
     }
 
     /**
-     * @dataProvider getGenericDecodeData()
-     * @covers PHP\BitTorrent\Decoder::decode
+     * @dataProvider getGenericDecodeData
+     * @covers ::__construct
+     * @covers ::decode
+     * @param string $encoded
+     * @param int|string|array $value
      */
     public function testGenericDecode($encoded, $value) {
         $this->assertEquals($value, $this->decoder->decode($encoded));
     }
 
     /**
+     * @covers ::decode
      * @expectedException InvalidArgumentException
-     * @covers PHP\BitTorrent\Decoder::decode
+     * @expectedExceptionMessage Parameter is not correctly encoded.
      */
     public function testGenericDecodeWithInvalidData() {
         $this->decoder->decode('foo');
@@ -220,35 +222,32 @@ class DecoderTest extends \PHPUnit_Framework_TestCase {
     /**
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Missing "announce" key
-     * @covers PHP\BitTorrent\Decoder::decodeFile
+     * @covers ::decodeFile
      */
     public function testDecodeTorrentFileStrictWithMissingAnnounce() {
-        $file = __DIR__ . '/_files/testMissingAnnounce.torrent';
-        $this->decoder->decodeFile($file, true);
+        $this->decoder->decodeFile(__DIR__ . '/_files/testMissingAnnounce.torrent', true);
     }
 
     /**
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Missing "info" key
-     * @covers PHP\BitTorrent\Decoder::decodeFile
+     * @covers ::decodeFile
      */
     public function testDecodeTorrentFileStrictWithMissingInfo() {
-        $file = __DIR__ . '/_files/testMissingInfo.torrent';
-        $this->decoder->decodeFile($file, true);
+        $this->decoder->decodeFile(__DIR__ . '/_files/testMissingInfo.torrent', true);
     }
 
     /**
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage File
-     * @covers PHP\BitTorrent\Decoder::decodeFile
+     * @covers ::decodeFile
      */
     public function testDecodeNonReadableFile() {
-        $file = __DIR__ . '/nonExistingFile';
-        $this->decoder->decodeFile($file);
+        $this->decoder->decodeFile(__DIR__ . '/nonExistingFile');
     }
 
     /**
-     * @covers PHP\BitTorrent\Decoder::decodeFile
+     * @covers ::decodeFile
      */
     public function testDecodeFileWithStrictChecksEnabled() {
         $list = $this->decoder->decodeFile(__DIR__ . '/_files/valid.torrent', true);
