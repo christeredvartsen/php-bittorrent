@@ -8,12 +8,12 @@
  * distributed with this source code.
  */
 
-namespace PHP\BitTorrent;
+namespace BitTorrent;
 
-use RecursiveDirectoryIterator,
-    RecursiveIteratorIterator,
-    RuntimeException,
-    InvalidArgumentException;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use RuntimeException;
+use InvalidArgumentException;
 
 /**
  * A class that represents a single torrent file
@@ -169,7 +169,7 @@ class Torrent {
         $torrent = new static($announceUrl);
 
         // Initialize array of the files to include in the torrent
-        $files = array();
+        $files = [];
 
         // Generate an absolute path
         $absolutePath = realpath($path);
@@ -178,10 +178,10 @@ class Torrent {
         // See if we have a single file
         if (is_file($absolutePath)) {
             $pathIsFile = true;
-            $files[] = array(
+            $files[] = [
                 'filename' => basename($absolutePath),
                 'filesize' => filesize($absolutePath),
-            );
+            ];
         } else if (is_dir($absolutePath)) {
             $dir = new RecursiveDirectoryIterator($absolutePath);
             $iterator = new RecursiveIteratorIterator($dir);
@@ -193,22 +193,22 @@ class Torrent {
                     continue;
                 }
 
-                $files[] = array(
+                $files[] = [
                     'filename' => str_replace($absolutePath . DIRECTORY_SEPARATOR, '', (string) $entry),
                     'filesize' => $entry->getSize(),
-                );
+                ];
             }
         } else {
             throw new InvalidArgumentException('Invalid path: ' . $path);
         }
 
         // Initialize the info part of the torrent
-        $info = array(
+        $info = [
             'piece length' => pow(2, $torrent->getPieceLengthExp())
-        );
+        ];
 
         // Initialize the pieces
-        $pieces = array();
+        $pieces = [];
 
         // If we only have a single file, get the size of the file and set the name property
         if ($pathIsFile) {
@@ -268,10 +268,10 @@ class Torrent {
                 $filename = $file['filename'];
                 $filesize = $file['filesize'];
 
-                $info['files'][] = array(
+                $info['files'][] = [
                     'length' => $filesize,
                     'path'   => explode(DIRECTORY_SEPARATOR, $filename)
-                );
+                ];
 
                 // Reset the position in the current file
                 $position = 0;
@@ -518,10 +518,10 @@ class Torrent {
             $createdAt = time();
         }
 
-        $torrent = array(
+        $torrent = [
             'creation date' => $createdAt,
             'info'          => $info,
-        );
+        ];
 
         if (($announce = $this->getAnnounce()) !== null) {
             $torrent['announce'] = $announce;

@@ -8,7 +8,9 @@
  * distributed with this source code.
  */
 
-namespace PHP\BitTorrent;
+namespace BitTorrent;
+
+use InvalidArgumentException;
 
 /**
  * Interface for decoders

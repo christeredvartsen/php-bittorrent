@@ -8,7 +8,7 @@
  * distributed with this source code.
  */
 
-namespace PHP\BitTorrent;
+namespace BitTorrent;
 
 use InvalidArgumentException;
 
@@ -34,7 +34,7 @@ class Encoder implements EncoderInterface {
      *
      * @param array $params Parameters for the encoder
      */
-    public function __construct(array $params = array()) {
+    public function __construct(array $params = []) {
         $this->params = array_replace($this->params, $params);
     }
 
@@ -99,11 +99,7 @@ class Encoder implements EncoderInterface {
     /**
      * {@inheritdoc}
      */
-    public function encodeList($list) {
-        if (!is_array($list)) {
-            throw new InvalidArgumentException('Expected array, got: ' . gettype($list) . '.');
-        }
-
+    public function encodeList(array $list) {
         $ret = 'l';
 
         foreach ($list as $value) {
@@ -116,11 +112,7 @@ class Encoder implements EncoderInterface {
     /**
      * {@inheritdoc}
      */
-    public function encodeDictionary($dictionary) {
-        if (!is_array($dictionary)) {
-            throw new InvalidArgumentException('Expected array, got: ' . gettype($dictionary) . '.');
-        }
-
+    public function encodeDictionary(array $dictionary) {
         ksort($dictionary);
 
         $ret = 'd';
