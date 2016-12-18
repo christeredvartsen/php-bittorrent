@@ -1,7 +1,7 @@
 {
   "name": "christeredvartsen/php-bittorrent",
   "type": "library",
-  "description": "PHP\\BitTorrent is a set of components that can be used to interact with torrent files (read+write) and classes that can encode/decode to/from the BitTorrent format.",
+  "description": "PHP BitTorrent is a set of components that can be used to interact with torrent files (read+write) and classes that can encode/decode to/from the BitTorrent format.",
   "keywords": ["bittorrent", "torrent"],
   "homepage": "https://github.com/christeredvartsen/php-bittorrent",
   "license": "MIT",
@@ -12,15 +12,35 @@
     }
   ],
   "require": {
-    "php": ">=5.3.2"
+    "php": ">=5.6.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "~3.7"
+    "phpunit/phpunit": "^5.7"
   },
   "support": {
+    "source": "https://github.com/christeredvartsen/php-bittorrent",
     "issues": "https://github.com/christeredvartsen/php-bittorrent/issues"
   },
   "autoload": {
-    "psr-0": { "PHP\\BitTorrent": "" }
+    "psr-4": {
+      "BitTorrent\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "BitTorrent\\": "tests/"
+    }
+  },
+  "scripts": {
+    "lint": "for file in `git ls-files '*php'`; do php -l $file; done",
+    "prepare": [
+      "rm -rf build",
+      "mkdir build",
+      "mkdir build/coverage"
+    ],
+    "test-phpunit": "vendor/bin/phpunit --verbose",
+    "test": [
+      "@test-phpunit"
+    ]
   }
 }
