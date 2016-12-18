@@ -1,33 +1,18 @@
 <?php
-/**
- * This file is part of the PHP BitTorrent package
- *
- * (c) Christer Edvartsen <cogo@starzinger.net>
- *
- * For the full copyright and license information, please view the LICENSE file that was
- * distributed with this source code.
- */
-
 namespace BitTorrent;
 
 use InvalidArgumentException;
 
-/**
- * Encode encodable PHP variables to the BitTorrent counterpart
- *
- * @package Encoder
- * @author Christer Edvartsen <cogo@starzinger.net>
- */
 class Encoder implements EncoderInterface {
     /**
      * Parameters for the encoder
      *
      * @var array
      */
-    private $params = array(
+    private $params = [
         // Set to true to encode empty arrays as dictionaries ("de") instead of lists ("le")
         'encodeEmptyArrayAsDictionary' => false,
-    );
+    ];
 
     /**
      * Class constructor

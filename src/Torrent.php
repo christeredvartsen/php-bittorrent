@@ -1,13 +1,4 @@
 <?php
-/**
- * This file is part of the PHP BitTorrent package
- *
- * (c) Christer Edvartsen <cogo@starzinger.net>
- *
- * For the full copyright and license information, please view the LICENSE file that was
- * distributed with this source code.
- */
-
 namespace BitTorrent;
 
 use RecursiveDirectoryIterator;
@@ -15,15 +6,6 @@ use RecursiveIteratorIterator;
 use RuntimeException;
 use InvalidArgumentException;
 
-/**
- * A class that represents a single torrent file
- *
- * This class represents a torrent file. It also has methods for loading from a torrent file, and
- * loading from a directory or a single file.
- *
- * @package Torrent
- * @author Christer Edvartsen <cogo@starzinger.net>
- */
 class Torrent {
     /**
      * The exponent to use when making the pieces

@@ -1,23 +1,8 @@
 <?php
-/**
- * This file is part of the PHP BitTorrent package
- *
- * (c) Christer Edvartsen <cogo@starzinger.net>
- *
- * For the full copyright and license information, please view the LICENSE file that was
- * distributed with this source code.
- */
-
 namespace BitTorrent;
 
 use InvalidArgumentException;
 
-/**
- * Decode bittorrent strings to it's PHP variable counterpart
- *
- * @package Decoder
- * @author Christer Edvartsen <cogo@starzinger.net>
- */
 class Decoder implements DecoderInterface {
     /**
      * Encoder instance
@@ -50,10 +35,10 @@ class Decoder implements DecoderInterface {
         $dictionary = $this->decodeDictionary(file_get_contents($file, true));
 
         if ($strict) {
-            if (!isset($dictionary['announce']) || !is_string($dictionary['announce'])) {
-                throw new InvalidArgumentException('Missing "announce" key.');
-            } else if (!isset($dictionary['info']) || !is_array($dictionary['info'])) {
-                throw new InvalidArgumentException('Missing "info" key.');
+            if (!isset($dictionary['announce']) || !is_string($dictionary['announce']) && !empty($dictionary['announce'])) {
+                throw new InvalidArgumentException('Missing or empty "announce" key.');
+            } else if (!isset($dictionary['info']) || !is_array($dictionary['info']) && !empty($dictionary['info'])) {
+                throw new InvalidArgumentException('Missing or empty "info" key.');
             }
         }
 
@@ -131,7 +116,7 @@ class Decoder implements DecoderInterface {
             throw new InvalidArgumentException('Parameter is not an encoded list.');
         }
 
-        $ret = array();
+        $ret = [];
 
         $length = strlen($list);
         $i = 1;
@@ -159,7 +144,7 @@ class Decoder implements DecoderInterface {
         }
 
         $length = strlen($dictionary);
-        $ret = array();
+        $ret = [];
         $i = 1;
 
         while ($i < $length) {

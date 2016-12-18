@@ -1,23 +1,8 @@
 <?php
-/**
- * This file is part of the PHP BitTorrent package
- *
- * (c) Christer Edvartsen <cogo@starzinger.net>
- *
- * For the full copyright and license information, please view the LICENSE file that was
- * distributed with this source code.
- */
-
 namespace BitTorrent;
 
 use InvalidArgumentException;
 
-/**
- * Interface for encoders
- *
- * @package Encoder
- * @author Christer Edvartsen <cogo@starzinger.net>
- */
 interface EncoderInterface {
     /**
      * Set a parameter
