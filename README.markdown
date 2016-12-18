@@ -108,3 +108,8 @@ On 32-bit platforms these components work slightly different with regards to int
 * The generic `BitTorrent\Encoder::encode` method will encode both integers and strings containing numerics as strings (strings containing floating point values are still treated as regular strings).
 * The `BitTorrent\Decoder::decodeInteger` method will return values as strings, and not integers.
 * The `BitTorrent\Torrent::getSize` method will use the [bcadd](http://no2.php.net/manual/en/function.bcadd.php) function to calculate the size of the files in the torrent.
+
+## License
+Licensed under the MIT License.
+
+See [LICENSE](LICENSE) file.
