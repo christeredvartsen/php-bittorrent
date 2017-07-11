@@ -164,7 +164,7 @@ class Torrent {
      * @param string $announceUrl URL to the announce
      * @return Torrent Returns a new instance of this class
      */
-    static public function createFromPath($path, $announceUrl) {
+    static public function createFromPath($path, $announceUrl = null) {
         // Create a new torrent instance
         $torrent = new static($announceUrl);
 
