@@ -421,20 +421,6 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * Try to save when no announce has been given. The code we are testing is AFTER the code that
-     * checks if the file specified is writeable, so make sure the argument to save() is a file that
-     * is writeable.
-     *
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Announce URL is missing
-     * @covers PHP\BitTorrent\Torrent::save
-     */
-    public function testSaveWithNoAnnounce() {
-        $target = tempnam(sys_get_temp_dir(), 'PHP\BitTorrent');
-        $this->torrent->save($target);
-    }
-
-    /**
      * @expectedException RuntimeException
      * @expectedExceptionMessage The info part of the torrent is not set.
      * @covers PHP\BitTorrent\Torrent::setAnnounce
