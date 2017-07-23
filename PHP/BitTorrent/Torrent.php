@@ -164,7 +164,7 @@ class Torrent {
      * @param string $announceUrl URL to the announce
      * @return Torrent Returns a new instance of this class
      */
-    static public function createFromPath($path, $announceUrl) {
+    static public function createFromPath($path, $announceUrl = null) {
         // Create a new torrent instance
         $torrent = new static($announceUrl);
 
@@ -506,12 +506,6 @@ class Torrent {
             throw new InvalidArgumentException('Could not open file "' . $filename . '" for writing.');
         }
 
-        $announce = $this->getAnnounce();
-
-        if (empty($announce)) {
-            throw new RuntimeException('Announce URL is missing.');
-        }
-
         $info = $this->getInfoPart();
 
         if ($encoder === null) {
@@ -525,10 +519,13 @@ class Torrent {
         }
 
         $torrent = array(
-            'announce'      => $announce,
             'creation date' => $createdAt,
             'info'          => $info,
         );
+
+        if (($announce = $this->getAnnounce()) !== null) {
+            $torrent['announce'] = $announce;
+        }
 
         if (($announceList = $this->getAnnounceList()) !== null) {
             $torrent['announce-list'] = $announceList;

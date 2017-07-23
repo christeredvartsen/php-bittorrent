@@ -356,6 +356,49 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @covers PHP\BitTorrent\Torrent::createFromPath
+     * @covers PHP\BitTorrent\Torrent::setComment
+     * @covers PHP\BitTorrent\Torrent::setCreatedBy
+     * @covers PHP\BitTorrent\Torrent::setAnnounceList
+     * @covers PHP\BitTorrent\Torrent::save
+     * @covers PHP\BitTorrent\Torrent::createFromTorrentFile
+     * @covers PHP\BitTorrent\Torrent::getComment
+     * @covers PHP\BitTorrent\Torrent::getCreatedBy
+     * @covers PHP\BitTorrent\Torrent::getName
+     * @covers PHP\BitTorrent\Torrent::getSize
+     * @covers PHP\BitTorrent\Torrent::add
+     * @covers PHP\BitTorrent\Torrent::getFileList
+     * @covers PHP\BitTorrent\Torrent::getInfoPart
+     */
+    public function testSaveTrackerlessTorrent() {
+        $path         = __DIR__ . '/_files';
+        $comment      = 'Some comment';
+        $createdBy    = 'PHPUnit';
+        $target       = tempnam(sys_get_temp_dir(), 'PHP\BitTorrent');
+
+        if (!$target) {
+            $this->fail('Could not create file: ' . $target);
+        }
+
+        $torrent = Torrent::createFromPath($path);
+        $torrent->setComment($comment)
+                ->setCreatedBy($createdBy)
+                ->save($target);
+
+        // Now load the file and make sure the values are correct
+        $torrent = Torrent::createFromTorrentFile($target);
+
+        $this->assertSame($comment, $torrent->getComment());
+        $this->assertSame($createdBy, $torrent->getCreatedBy());
+        $this->assertSame('_files', $torrent->getName());
+        $this->assertEquals(902910, $torrent->getSize());
+        $this->assertSame(7, count($torrent->getFileList()));
+
+        // Remove the saved file
+        unlink($target);
+    }
+
+    /**
+     * @covers PHP\BitTorrent\Torrent::createFromPath
      * @covers PHP\BitTorrent\Torrent::setExtraMeta
      * @covers PHP\BitTorrent\Torrent::save
      * @covers PHP\BitTorrent\Torrent::createFromTorrentFile
@@ -418,20 +461,6 @@ class TorrentTest extends \PHPUnit_Framework_TestCase {
 
         // Remove the saved file
         unlink($target);
-    }
-
-    /**
-     * Try to save when no announce has been given. The code we are testing is AFTER the code that
-     * checks if the file specified is writeable, so make sure the argument to save() is a file that
-     * is writeable.
-     *
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Announce URL is missing
-     * @covers PHP\BitTorrent\Torrent::save
-     */
-    public function testSaveWithNoAnnounce() {
-        $target = tempnam(sys_get_temp_dir(), 'PHP\BitTorrent');
-        $this->torrent->save($target);
     }
 
     /**
