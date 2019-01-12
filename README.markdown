@@ -42,7 +42,7 @@ PHP BitTorrent does **not** come with its own autoloader, so you will need to us
 $encoder = new PHP\BitTorrent\Encoder();
 
 var_dump($encoder->encodeString('Some string')); // string(14) "11:Some string"
-var_dump($encoder->encodeInteger(42)); // int(42)
+var_dump($encoder->encodeInteger(42)); // string(4) "i42e"
 var_dump($encoder->encodeList(array(1, 2, 3)); // string(11) "li1ei2ei3ee"
 var_dump($encoder->encodeDictionary(array('foo' => 'bar', 'bar' => 'foo')); // string(22) "d3:foo3:bar3:bar3:fooe"
 ```
