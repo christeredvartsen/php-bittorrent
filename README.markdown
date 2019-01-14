@@ -2,6 +2,7 @@
 **PHP\_BitTorrent** is a set of components that can be used to interact with torrent files (read+write) and encode/decode to/from the BitTorrent format.
 
 [![Current Build Status](https://secure.travis-ci.org/christeredvartsen/php-bittorrent.png)](http://travis-ci.org/christeredvartsen/php-bittorrent)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fchristeredvartsen%2Fphp-bittorrent.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fchristeredvartsen%2Fphp-bittorrent?ref=badge_shield)
 
 ## Requirements
 PHP\_BitTorrent requires PHP 5.3.x or above. The recommended version is 5.3.2 or newer.
@@ -106,3 +107,7 @@ On 32-bit platforms these components work slightly different with regards to int
 * The generic `PHP\BitTorrent\Encoder::encode` method will encode both integers and strings containing numerics as strings (strings containing floating point values are still treated as regular strings).
 * The `PHP\BitTorrent\Decoder::decodeInteger` method will return values as strings, and not integers.
 * The `PHP\BitTorrent\Torrent::getSize` method will use the [bcadd](http://no2.php.net/manual/en/function.bcadd.php) function to calculate the size of the files in the torrent.
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fchristeredvartsen%2Fphp-bittorrent.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fchristeredvartsen%2Fphp-bittorrent?ref=badge_large)
