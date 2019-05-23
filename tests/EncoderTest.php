@@ -1,13 +1,13 @@
 <?php
 namespace BitTorrent;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 
 /**
  * @coversDefaultClass BitTorrent\Encoder
  */
-class EncoderTest extends PHPUnit_Framework_TestCase {
+class EncoderTest extends TestCase {
     /**
      * @var Encdoder
      */
