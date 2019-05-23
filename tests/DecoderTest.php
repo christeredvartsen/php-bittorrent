@@ -1,12 +1,12 @@
 <?php
 namespace BitTorrent;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass BitTorrent\Decoder
  */
-class DecoderTest extends PHPUnit_Framework_TestCase {
+class DecoderTest extends TestCase {
     /**
      * @var Decoder
      */

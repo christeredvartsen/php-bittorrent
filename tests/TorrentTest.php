@@ -1,12 +1,12 @@
 <?php
 namespace BitTorrent;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass BitTorrent\Torrent
  */
-class TorrentTest extends PHPUnit_Framework_TestCase {
+class TorrentTest extends TestCase {
     /**
      * @var Torrent
      */
