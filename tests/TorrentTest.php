@@ -154,7 +154,9 @@ class TorrentTest extends TestCase {
         $name = 'some_filename';
         $info = ['length' => 123, 'name' => $name];
         $this->torrent->setInfo($info);
-        $this->assertSame($name, $this->torrent->getFileList());
+        $fileList = $this->torrent->getFileList();
+        $this->assertCount(1, $fileList);
+        $this->assertSame($name, $fileList[0]);
     }
 
     /**
@@ -226,7 +228,7 @@ class TorrentTest extends TestCase {
 
         $this->assertSame('http://tracker/', $torrent->getAnnounce());
         $this->assertEquals($announceList, $torrent->getAnnounceList());
-        $this->assertSame('extra', $torrent->getFileList());
+        $this->assertSame(1, count($torrent->getFileList()));
     }
 
     /**
