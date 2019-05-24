@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace BitTorrent;
 
 use PHPUnit\Framework\TestCase;

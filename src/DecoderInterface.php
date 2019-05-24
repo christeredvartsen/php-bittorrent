@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace BitTorrent;
 
 use InvalidArgumentException;
@@ -21,7 +21,7 @@ interface DecoderInterface {
      * @return array Returns the decoded version of the file as an array
      * @throws InvalidArgumentException
      */
-    function decodeFile($file, $strict = false);
+    function decodeFile(string $file, bool $strict = false) : array;
 
     /**
      * Decode any bittorrent encoded string
@@ -30,16 +30,16 @@ interface DecoderInterface {
      * @return int|string|array Returns the native PHP counterpart of the encoded string
      * @throws InvalidArgumentException
      */
-    function decode($string);
+    function decode(string $string);
 
     /**
      * Decode an encoded PHP integer
      *
      * @param string $integer The integer to decode
-     * @return int|string Returns the decoded integer (as a string on 32-bit platforms)
+     * @return int Returns the decoded integer
      * @throws InvalidArgumentException
      */
-    function decodeInteger($integer);
+    function decodeInteger(string $integer) : int;
 
     /**
      * Decode an encoded PHP string
@@ -48,7 +48,7 @@ interface DecoderInterface {
      * @return string Returns the decoded string value
      * @throws InvalidArgumentException
      */
-    function decodeString($string);
+    function decodeString(string $string) : string;
 
     /**
      * Decode an encoded PHP array
@@ -57,7 +57,7 @@ interface DecoderInterface {
      * @return array Returns a numerical array
      * @throws InvalidArgumentException
      */
-    function decodeList($list);
+    function decodeList(string $list) : array;
 
     /**
      * Decode an encoded PHP associative array
@@ -66,5 +66,5 @@ interface DecoderInterface {
      * @return array Returns an associative array
      * @throws InvalidArgumentException
      */
-    function decodeDictionary($dictionary);
+    function decodeDictionary(string $dictionary) : array;
 }

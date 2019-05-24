@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace BitTorrent;
 
 use InvalidArgumentException;
@@ -23,11 +23,8 @@ class Encoder implements EncoderInterface {
         $this->params = array_replace($this->params, $params);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function encode($var) {
-        if ($this->isInt($var)) {
+    public function encode($var) : string {
+        if (is_int($var)) {
             return $this->encodeInteger($var);
         } else if (is_string($var)) {
             return $this->encodeString($var);
@@ -47,35 +44,18 @@ class Encoder implements EncoderInterface {
             return $this->encodeList($var);
         }
 
-        throw new InvalidArgumentException('Variables of type ' . gettype($var) . ' can not be encoded.');
+        throw new InvalidArgumentException(sprintf('Variables of type %s can not be encoded.', gettype($var)));
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function encodeInteger($integer) {
-        if ($this->isInt($integer)) {
-            return 'i' . $integer . 'e';
-        }
-
-        throw new InvalidArgumentException('Expected an integer.');
+    public function encodeInteger(int $integer) : string {
+        return 'i' . $integer . 'e';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function encodeString($string) {
-        if (!is_string($string)) {
-            throw new InvalidArgumentException('Expected string, got: ' . gettype($string) . '.');
-        }
-
-        return strlen($string) . ':' . $string;
+    public function encodeString(string $string) : string {
+        return sprintf('%d:%s', strlen($string), $string);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function encodeList(array $list) {
+    public function encodeList(array $list) : string {
         $ret = 'l';
 
         foreach ($list as $value) {
@@ -85,10 +65,7 @@ class Encoder implements EncoderInterface {
         return $ret . 'e';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function encodeDictionary(array $dictionary) {
+    public function encodeDictionary(array $dictionary) : string {
         ksort($dictionary);
 
         $ret = 'd';
@@ -98,16 +75,5 @@ class Encoder implements EncoderInterface {
         }
 
         return $ret . 'e';
-    }
-
-    /**
-     * Check if a variable is an integer
-     *
-     * @param int|string
-     * @return boolean
-     */
-    private function isInt($var) {
-        return is_int($var) ||
-               (PHP_INT_SIZE === 4 && is_numeric($var) && (strpos($var, '.') === false));
     }
 }

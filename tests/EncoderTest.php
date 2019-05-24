@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace BitTorrent;
 
 use PHPUnit\Framework\TestCase;
@@ -8,9 +8,6 @@ use stdClass;
  * @coversDefaultClass BitTorrent\Encoder
  */
 class EncoderTest extends TestCase {
-    /**
-     * @var Encdoder
-     */
     private $encoder;
 
     /**
@@ -25,7 +22,7 @@ class EncoderTest extends TestCase {
      *
      * @return array[]
      */
-    public function getEncodeIntegerData() {
+    public function getEncodeIntegerData() : array {
         return [
             [-1, 'i-1e'],
             [0, 'i0e'],
@@ -36,21 +33,11 @@ class EncoderTest extends TestCase {
     /**
      * @dataProvider getEncodeIntegerData
      * @covers ::encodeInteger
-     * @covers ::isInt
      * @param int $value
      * @param string $encoded
      */
-    public function testEncodeInteger($value, $encoded) {
+    public function testEncodeInteger(int $value, string $encoded) {
         $this->assertSame($encoded, $this->encoder->encodeInteger($value));
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Expected an integer.
-     * @covers ::encodeInteger
-     */
-    public function testEncodeNonIntegerAsInteger() {
-        $this->encoder->encodeInteger('one');
     }
 
     /**
@@ -58,7 +45,7 @@ class EncoderTest extends TestCase {
      *
      * @return array[]
      */
-    public function getEncodeStringData() {
+    public function getEncodeStringData() : array {
         return [
             ['spam', '4:spam'],
             ['foobar', '6:foobar'],
@@ -72,17 +59,8 @@ class EncoderTest extends TestCase {
      * @param string $value
      * @param string $encoded
      */
-    public function testEncodeString($value, $encoded) {
+    public function testEncodeString(string $value, string $encoded) {
         $this->assertSame($encoded, $this->encoder->encodeString($value));
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Expected string, got: integer.
-     * @covers ::encodeString
-     */
-    public function testEncodeNonStringAsString() {
-        $this->encoder->encodeString(1);
     }
 
     /**
@@ -90,7 +68,7 @@ class EncoderTest extends TestCase {
      *
      * @return array[]
      */
-    public function getEncodeListData() {
+    public function getEncodeListData() : array {
         return [
             [['spam', 1, [1]], 'l4:spami1eli1eee'],
         ];
@@ -102,7 +80,7 @@ class EncoderTest extends TestCase {
      * @param array $value
      * @param string $encoded
      */
-    public function testEncodeList(array $value, $encoded) {
+    public function testEncodeList(array $value, string $encoded) {
         $this->assertSame($encoded, $this->encoder->encodeList($value));
     }
 
@@ -111,7 +89,7 @@ class EncoderTest extends TestCase {
      *
      * @return array[]
      */
-    public function getEncodeDictionaryData() {
+    public function getEncodeDictionaryData() : array {
         return [
             [['1' => 'foo', 'foo' => 'bar', 'list' => [1, 2, 3]], 'd3:foo3:bar4:listli1ei2ei3ee1:13:fooe'],
             [['foo' => 'bar', 'spam' => 'eggs'], 'd3:foo3:bar4:spam4:eggse'],
@@ -125,7 +103,7 @@ class EncoderTest extends TestCase {
      * @param array $value
      * @param string $encoded
      */
-    public function testEncodeDictionary(array $value, $encoded) {
+    public function testEncodeDictionary(array $value, string $encoded) {
         $this->assertSame($encoded, $this->encoder->encodeDictionary($value));
     }
 
@@ -134,7 +112,7 @@ class EncoderTest extends TestCase {
      *
      * @return array[]
      */
-    public function getEncodeData() {
+    public function getEncodeData() : array {
         return [
             [1, 'i1e'],
             ['spam', '4:spam'],
@@ -146,11 +124,10 @@ class EncoderTest extends TestCase {
     /**
      * @dataProvider getEncodeData
      * @covers ::encode
-     * @covers ::isInt
      * @param string|int|array $value
      * @param string $encoded
      */
-    public function testEncodeUsingGenericMethod($value, $encoded) {
+    public function testEncodeUsingGenericMethod($value, string $encoded) {
         $this->assertSame($encoded, $this->encoder->encode($value));
     }
 
