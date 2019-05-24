@@ -1,7 +1,7 @@
 {
-  "name": "christeredvartsen/php-bittorrent",
+  "name": "christeredvartsen/bittorrent",
   "type": "library",
-  "description": "PHP BitTorrent is a set of components that can be used to interact with torrent files (read+write) and classes that can encode/decode to/from the BitTorrent format.",
+  "description": "A set of components that can be used to interact with torrent files (read+write) and classes that can encode/decode to/from the BitTorrent format.",
   "keywords": [
     "bittorrent",
     "torrent"
@@ -18,7 +18,9 @@
     "php": ">=7.1"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7.0"
+    "phpunit/phpunit": "^7.0",
+    "phploc/phploc": "^4.0",
+    "phpstan/phpstan": "^0.11.7"
   },
   "support": {
     "source": "https://github.com/christeredvartsen/php-bittorrent",
@@ -35,19 +37,31 @@
     }
   },
   "scripts": {
-    "lint": "for file in `git ls-files '*php'`; do php -l $file; done",
-    "prepare": [
-      "rm -rf build",
-      "mkdir build",
-      "mkdir build/coverage"
+    "clean:build": "rm -rf build",
+    "qa:lint": "for file in `git ls-files '*php'`; do php -l $file; done",
+    "qa:phpstan": "vendor/bin/phpstan analyse src tests",
+    "qa:phploc": [
+      "rm -rf build/artifacts/phploc",
+      "mkdir -p build/artifacts/phploc",
+      "vendor/bin/phploc --log-xml build/artifacts/phploc/phploc.xml src"
+    ],
+    "qa": [
+      "@qa:lint",
+      "@qa:phploc",
+      "@qa:phpstan"
     ],
     "test:phpunit": "vendor/bin/phpunit --verbose",
-    "test:phpunit:coverage": "vendor/bin/phpunit --verbose --coverage-html build/coverage",
+    "test:phpunit:coverage": [
+      "rm -rf build/artifacts/phpunit/coverage",
+      "mkdir -p build/artifacts/phpunit/coverage",
+      "vendor/bin/phpunit --verbose --coverage-html build/artifacts/phpunit/coverage"
+    ],
     "test": [
       "@test:phpunit"
     ],
-    "test:coverage": [
-      "@test:phpunit:coverage"
+    "ci": [
+      "@qa",
+      "@test"
     ]
   }
 }
