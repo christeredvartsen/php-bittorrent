@@ -65,7 +65,7 @@ class TorrentTest extends TestCase {
      * @covers ::getInfo
      */
     public function testSetGetInfo() {
-        $info = array('some' => 'data');
+        $info = ['some' => 'data'];
         $this->assertSame($this->torrent, $this->torrent->setInfo($info));
         $this->assertSame($info, $this->torrent->getInfo());
     }
@@ -85,7 +85,7 @@ class TorrentTest extends TestCase {
      * @covers ::getAnnounceList
      */
     public function testSetGetAnnounceList() {
-        $announceList = array('http://tracker1/', 'http://tracker2/');
+        $announceList = ['http://tracker1/', 'http://tracker2/'];
         $this->assertSame($this->torrent, $this->torrent->setAnnounceList($announceList));
         $this->assertSame($announceList, $this->torrent->getAnnounceList());
     }
@@ -130,7 +130,7 @@ class TorrentTest extends TestCase {
      */
     public function testGetName() {
         $name = 'Some name';
-        $info = array('name' => $name);
+        $info = ['name' => $name];
         $this->torrent->setInfo($info);
         $this->assertSame($name, $this->torrent->getName());
     }
@@ -141,7 +141,7 @@ class TorrentTest extends TestCase {
      */
     public function testGetSizeWhenLengthIsPresentInTheInfoBlock() {
         $length = 123;
-        $info = array('length' => $length);
+        $info = ['length' => $length];
         $this->torrent->setInfo($info);
         $this->assertSame($length, $this->torrent->getSize());
     }
@@ -152,7 +152,7 @@ class TorrentTest extends TestCase {
      */
     public function testGetFileListWhenInfoBlockOnlyContainsOneFile() {
         $name = 'some_filename';
-        $info = array('length' => 123, 'name' => $name);
+        $info = ['length' => 123, 'name' => $name];
         $this->torrent->setInfo($info);
         $this->assertSame($name, $this->torrent->getFileList());
     }
@@ -162,12 +162,12 @@ class TorrentTest extends TestCase {
      * @covers ::getFileList
      */
     public function testGetFileList() {
-        $files = array(
-            array('length' => 12, 'path' => array('path', 'file.php')),
-            array('length' => 32, 'path' => array('path2', 'file2.php')),
-            array('length' => 123, 'path' => array('file.php')),
-        );
-        $info = array('files' => $files);
+        $files = [
+            ['length' => 12, 'path' => ['path', 'file.php']],
+            ['length' => 32, 'path' => ['path2', 'file2.php']],
+            ['length' => 123, 'path' => ['file.php']],
+        ];
+        $info = ['files' => $files];
         $this->torrent->setInfo($info);
         $this->assertSame($files, $this->torrent->getFileList());
     }
@@ -177,12 +177,12 @@ class TorrentTest extends TestCase {
      * @covers ::getSize
      */
     public function testGetSizeWhenInfoBlockHasSeveralFiles() {
-        $files = array(
-            array('length' =>  12, 'path' => array('path', 'file.php')),
-            array('length' =>  32, 'path' => array('path2', 'file2.php')),
-            array('length' => 123, 'path' => array('file.php')),
-        );
-        $info = array('files' => $files);
+        $files = [
+            ['length' =>  12, 'path' => ['path', 'file.php']],
+            ['length' =>  32, 'path' => ['path2', 'file2.php']],
+            ['length' => 123, 'path' => ['file.php']],
+        ];
+        $info = ['files' => $files];
         $this->torrent->setInfo($info);
         $this->assertEquals(167, $this->torrent->getSize());
     }
@@ -216,17 +216,17 @@ class TorrentTest extends TestCase {
         $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_extra_files/extra.torrent');
 
         // we expect an array of arrays, according to the spec
-        $announceList = array(
-            array(
+        $announceList = [
+            [
                 'http://tracker/',
                 'http://tracker2/',
-                'http://tracker3/'
-            )
-        );
+                'http://tracker3/',
+            ]
+        ];
 
         $this->assertSame('http://tracker/', $torrent->getAnnounce());
         $this->assertEquals($announceList, $torrent->getAnnounceList());
-        $this->assertSame(1, count($torrent->getFileList()));
+        $this->assertSame('extra', $torrent->getFileList());
     }
 
     /**
@@ -236,14 +236,14 @@ class TorrentTest extends TestCase {
     public function testCreateFromTorrentFileWithExtra() {
         $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_extra_files/extra.torrent');
 
-        $webSeeds = array(
+        $webSeeds = [
             'url-list' =>
-                array(
+                [
                     'http://seed/',
                     'http://seed2/',
-                    'http://seed3/'
-                )
-        );
+                    'http://seed3/',
+                ]
+        ];
 
         $this->assertEquals($webSeeds, $torrent->getExtraMeta());
     }
@@ -303,7 +303,7 @@ class TorrentTest extends TestCase {
     public function testSaveTorrent() {
         $path         = __DIR__ . '/_files';
         $announce     = 'http://tracker/';
-        $announceList = array(array('http://tracker2'), array('http://tracker3'));;
+        $announceList = [['http://tracker2'], ['http://tracker3']];
         $comment      = 'Some comment';
         $createdBy    = 'PHPUnit';
         $target       = tempnam(sys_get_temp_dir(), 'PHP\BitTorrent');
@@ -349,14 +349,13 @@ class TorrentTest extends TestCase {
             $this->fail('Could not create file: ' . $target);
         }
 
-        $extra = array(
-            'url-list' =>
-            array(
+        $extra = [
+            'url-list' => [
                 'http://seed/',
                 'http://seed2/',
-                'http://seed3/'
-            )
-        );
+                'http://seed3/',
+            ],
+        ];
 
         $torrent = Torrent::createFromPath($path, $announce);
         $torrent->setExtraMeta($extra)
@@ -389,7 +388,7 @@ class TorrentTest extends TestCase {
             $this->fail('Could not create file: ' . $target);
         }
 
-        $extra = array('announce' => 'http://extratracker');
+        $extra = ['announce' => 'http://extratracker'];
 
         $torrent = Torrent::createFromPath($path, $announce);
         $torrent->setExtraMeta($extra)
