@@ -542,18 +542,13 @@ class Torrent {
     /**
      * Get the files listed in the torrent
      *
-     * If the torrent is a multifile torrent, return the files array. If it contains a single file,
-     * return the name element from the info array.
-     *
-     * @return string|array Returns a string if the torrent only contains one file or an array of
-     *                      files otherwise.
-     * @throws RuntimeException
+     * @return array List of files
      */
-    public function getFileList() {
+    public function getFileList() : array {
         $info = $this->getInfoPart();
 
         if (isset($info['length'])) {
-            return $info['name'];
+            return [$info['name']];
         }
 
         return $info['files'];
