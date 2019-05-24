@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace BitTorrent;
 
 use RecursiveDirectoryIterator;
@@ -158,13 +158,13 @@ class Torrent {
         $pathIsFile = false;
 
         // See if we have a single file
-        if (is_file($absolutePath)) {
+        if (false !== $absolutePath && is_file($absolutePath)) {
             $pathIsFile = true;
             $files[] = [
                 'filename' => basename($absolutePath),
                 'filesize' => filesize($absolutePath),
             ];
-        } else if (is_dir($absolutePath)) {
+        } else if (false !== $absolutePath && is_dir($absolutePath)) {
             $dir = new RecursiveDirectoryIterator($absolutePath);
             $iterator = new RecursiveIteratorIterator($dir);
 

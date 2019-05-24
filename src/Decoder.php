@@ -1,21 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 namespace BitTorrent;
 
 use InvalidArgumentException;
 
 class Decoder implements DecoderInterface {
-    /**
-     * Encoder instance
-     *
-     * @var EncoderInterface
-     */
     private $encoder;
 
-    /**
-     * Class constructor
-     *
-     * @param EncoderInterface $encoder An instance of an encoder
-     */
     public function __construct(EncoderInterface $encoder = null) {
         if ($encoder === null) {
             $encoder = new Encoder();
@@ -24,10 +14,7 @@ class Decoder implements DecoderInterface {
         $this->encoder = $encoder;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function decodeFile($file, $strict = false) {
+    public function decodeFile(string $file, bool $strict = false) : array {
         if (!is_readable($file)) {
             throw new InvalidArgumentException('File ' . $file . ' does not exist or can not be read.');
         }
@@ -45,10 +32,7 @@ class Decoder implements DecoderInterface {
         return $dictionary;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function decode($string) {
+    public function decode(string $string) {
         if ($string[0] === 'i') {
             return $this->decodeInteger($string);
         } else if ($string[0] === 'l') {
@@ -62,10 +46,7 @@ class Decoder implements DecoderInterface {
         throw new InvalidArgumentException('Parameter is not correctly encoded.');
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function decodeInteger($integer) {
+    public function decodeInteger(string $integer) : int {
         if ($integer[0] !== 'i' || (!$ePos = strpos($integer, 'e'))) {
             throw new InvalidArgumentException('Invalid integer. Integers must start wth "i" and end with "e".');
         }
@@ -77,29 +58,18 @@ class Decoder implements DecoderInterface {
             throw new InvalidArgumentException('Invalid integer value.');
         }
 
-        if (PHP_INT_SIZE === 8) {
-            return (int) $integer;
-        }
-
-        // Return integer as a string on 32-bit systems
-        // @codeCoverageIgnoreStart
-        return $integer;
-        // @codeCoverageIgnoreEnd
+        return (int) $integer;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function decodeString($string) {
+    public function decodeString(string $string) : string {
         $stringParts = explode(':', $string, 2);
 
-        // The string must have two parts
         if (count($stringParts) !== 2) {
             throw new InvalidArgumentException('Invalid string. Strings consist of two parts separated by ":".');
         }
 
         $length = (int) $stringParts[0];
-        $lengthLen = strlen($length);
+        $lengthLen = strlen((string) $length);
 
         if (($lengthLen + 1 + $length) > strlen($string)) {
             throw new InvalidArgumentException('The length of the string does not match the prefix of the encoded data.');
@@ -108,10 +78,7 @@ class Decoder implements DecoderInterface {
         return substr($string, ($lengthLen + 1), $length);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function decodeList($list) {
+    public function decodeList(string $list) : array {
         if ($list[0] !== 'l') {
             throw new InvalidArgumentException('Parameter is not an encoded list.');
         }
@@ -135,10 +102,7 @@ class Decoder implements DecoderInterface {
         return $ret;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function decodeDictionary($dictionary) {
+    public function decodeDictionary(string $dictionary) : array {
         if ($dictionary[0] !== 'd') {
             throw new InvalidArgumentException('Parameter is not an encoded dictionary.');
         }

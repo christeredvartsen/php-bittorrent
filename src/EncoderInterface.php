@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace BitTorrent;
 
 use InvalidArgumentException;
@@ -11,41 +11,37 @@ interface EncoderInterface {
      * @return string Returns the encoded string
      * @throws InvalidArgumentException
      */
-    function encode($var);
+    function encode($var) : string;
 
     /**
      * Encode an integer
      *
-     * @param int|string $integer The integer to encode. Strings are supported on 32-bit platforms
+     * @param int|string $integer The integer to encode
      * @return string Returns the encoded string
-     * @throws InvalidArgumentException
      */
-    function encodeInteger($integer);
+    function encodeInteger(int $integer) : string;
 
     /**
      * Encode a string
      *
      * @param string $string The string to encode
      * @return string Returns the encoded string
-     * @throws InvalidArgumentException
      */
-    function encodeString($string);
+    function encodeString(string $string) : string;
 
     /**
      * Encode a list (numerically indexed array)
      *
      * @param array $list The array to encode
      * @return string Returns the encoded string
-     * @throws InvalidArgumentException
      */
-    function encodeList(array $list);
+    function encodeList(array $list) : string;
 
     /**
      * Encode a dictionary (associative PHP array)
      *
      * @param array $dictionary The array to encode
      * @return string Returns the encoded string
-     * @throws InvalidArgumentException
      */
-    function encodeDictionary(array $dictionary);
+    function encodeDictionary(array $dictionary) : string;
 }

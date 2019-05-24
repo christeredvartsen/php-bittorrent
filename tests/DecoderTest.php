@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 namespace BitTorrent;
 
 use PHPUnit\Framework\TestCase;
@@ -7,9 +7,6 @@ use PHPUnit\Framework\TestCase;
  * @coversDefaultClass BitTorrent\Decoder
  */
 class DecoderTest extends TestCase {
-    /**
-     * @var Decoder
-     */
     private $decoder;
 
     /**
@@ -24,7 +21,7 @@ class DecoderTest extends TestCase {
      *
      * @return array[]
      */
-    public function getDecodeIntegerData() {
+    public function getDecodeIntegerData() : array {
         return [
             ['i1e', 1],
             ['i-1e', -1],
@@ -38,7 +35,7 @@ class DecoderTest extends TestCase {
      * @param string $encoded
      * @param int $value
      */
-    public function testDecoderInteger($encoded, $value) {
+    public function testDecoderInteger(string $encoded, int $value) {
         $this->assertEquals($value, $this->decoder->decodeInteger($encoded));
     }
 
@@ -47,7 +44,7 @@ class DecoderTest extends TestCase {
      *
      * @return array[]
      */
-    public function getDecodeInvalidIntegerData() {
+    public function getDecodeInvalidIntegerData() : array {
         return [
             ['i01e'],
             ['i-01e'],
@@ -62,7 +59,7 @@ class DecoderTest extends TestCase {
      * @expectedExceptionMessage Invalid integer value.
      * @param string $value
      */
-    public function testDecodeInvalidInteger($value) {
+    public function testDecodeInvalidInteger(string $value) {
         $this->decoder->decodeInteger($value);
     }
 
@@ -89,7 +86,7 @@ class DecoderTest extends TestCase {
      *
      * @return array[]
      */
-    public function getDecodeStringData() {
+    public function getDecodeStringData() : array {
         return [
             ['4:spam', 'spam'],
             ['11:test string', 'test string'],
@@ -103,7 +100,7 @@ class DecoderTest extends TestCase {
      * @param string $encoded
      * @param string $value
      */
-    public function testDecodeString($encoded, $value) {
+    public function testDecodeString(string $encoded, string $value) {
         $this->assertSame($value, $this->decoder->decodeString($encoded));
     }
 
@@ -130,7 +127,7 @@ class DecoderTest extends TestCase {
      *
      * @return array[]
      */
-    public function getDecodeListData() {
+    public function getDecodeListData() : array {
         return [
             ['li1ei2ei3ee', [1, 2, 3]],
         ];
@@ -142,7 +139,7 @@ class DecoderTest extends TestCase {
      * @param string $encoded
      * @param array $value
      */
-    public function testDecodeList($encoded, array $value) {
+    public function testDecodeList(string $encoded, array $value) {
         $this->assertEquals($value, $this->decoder->decodeList($encoded));
     }
 
@@ -160,7 +157,7 @@ class DecoderTest extends TestCase {
      *
      * @return array[]
      */
-    public function getDecodeDictionaryData() {
+    public function getDecodeDictionaryData() : array {
         return [
             ['d3:foo3:bar4:spam4:eggse', ['foo' => 'bar', 'spam' => 'eggs']],
         ];
@@ -172,7 +169,7 @@ class DecoderTest extends TestCase {
      * @param string $encoded
      * @param array $value
      */
-    public function testDecodeDictionary($encoded, array $value) {
+    public function testDecodeDictionary(string $encoded, array $value) {
         $this->assertSame($value, $this->decoder->decodeDictionary($encoded));
     }
 
@@ -190,7 +187,7 @@ class DecoderTest extends TestCase {
      *
      * @return array[]
      */
-    public function getGenericDecodeData() {
+    public function getGenericDecodeData() : array {
         return [
             ['i1e', 1],
             ['4:spam', 'spam'],
@@ -206,7 +203,7 @@ class DecoderTest extends TestCase {
      * @param string $encoded
      * @param int|string|array $value
      */
-    public function testGenericDecode($encoded, $value) {
+    public function testGenericDecode(string $encoded, $value) {
         $this->assertEquals($value, $this->decoder->decode($encoded));
     }
 
