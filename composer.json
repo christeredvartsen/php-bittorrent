@@ -45,6 +45,9 @@
     "test:phpunit:coverage": "vendor/bin/phpunit --verbose --coverage-html build/coverage",
     "test": [
       "@test:phpunit"
+    ],
+    "test:coverage": [
+      "@test:phpunit:coverage"
     ]
   }
 }
