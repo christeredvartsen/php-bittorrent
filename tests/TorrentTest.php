@@ -175,7 +175,6 @@ class TorrentTest extends TestCase {
     /**
      * @covers ::setInfo
      * @covers ::getSize
-     * @covers ::add
      */
     public function testGetSizeWhenInfoBlockHasSeveralFiles() {
         $files = array(
@@ -195,7 +194,6 @@ class TorrentTest extends TestCase {
      * @covers ::getCreatedBy
      * @covers ::getCreatedAt
      * @covers ::getSize
-     * @covers ::add
      * @covers ::getFileList
      */
     public function testCreateFromTorrentFile() {
@@ -255,7 +253,6 @@ class TorrentTest extends TestCase {
      * @covers ::getAnnounce
      * @covers ::getName
      * @covers ::getSize
-     * @covers ::add
      * @covers ::getFileList
      */
     public function testCreateFromPathWhenUsingADirectoryAsArgument() {
@@ -274,7 +271,6 @@ class TorrentTest extends TestCase {
      * @covers ::getAnnounce
      * @covers ::getName
      * @covers ::getSize
-     * @covers ::add
      * @covers ::getFileList
      */
     public function testCreateFromPathWhenUsingAFileAsArgument() {
@@ -300,7 +296,6 @@ class TorrentTest extends TestCase {
      * @covers ::getCreatedBy
      * @covers ::getName
      * @covers ::getSize
-     * @covers ::add
      * @covers ::getFileList
      * @covers ::getAnnounceList
      * @covers ::getInfoPart
@@ -497,7 +492,6 @@ class TorrentTest extends TestCase {
 
     /**
      * @covers ::getSize
-     * @covers ::add
      */
     public function testGetSizeWithLargeValues() {
         $torrent1 = Torrent::createFromTorrentFile(__DIR__ . '/_files/large_files.torrent');
