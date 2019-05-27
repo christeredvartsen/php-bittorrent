@@ -26,7 +26,7 @@ class Torrent {
      *
      * @var array
      */
-    private $announceList;
+    private $announceList = [];
 
     /**
      * Optional comment
@@ -68,7 +68,7 @@ class Torrent {
      *
      * @param string $announceUrl Optional announce URL
      */
-    public function __construct($announceUrl = null) {
+    public function __construct(string $announceUrl = null) {
         if ($announceUrl !== null) {
             $this->setAnnounce($announceUrl);
         }
@@ -84,20 +84,16 @@ class Torrent {
      */
     static public function createFromTorrentFile($path, DecoderInterface $decoder = null) {
         if (!is_file($path)) {
-            throw new InvalidArgumentException($path . ' does not exist.');
+            throw new InvalidArgumentException(sprintf('%s does not exist.', $path));
         }
 
-        // Make sure we have a decoder
         if ($decoder === null) {
             $decoder = new Decoder();
         }
 
         $decodedFile = $decoder->decodeFile($path);
-
-        // Create a new torrent
         $torrent = new static();
 
-        // Populate the object with data from the file
         if (isset($decodedFile['announce'])) {
             $torrent->setAnnounce($decodedFile['announce']);
             unset($decodedFile['announce']);
@@ -128,7 +124,6 @@ class Torrent {
             unset($decodedFile['info']);
         }
 
-        // add any extra meta info fields that were left in this file
         if (count($decodedFile) > 0) {
             $torrent->setExtraMeta($decodedFile);
         }
@@ -146,18 +141,13 @@ class Torrent {
      * @param string $announceUrl URL to the announce
      * @return Torrent Returns a new instance of this class
      */
-    static public function createFromPath($path, $announceUrl = null) {
-        // Create a new torrent instance
+    static public function createFromPath($path, $announceUrl) {
         $torrent = new static($announceUrl);
-
-        // Initialize array of the files to include in the torrent
         $files = [];
 
-        // Generate an absolute path
         $absolutePath = realpath($path);
         $pathIsFile = false;
 
-        // See if we have a single file
         if (false !== $absolutePath && is_file($absolutePath)) {
             $pathIsFile = true;
             $files[] = [
@@ -181,32 +171,20 @@ class Torrent {
                 ];
             }
         } else {
-            throw new InvalidArgumentException('Invalid path: ' . $path);
+            throw new InvalidArgumentException(sprintf('Invalid path: %s', $path));
         }
 
-        // Initialize the info part of the torrent
         $info = [
             'piece length' => pow(2, $torrent->getPieceLengthExp())
         ];
 
-        // Initialize the pieces
         $pieces = [];
 
-        // If we only have a single file, get the size of the file and set the name property
         if ($pathIsFile) {
-            // Regenerate the path to the file
             $filePath = dirname($absolutePath);
-
-            // The name of the file in the torrent
             $info['name'] = $files[0]['filename'];
-
-            // The size of the file
             $info['length'] = $files[0]['filesize'];
-
-            // The current position in the file
             $position = 0;
-
-            // Open the file
             $fp = fopen($filePath . DIRECTORY_SEPARATOR . $files[0]['filename'], 'rb');
 
             while ($position < $info['length']) {
@@ -220,15 +198,12 @@ class Torrent {
                 }
             }
 
-            // Close the file handle
             fclose($fp);
 
             $pieces = implode('', $pieces);
         } else {
-            // The name of the directory in the torrent
             $info['name'] = basename($absolutePath);
 
-            // Sort the filelist to mimic btmakemetafile
             usort($files, function($a, $b) {
                 if ($a['filename'] < $b['filename']) {
                     return -1;
@@ -239,7 +214,6 @@ class Torrent {
                 return 0;
             });
 
-            // Initialize some helper variables for the hashing or the parts of each file
             $part = '';
             $done = 0;
 
@@ -255,13 +229,9 @@ class Torrent {
                     'path'   => explode(DIRECTORY_SEPARATOR, $filename)
                 ];
 
-                // Reset the position in the current file
                 $position = 0;
-
-                // Open the current file
                 $fp = fopen($absolutePath . DIRECTORY_SEPARATOR . $filename, 'rb');
 
-                // Loop through the file
                 while ($position < $filesize) {
                     $bytes = min(($filesize - $position), ($info['piece length'] - $done));
                     $part .= fread($fp, $bytes);
@@ -269,7 +239,6 @@ class Torrent {
                     $done += $bytes;
                     $position += $bytes;
 
-                    // We have a piece. Add it to the array and reset the helper variables
                     if ($done === $info['piece length']) {
                         $pieces[] = sha1($part, true);
                         $part = '';
@@ -277,26 +246,18 @@ class Torrent {
                     }
                 }
 
-                // Close the file handle
                 fclose($fp);
             }
 
-            // If there is a part still not hashed then add it to the pieces array
             if ($done > 0) {
                 $pieces[] = sha1($part, true);
             }
 
-            // Make a string of the pieces
             $pieces = implode('', $pieces);
         }
 
-        // Store the pieces in the $info array
         $info['pieces'] = $pieces;
-
-        // Sort the info array
         ksort($info);
-
-        // Set the info
         $torrent->setInfo($info);
 
         return $torrent;
@@ -306,10 +267,10 @@ class Torrent {
      * Set the piece length exponent
      *
      * @param int $pieceLengthExp The exponent to set
-     * @return Torrent Returns self for a fluent interface
+     * @return self Returns self for a fluent interface
      */
-    public function setPieceLengthExp($pieceLengthExp) {
-        $this->pieceLengthExp = (int) $pieceLengthExp;
+    public function setPieceLengthExp(int $pieceLengthExp) : self {
+        $this->pieceLengthExp = $pieceLengthExp;
 
         return $this;
     }
@@ -320,7 +281,7 @@ class Torrent {
      * @return int Returns the piece length exponent used when creating a torrent instance from a
      *             path
      */
-    public function getPieceLengthExp() {
+    public function getPieceLengthExp() : int {
         return $this->pieceLengthExp;
     }
 
@@ -328,9 +289,9 @@ class Torrent {
      * Set the announce URL
      *
      * @param string $announceUrl The URL to set
-     * @return Torrent Returns self for a fluent interface
+     * @return self Returns self for a fluent interface
      */
-    public function setAnnounce($announceUrl) {
+    public function setAnnounce(string $announceUrl) : self {
         $this->announce = $announceUrl;
 
         return $this;
@@ -341,7 +302,7 @@ class Torrent {
      *
      * @return string Returns the URL to the tracker (if set)
      */
-    public function getAnnounce() {
+    public function getAnnounce() : ?string {
         return $this->announce;
     }
 
@@ -349,9 +310,9 @@ class Torrent {
      * Set the announce list
      *
      * @param array $announceList The array of URLs to set
-     * @return Torrent Returns self for a fluent interface
+     * @return self Returns self for a fluent interface
      */
-    public function setAnnounceList(array $announceList) {
+    public function setAnnounceList(array $announceList) : self {
         $this->announceList = $announceList;
 
         return $this;
@@ -362,7 +323,7 @@ class Torrent {
      *
      * @return array Returns the URL to the tracker (if set)
      */
-    public function getAnnounceList() {
+    public function getAnnounceList() : ?array {
         return $this->announceList;
     }
 
@@ -485,7 +446,7 @@ class Torrent {
      */
     public function save($filename, EncoderInterface $encoder = null) {
         if (!is_writable($filename) && !is_writable(dirname($filename))) {
-            throw new InvalidArgumentException('Could not open file "' . $filename . '" for writing.');
+            throw new InvalidArgumentException(sprintf('Could not open file "%s" for writing.', $filename));
         }
 
         $info = $this->getInfoPart();
@@ -530,11 +491,7 @@ class Torrent {
             }
         }
 
-        // Create the encoded dictionary
-        $dictionary = $encoder->encodeDictionary($torrent);
-
-        // Write the encoded data to the file
-        file_put_contents($filename, $dictionary);
+        file_put_contents($filename, $encoder->encodeDictionary($torrent));
 
         return $this;
     }
@@ -542,7 +499,7 @@ class Torrent {
     /**
      * Get the files listed in the torrent
      *
-     * @return array List of files
+     * @return string[] List of files
      */
     public function getFileList() : array {
         $info = $this->getInfoPart();
@@ -558,12 +515,10 @@ class Torrent {
      * Get the size of the files in the torrent
      *
      * @return int Returns the size of the files in the torrent in bytes
-     * @throws RuntimeException
      */
-    public function getSize() {
+    public function getSize() : int {
         $info = $this->getInfoPart();
 
-        // If the length element is set, return that one. If not, loop through the files and generate the total
         if (isset($info['length'])) {
             return $info['length'];
         }
@@ -582,36 +537,30 @@ class Torrent {
      * Get the name that the content will be saved as
      *
      * @return string The name of the torrent
-     * @throws RuntimeException
      */
-    public function getName() {
-        $info = $this->getInfoPart();
-
-        return $info['name'];
+    public function getName() : string {
+        return $this->getInfoPart()['name'];
     }
 
     /**
      * Get the hash of the torrent file
      *
-     * @param boolean $raw Set to true to return the raw 20-byte hash
+     * @param bool $raw Set to true to return the raw 20-byte hash
      * @return string The torrent hash
-     * @throws RuntimeException
      */
-    public function getHash($raw = false) {
-        $info = $this->getInfoPart();
-
-        $encoder = new Encoder();
-
-        return sha1($encoder->encodeDictionary($info), $raw);
+    public function getHash(bool $raw = false) : string {
+        return sha1(
+            (new Encoder())->encodeDictionary($this->getInfoPart()),
+            $raw
+        );
     }
 
     /**
      * Get the urlencoded raw hash of the torrent file
      *
      * @return string The torrent hash
-     * @throws RuntimeException
      */
-    public function getEncodedHash() {
+    public function getEncodedHash() : string {
         return urlencode($this->getHash(true));
     }
 
@@ -621,10 +570,10 @@ class Torrent {
      * @return array
      * @throws RuntimeException
      */
-    private function getInfoPart() {
+    private function getInfoPart() : array {
         $info = $this->getInfo();
 
-        if ($info === null) {
+        if (null === $info) {
             throw new RuntimeException('The info part of the torrent is not set.');
         }
 
@@ -634,11 +583,11 @@ class Torrent {
     /**
      * Check if the torrent is private or not (via the optional private flag)
      *
-     * @return boolean
+     * @return bool
      */
-    public function isPrivate() {
+    public function isPrivate() : bool {
         $info = $this->getInfoPart();
 
-        return (isset($info['private']) && $info['private'] === 1) ? true : false;
+        return (isset($info['private']) && 1 === $info['private']) ? true : false;
     }
 }

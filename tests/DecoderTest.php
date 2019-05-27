@@ -9,9 +9,6 @@ use PHPUnit\Framework\TestCase;
 class DecoderTest extends TestCase {
     private $decoder;
 
-    /**
-     * Set up the decoder
-     */
     public function setUp() {
         $this->decoder = new Decoder();
     }

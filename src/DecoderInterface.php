@@ -16,7 +16,7 @@ interface DecoderInterface {
      * By default the method does not check for these elements.
      *
      * @param string $file Path to the torrent file we want to decode
-     * @param boolean $strict If set to true this method will check for certain elements in the
+     * @param bool $strict If set to true this method will check for certain elements in the
      *                        dictionary.
      * @return array Returns the decoded version of the file as an array
      * @throws InvalidArgumentException

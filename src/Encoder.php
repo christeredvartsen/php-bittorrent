@@ -48,7 +48,7 @@ class Encoder implements EncoderInterface {
     }
 
     public function encodeInteger(int $integer) : string {
-        return 'i' . $integer . 'e';
+        return sprintf('i%de', $integer);
     }
 
     public function encodeString(string $string) : string {
@@ -56,24 +56,22 @@ class Encoder implements EncoderInterface {
     }
 
     public function encodeList(array $list) : string {
-        $ret = 'l';
+        $encodedList = array_map(function($value) {
+            return $this->encode($value);
+        }, $list);
 
-        foreach ($list as $value) {
-            $ret .= $this->encode($value);
-        }
-
-        return $ret . 'e';
+        return sprintf('l%se', implode('', $encodedList));
     }
 
     public function encodeDictionary(array $dictionary) : string {
         ksort($dictionary);
 
-        $ret = 'd';
+        $encodedDictionary = '';
 
         foreach ($dictionary as $key => $value) {
-            $ret .= $this->encodeString((string) $key) . $this->encode($value);
+            $encodedDictionary .= $this->encodeString((string) $key) . $this->encode($value);
         }
 
-        return $ret . 'e';
+        return sprintf('d%se', $encodedDictionary);
     }
 }
