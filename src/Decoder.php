@@ -7,16 +7,12 @@ class Decoder implements DecoderInterface {
     private $encoder;
 
     public function __construct(EncoderInterface $encoder = null) {
-        if ($encoder === null) {
-            $encoder = new Encoder();
-        }
-
-        $this->encoder = $encoder;
+        $this->encoder = $encoder ?? new Encoder();
     }
 
     public function decodeFile(string $file, bool $strict = false) : array {
         if (!is_readable($file)) {
-            throw new InvalidArgumentException('File ' . $file . ' does not exist or can not be read.');
+            throw new InvalidArgumentException(sprintf('File %s does not exist or can not be read.', $file));
         }
 
         $dictionary = $this->decodeDictionary(file_get_contents($file, true));
@@ -33,11 +29,11 @@ class Decoder implements DecoderInterface {
     }
 
     public function decode(string $string) {
-        if ($string[0] === 'i') {
+        if ('i' === $string[0]) {
             return $this->decodeInteger($string);
-        } else if ($string[0] === 'l') {
+        } else if ('l' === $string[0]) {
             return $this->decodeList($string);
-        } else if ($string[0] === 'd') {
+        } else if ('d' === $string[0]) {
             return $this->decodeDictionary($string);
         } else if (preg_match('/^\d+:/', $string)) {
             return $this->decodeString($string);
@@ -47,14 +43,14 @@ class Decoder implements DecoderInterface {
     }
 
     public function decodeInteger(string $integer) : int {
-        if ($integer[0] !== 'i' || (!$ePos = strpos($integer, 'e'))) {
+        if ('i' !== $integer[0] || (!$ePos = strpos($integer, 'e'))) {
             throw new InvalidArgumentException('Invalid integer. Integers must start wth "i" and end with "e".');
         }
 
         $integer = substr($integer, 1, ($ePos - 1));
         $len = strlen($integer);
 
-        if (($integer[0] === '0' && $len > 1) || ($integer[0] === '-' && $integer[1] === '0') || !is_numeric($integer)) {
+        if (('0' === $integer[0] && $len > 1) || ('-' === $integer[0] && '0' === $integer[1]) || !is_numeric($integer)) {
             throw new InvalidArgumentException('Invalid integer value.');
         }
 
@@ -64,7 +60,7 @@ class Decoder implements DecoderInterface {
     public function decodeString(string $string) : string {
         $stringParts = explode(':', $string, 2);
 
-        if (count($stringParts) !== 2) {
+        if (2 !== count($stringParts)) {
             throw new InvalidArgumentException('Invalid string. Strings consist of two parts separated by ":".');
         }
 
@@ -79,7 +75,7 @@ class Decoder implements DecoderInterface {
     }
 
     public function decodeList(string $list) : array {
-        if ($list[0] !== 'l') {
+        if ('l' !== $list[0]) {
             throw new InvalidArgumentException('Parameter is not an encoded list.');
         }
 
@@ -89,7 +85,7 @@ class Decoder implements DecoderInterface {
         $i = 1;
 
         while ($i < $length) {
-            if ($list[$i] === 'e') {
+            if ('e' === $list[$i]) {
                 break;
             }
 
@@ -103,7 +99,7 @@ class Decoder implements DecoderInterface {
     }
 
     public function decodeDictionary(string $dictionary) : array {
-        if ($dictionary[0] !== 'd') {
+        if ('d' !== $dictionary[0]) {
             throw new InvalidArgumentException('Parameter is not an encoded dictionary.');
         }
 
@@ -112,7 +108,7 @@ class Decoder implements DecoderInterface {
         $i = 1;
 
         while ($i < $length) {
-            if ($dictionary[$i] === 'e') {
+            if ('e' === $dictionary[$i]) {
                 break;
             }
 
