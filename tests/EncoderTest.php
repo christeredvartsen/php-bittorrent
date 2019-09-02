@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 namespace BitTorrent;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 
@@ -10,18 +11,10 @@ use stdClass;
 class EncoderTest extends TestCase {
     private $encoder;
 
-    /**
-     * Set up the encoder
-     */
-    public function setUp() {
+    public function setUp() : void {
         $this->encoder = new Encoder();
     }
 
-    /**
-     * Data provider
-     *
-     * @return array[]
-     */
     public function getEncodeIntegerData() : array {
         return [
             [-1, 'i-1e'],
@@ -33,18 +26,11 @@ class EncoderTest extends TestCase {
     /**
      * @dataProvider getEncodeIntegerData
      * @covers ::encodeInteger
-     * @param int $value
-     * @param string $encoded
      */
-    public function testEncodeInteger(int $value, string $encoded) {
+    public function testEncodeInteger(int $value, string $encoded) : void {
         $this->assertSame($encoded, $this->encoder->encodeInteger($value));
     }
 
-    /**
-     * Data provider
-     *
-     * @return array[]
-     */
     public function getEncodeStringData() : array {
         return [
             ['spam', '4:spam'],
@@ -56,18 +42,11 @@ class EncoderTest extends TestCase {
     /**
      * @dataProvider getEncodeStringData
      * @covers ::encodeString
-     * @param string $value
-     * @param string $encoded
      */
-    public function testEncodeString(string $value, string $encoded) {
+    public function testEncodeString(string $value, string $encoded) : void {
         $this->assertSame($encoded, $this->encoder->encodeString($value));
     }
 
-    /**
-     * Data provider
-     *
-     * @return array[]
-     */
     public function getEncodeListData() : array {
         return [
             [['spam', 1, [1]], 'l4:spami1eli1eee'],
@@ -77,18 +56,11 @@ class EncoderTest extends TestCase {
     /**
      * @dataProvider getEncodeListData
      * @covers ::encodeList
-     * @param array $value
-     * @param string $encoded
      */
-    public function testEncodeList(array $value, string $encoded) {
+    public function testEncodeList(array $value, string $encoded) : void {
         $this->assertSame($encoded, $this->encoder->encodeList($value));
     }
 
-    /**
-     * Data provider
-     *
-     * @return array[]
-     */
     public function getEncodeDictionaryData() : array {
         return [
             [['1' => 'foo', 'foo' => 'bar', 'list' => [1, 2, 3]], 'd3:foo3:bar4:listli1ei2ei3ee1:13:fooe'],
@@ -100,18 +72,11 @@ class EncoderTest extends TestCase {
     /**
      * @dataProvider getEncodeDictionaryData
      * @covers ::encodeDictionary
-     * @param array $value
-     * @param string $encoded
      */
-    public function testEncodeDictionary(array $value, string $encoded) {
+    public function testEncodeDictionary(array $value, string $encoded) : void {
         $this->assertSame($encoded, $this->encoder->encodeDictionary($value));
     }
 
-    /**
-     * Data provider
-     *
-     * @return array[]
-     */
     public function getEncodeData() : array {
         return [
             [1, 'i1e'],
@@ -124,19 +89,17 @@ class EncoderTest extends TestCase {
     /**
      * @dataProvider getEncodeData
      * @covers ::encode
-     * @param string|int|array $value
-     * @param string $encoded
      */
-    public function testEncodeUsingGenericMethod($value, string $encoded) {
+    public function testEncodeUsingGenericMethod($value, string $encoded) : void {
         $this->assertSame($encoded, $this->encoder->encode($value));
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Variables of type object can not be encoded.
      * @covers ::encode
      */
-    public function testEncodeNonSupportedType() {
+    public function testEncodeNonSupportedType() : void {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Variables of type object can not be encoded.');
         $this->encoder->encode(new stdClass());
     }
 
@@ -144,7 +107,7 @@ class EncoderTest extends TestCase {
      * @covers ::__construct
      * @covers ::encode
      */
-    public function testCanEncodeEmptyArraysAsDictionaries() {
+    public function testCanEncodeEmptyArraysAsDictionaries() : void {
         $encoder = new Encoder();
         $this->assertSame('le', $encoder->encode([]));
 
