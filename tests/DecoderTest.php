@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 namespace BitTorrent;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -9,15 +10,10 @@ use PHPUnit\Framework\TestCase;
 class DecoderTest extends TestCase {
     private $decoder;
 
-    public function setUp() {
+    public function setUp() : void {
         $this->decoder = new Decoder();
     }
 
-    /**
-     * Data provider
-     *
-     * @return array[]
-     */
     public function getDecodeIntegerData() : array {
         return [
             ['i1e', 1],
@@ -29,18 +25,11 @@ class DecoderTest extends TestCase {
     /**
      * @dataProvider getDecodeIntegerData
      * @covers ::decodeInteger
-     * @param string $encoded
-     * @param int $value
      */
-    public function testDecoderInteger(string $encoded, int $value) {
+    public function testDecoderInteger(string $encoded, int $value) : void {
         $this->assertEquals($value, $this->decoder->decodeInteger($encoded));
     }
 
-    /**
-     * Data provider
-     *
-     * @return array[]
-     */
     public function getDecodeInvalidIntegerData() : array {
         return [
             ['i01e'],
@@ -52,37 +41,31 @@ class DecoderTest extends TestCase {
     /**
      * @dataProvider getDecodeInvalidIntegerData
      * @covers ::decodeInteger
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Invalid integer value.
-     * @param string $value
      */
-    public function testDecodeInvalidInteger(string $value) {
+    public function testDecodeInvalidInteger(string $value) : void {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid integer value.');
         $this->decoder->decodeInteger($value);
     }
 
     /**
      * @covers ::decodeInteger
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Invalid integer. Integers must start wth "i" and end with "e".
      */
-    public function testDecodeStringAsInteger() {
+    public function testDecodeStringAsInteger() : void {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid integer. Integers must start wth "i" and end with "e".');
         $this->decoder->decodeInteger('4:spam');
     }
 
     /**
      * @covers ::decodeInteger
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Invalid integer. Integers must start wth "i" and end with "e".
      */
-    public function testDecodePartialInteger() {
+    public function testDecodePartialInteger() : void {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid integer. Integers must start wth "i" and end with "e".');
         $this->decoder->decodeInteger('i10');
     }
 
-    /**
-     * Data provider
-     *
-     * @return array[]
-     */
     public function getDecodeStringData() : array {
         return [
             ['4:spam', 'spam'],
@@ -94,36 +77,29 @@ class DecoderTest extends TestCase {
     /**
      * @dataProvider getDecodeStringData
      * @covers ::decodeString
-     * @param string $encoded
-     * @param string $value
      */
-    public function testDecodeString(string $encoded, string $value) {
+    public function testDecodeString(string $encoded, string $value) : void {
         $this->assertSame($value, $this->decoder->decodeString($encoded));
     }
 
     /**
      * @covers ::decodeString
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Invalid string. Strings consist of two parts separated by ":".
      */
-    public function testDecodeInvalidString() {
+    public function testDecodeInvalidString() : void {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid string. Strings consist of two parts separated by ":".');
         $this->decoder->decodeString('4spam');
     }
 
     /**
      * @covers ::decodeString
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage The length of the string does not match the prefix of the encoded data.
      */
-    public function testDecodeStringWithInvalidLength() {
+    public function testDecodeStringWithInvalidLength() : void {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The length of the string does not match the prefix of the encoded data.');
         $this->decoder->decodeString('6:spam');
     }
 
-    /**
-     * Data provider
-     *
-     * @return array[]
-     */
     public function getDecodeListData() : array {
         return [
             ['li1ei2ei3ee', [1, 2, 3]],
@@ -133,27 +109,20 @@ class DecoderTest extends TestCase {
     /**
      * @dataProvider getDecodeListData
      * @covers ::decodeList
-     * @param string $encoded
-     * @param array $value
      */
-    public function testDecodeList(string $encoded, array $value) {
+    public function testDecodeList(string $encoded, array $value) : void {
         $this->assertEquals($value, $this->decoder->decodeList($encoded));
     }
 
     /**
      * @covers ::decodeList
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Parameter is not an encoded list.
      */
-    public function testDecodeInvalidList() {
+    public function testDecodeInvalidList() : void {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Parameter is not an encoded list.');
         $this->decoder->decodeList('4:spam');
     }
 
-    /**
-     * Data provider
-     *
-     * @return array[]
-     */
     public function getDecodeDictionaryData() : array {
         return [
             ['d3:foo3:bar4:spam4:eggse', ['foo' => 'bar', 'spam' => 'eggs']],
@@ -163,27 +132,20 @@ class DecoderTest extends TestCase {
     /**
      * @dataProvider getDecodeDictionaryData
      * @covers ::decodeDictionary
-     * @param string $encoded
-     * @param array $value
      */
-    public function testDecodeDictionary(string $encoded, array $value) {
+    public function testDecodeDictionary(string $encoded, array $value) : void {
         $this->assertSame($value, $this->decoder->decodeDictionary($encoded));
     }
 
     /**
      * @covers ::decodeDictionary
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Parameter is not an encoded dictionary.
      */
-    public function testDecodeInvalidDictionary() {
+    public function testDecodeInvalidDictionary() : void {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Parameter is not an encoded dictionary.');
         $this->decoder->decodeDictionary('4:spam');
     }
 
-    /**
-     * Data provider
-     *
-     * @return array[]
-     */
     public function getGenericDecodeData() : array {
         return [
             ['i1e', 1],
@@ -197,56 +159,54 @@ class DecoderTest extends TestCase {
      * @dataProvider getGenericDecodeData
      * @covers ::__construct
      * @covers ::decode
-     * @param string $encoded
-     * @param int|string|array $value
      */
-    public function testGenericDecode(string $encoded, $value) {
+    public function testGenericDecode(string $encoded, $value) : void {
         $this->assertEquals($value, $this->decoder->decode($encoded));
     }
 
     /**
      * @covers ::decode
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Parameter is not correctly encoded.
      */
-    public function testGenericDecodeWithInvalidData() {
+    public function testGenericDecodeWithInvalidData() : void {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Parameter is not correctly encoded.');
         $this->decoder->decode('foo');
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Missing or empty "announce" key.
      * @covers ::decodeFile
      */
-    public function testDecodeTorrentFileStrictWithMissingAnnounce() {
+    public function testDecodeTorrentFileStrictWithMissingAnnounce() : void {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Missing or empty "announce" key.');
         $this->decoder->decodeFile(__DIR__ . '/_files/testMissingAnnounce.torrent', true);
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Missing or empty "info" key.
      * @covers ::decodeFile
      */
-    public function testDecodeTorrentFileStrictWithMissingInfo() {
+    public function testDecodeTorrentFileStrictWithMissingInfo() : void {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Missing or empty "info" key.');
         $this->decoder->decodeFile(__DIR__ . '/_files/testMissingInfo.torrent', true);
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage File
      * @covers ::decodeFile
      */
-    public function testDecodeNonReadableFile() {
+    public function testDecodeNonReadableFile() : void {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessageRegExp('/^File .*nonExistingFile does not exist or can not be read.$/');
         $this->decoder->decodeFile(__DIR__ . '/nonExistingFile');
     }
 
     /**
      * @covers ::decodeFile
      */
-    public function testDecodeFileWithStrictChecksEnabled() {
+    public function testDecodeFileWithStrictChecksEnabled() : void {
         $list = $this->decoder->decodeFile(__DIR__ . '/_files/valid.torrent', true);
 
-        $this->assertInternalType('array', $list);
+        $this->assertIsArray($list);
         $this->assertArrayHasKey('announce', $list);
         $this->assertSame('http://trackerurl', $list['announce']);
         $this->assertArrayHasKey('comment', $list);
@@ -254,7 +214,7 @@ class DecoderTest extends TestCase {
         $this->assertArrayHasKey('creation date', $list);
         $this->assertEquals(1323713688, $list['creation date']);
         $this->assertArrayHasKey('info', $list);
-        $this->assertInternalType('array', $list['info']);
+        $this->assertIsArray($list['info']);
         $this->assertArrayHasKey('files', $list['info']);
         $this->assertSame(5, count($list['info']['files']));
         $this->assertArrayHasKey('name', $list['info']);
