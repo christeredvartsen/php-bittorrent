@@ -1,0 +1,19 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Dump PHP version
+      run: php -v
+
+    - name: Install Barrel API Client dependencies through Composer
+      run: composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Run CI steps
+      run: composer run ci
