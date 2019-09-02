@@ -56,7 +56,7 @@ class Encoder implements EncoderInterface {
     }
 
     public function encodeList(array $list) : string {
-        $encodedList = array_map(function($value) {
+        $encodedList = array_map(function($value) : string {
             return $this->encode($value);
         }, $list);
 
