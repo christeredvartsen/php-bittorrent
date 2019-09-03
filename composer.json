@@ -39,7 +39,7 @@
   "scripts": {
     "clean:build": "rm -rf build",
     "qa:lint": "for file in `git ls-files '*php'`; do php -l $file; done",
-    "qa:phpstan": "vendor/bin/phpstan analyse src tests",
+    "qa:phpstan": "vendor/bin/phpstan analyse src tests -l 4",
     "qa:phploc": [
       "rm -rf build/artifacts/phploc",
       "mkdir -p build/artifacts/phploc",
@@ -54,7 +54,7 @@
     "test:phpunit:coverage": [
       "rm -rf build/artifacts/phpunit/coverage",
       "mkdir -p build/artifacts/phpunit/coverage",
-      "vendor/bin/phpunit --verbose --coverage-html build/artifacts/phpunit/coverage"
+      "vendor/bin/phpunit --verbose --coverage-text --coverage-html build/artifacts/phpunit/coverage"
     ],
     "test": [
       "@test:phpunit"
