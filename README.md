@@ -78,10 +78,8 @@ require 'vendor/autoload.php';
 
 use BitTorrent\Torrent;
 
-$torrent = Torrent::createFromPath('/path/to/files', 'http://tracker/announce.php');
-
-$torrent
-    ->setComment('Some comment')
+$torrent = Torrent::createFromPath('/path/to/files', 'http://tracker/announce.php')
+    ->withComment('Some comment')
     ->save('/save/to/path/file.torrent');
 ```
 
@@ -93,11 +91,9 @@ require 'vendor/autoload.php';
 
 use BitTorrent\Torrent;
 
-$torrent = Torrent::createFromTorrentFile('/path/to/file.torrent');
-
-$torrent
-    ->setAnnounce('http://tracker/announce.php') // Override announce in original file
-    ->setComment('Some comment') // Override commend in original file
+$torrent = Torrent::createFromTorrentFile('/path/to/file.torrent')
+    ->withAnnounce('http://tracker/announce.php') // Override announce in original file
+    ->withComment('Some comment') // Override commend in original file
     ->save('/save/to/path/file.torrent'); // Save to a new file
 ```
 
