@@ -2,206 +2,211 @@
 namespace BitTorrent;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
+use InvalidArgumentException;
 
 /**
  * @coversDefaultClass BitTorrent\Torrent
  */
 class TorrentTest extends TestCase {
-    /**
-     * @var Torrent
-     */
     private $torrent;
 
-    /**
-     * Set up the torrent instance
-     */
-    public function setUp() {
+    public function setUp() : void {
         $this->torrent = new Torrent();
     }
 
     /**
      * @covers ::__construct
-     * @covers ::setAnnounce
-     * @covers ::getAnnounce
+     * @covers ::getEncoder
      */
-    public function testConstructor() {
-        $announce = 'http://tracker/';
-        $torrent = new Torrent($announce);
-        $this->assertSame($announce, $torrent->getAnnounce());
+    public function testConstructor() : void {
+        $torrent = new Torrent('http://sometracker');
+        $this->assertSame('http://sometracker', $torrent->getAnnounceUrl());
+        $this->assertInstanceOf(EncoderInterface::class, $torrent->getEncoder());
     }
 
     /**
-     * @covers ::setComment
-     * @covers ::getComment
+     * @covers ::withEncoder
+     * @covers ::getEncoder
      */
-    public function testSetGetComment() {
-        $comment = 'This is my comment';
-        $this->assertSame($this->torrent, $this->torrent->setComment($comment));
-        $this->assertSame($comment, $this->torrent->getComment());
+    public function testSetAndGetEncoder() : void {
+        $encoder = $this->createMock(EncoderInterface::class);
+        $torrent = (new Torrent('http://sometracker'))->withEncoder($encoder);
+        $this->assertInstanceOf(EncoderInterface::class, $torrent->getEncoder());
+    }
+
+    public function getDataForSettersAndGetters() : array {
+        return [
+            'Announce URL' => [
+                'getter'  => 'getAnnounceUrl',
+                'mutator' => 'withAnnounceUrl',
+                'value'   => 'http://tracker',
+                'initial' => null,
+            ],
+            'Piece length exponent' => [
+                'getter'  => 'getPieceLengthExp',
+                'mutator' => 'withPieceLengthExp',
+                'value'   => 6,
+                'initial' => 18,
+            ],
+            'Comment' => [
+                'getter'  => 'getComment',
+                'mutator' => 'withComment',
+                'value'   => 'some comment',
+                'initial' => null,
+            ],
+            'Announce list' => [
+                'getter'  => 'getAnnounceList',
+                'mutator' => 'withAnnounceList',
+                'value'   => ['http://sometracker'],
+                'initial' => [],
+            ],
+            'Created by' => [
+                'getter'  => 'getCreatedBy',
+                'mutator' => 'withCreatedBy',
+                'value'   => 'Some creator',
+                'initial' => 'PHP BitTorrent',
+            ],
+            'Created at' => [
+                'getter'  => 'getCreatedAt',
+                'mutator' => 'withCreatedAt',
+                'value'   => 1567451302,
+                'initial' => null,
+            ],
+            'Info' => [
+                'getter'  => 'getInfo',
+                'mutator' => 'withInfo',
+                'value'   => ['length' => 123, 'name' => 'some name'],
+                'initial' => null,
+            ],
+            'Extra meta' => [
+                'getter'  => 'getExtraMeta',
+                'mutator' => 'withExtraMeta',
+                'value'   => ['foo' => 'bar'],
+                'initial' => null,
+            ],
+        ];
     }
 
     /**
-     * @covers ::setCreatedBy
-     * @covers ::getCreatedBy
-     */
-    public function testSetGetCreatedBy() {
-        $createdBy = 'Some client name';
-        $this->assertSame($this->torrent, $this->torrent->setCreatedBy($createdBy));
-        $this->assertSame($createdBy, $this->torrent->getCreatedBy());
-    }
-
-    /**
-     * @covers ::setCreatedAt
-     * @covers ::getCreatedAt
-     */
-    public function testSetGetCreationDate() {
-        $timestamp = time();
-        $this->assertSame($this->torrent, $this->torrent->setCreatedAt($timestamp));
-        $this->assertSame($timestamp, $this->torrent->getCreatedAt());
-    }
-
-    /**
-     * @covers ::setInfo
-     * @covers ::getInfo
-     */
-    public function testSetGetInfo() {
-        $info = ['some' => 'data'];
-        $this->assertSame($this->torrent, $this->torrent->setInfo($info));
-        $this->assertSame($info, $this->torrent->getInfo());
-    }
-
-    /**
-     * @covers ::setAnnounce
-     * @covers ::getAnnounce
-     */
-    public function testSetGetAnnounce() {
-        $announce = 'http://tracker/';
-        $this->assertSame($this->torrent, $this->torrent->setAnnounce($announce));
-        $this->assertSame($announce, $this->torrent->getAnnounce());
-    }
-
-    /**
-     * @covers ::setAnnounceList
-     * @covers ::getAnnounceList
-     */
-    public function testSetGetAnnounceList() {
-        $announceList = ['http://tracker1/', 'http://tracker2/'];
-        $this->assertSame($this->torrent, $this->torrent->setAnnounceList($announceList));
-        $this->assertSame($announceList, $this->torrent->getAnnounceList());
-    }
-
-    /**
-     * @covers ::setPieceLengthExp
+     * @dataProvider getDataForSettersAndGetters
+     * @covers ::withAnnounceUrl
+     * @covers ::withPieceLengthExp
+     * @covers ::withComment
+     * @covers ::withAnnounceList
+     * @covers ::withCreatedBy
+     * @covers ::withCreatedAt
+     * @covers ::withInfo
+     * @covers ::withExtraMeta
+     *
+     * @covers ::getAnnounceUrl
      * @covers ::getPieceLengthExp
+     * @covers ::getComment
+     * @covers ::getAnnounceList
+     * @covers ::getCreatedBy
+     * @covers ::getCreatedAt
+     * @covers ::getInfo
+     * @covers ::getExtraMeta
      */
-    public function testSetGetPieceLengthExp() {
-        $exp = 6;
-        $this->assertSame($this->torrent, $this->torrent->setPieceLengthExp($exp));
-        $this->assertSame($exp, $this->torrent->getPieceLengthExp());
+    public function testSettersAndGetters(string $getter, string $mutator, $value, $initial) : void {
+        $this->assertSame($initial, $this->torrent->$getter(), 'Incorrect initial value');
+        $torrent = $this->torrent->$mutator($value);
+        $this->assertSame($initial, $this->torrent->$getter(), 'Incorrect value after setting');
+        $this->assertSame($value, $torrent->$getter(), 'Incorrect value in mutation');
     }
 
     /**
-     * @expectedException RuntimeException
      * @covers ::getName
      */
-    public function testGetNameWithNoInfoBlockAdded() {
+    public function testGetNameWithNoInfoBlockAdded() : void {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('The info part of the torrent is not set.');
         $this->torrent->getName();
     }
 
     /**
-     * @expectedException RuntimeException
      * @covers ::getSize
      */
-    public function testGetSizeWithNoInfoBlockAdded() {
+    public function testGetSizeWithNoInfoBlockAdded() : void {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('The info part of the torrent is not set.');
         $this->torrent->getSize();
     }
 
     /**
-     * @expectedException RuntimeException
      * @covers ::getFileList
      */
-    public function testGetFileListWithNoInfoBlockAdded() {
+    public function testGetFileListWithNoInfoBlockAdded() : void {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('The info part of the torrent is not set.');
         $this->torrent->getFileList();
     }
 
     /**
-     * @covers ::setInfo
+     * @covers ::withInfo
      * @covers ::getName
      */
-    public function testGetName() {
-        $name = 'Some name';
-        $info = ['name' => $name];
-        $this->torrent->setInfo($info);
-        $this->assertSame($name, $this->torrent->getName());
+    public function testGetName() : void {
+        $this->assertSame('Some name', $this->torrent->withInfo($info = ['name' => 'Some name'])->getName());
     }
 
     /**
-     * @covers ::setInfo
+     * @covers ::withInfo
      * @covers ::getSize
      */
-    public function testGetSizeWhenLengthIsPresentInTheInfoBlock() {
-        $length = 123;
-        $info = ['length' => $length];
-        $this->torrent->setInfo($info);
-        $this->assertSame($length, $this->torrent->getSize());
+    public function testGetSizeWhenLengthIsPresentInTheInfoBlock() : void {
+        $this->assertSame(123, $this->torrent->withInfo(['length' => 123])->getSize());
     }
 
     /**
-     * @covers ::setInfo
+     * @covers ::withInfo
      * @covers ::getFileList
      */
-    public function testGetFileListWhenInfoBlockOnlyContainsOneFile() {
-        $name = 'some_filename';
-        $info = ['length' => 123, 'name' => $name];
-        $this->torrent->setInfo($info);
-        $fileList = $this->torrent->getFileList();
+    public function testGetFileListWhenInfoBlockOnlyContainsOneFile() : void {
+        $fileList = $this->torrent->withInfo(['length' => 123, 'name' => 'some_filename'])->getFileList();
         $this->assertCount(1, $fileList);
-        $this->assertSame($name, $fileList[0]);
+        $this->assertSame('some_filename', $fileList[0]);
     }
 
     /**
-     * @covers ::setInfo
+     * @covers ::withInfo
      * @covers ::getFileList
      */
-    public function testGetFileList() {
+    public function testGetFileList() : void {
         $files = [
             ['length' => 12, 'path' => ['path', 'file.php']],
             ['length' => 32, 'path' => ['path2', 'file2.php']],
             ['length' => 123, 'path' => ['file.php']],
         ];
-        $info = ['files' => $files];
-        $this->torrent->setInfo($info);
-        $this->assertSame($files, $this->torrent->getFileList());
+        $this->assertSame($files, $this->torrent->withInfo(['files' => $files])->getFileList());
     }
 
     /**
-     * @covers ::setInfo
+     * @covers ::withInfo
      * @covers ::getSize
      */
-    public function testGetSizeWhenInfoBlockHasSeveralFiles() {
+    public function testGetSizeWhenInfoBlockHasSeveralFiles() : void {
         $files = [
             ['length' =>  12, 'path' => ['path', 'file.php']],
             ['length' =>  32, 'path' => ['path2', 'file2.php']],
             ['length' => 123, 'path' => ['file.php']],
         ];
-        $info = ['files' => $files];
-        $this->torrent->setInfo($info);
-        $this->assertEquals(167, $this->torrent->getSize());
+        $this->assertEquals(167, $this->torrent->withInfo(['files' => $files])->getSize());
     }
 
     /**
      * @covers ::createFromTorrentFile
-     * @covers ::getAnnounce
+     * @covers ::getAnnounceUrl
      * @covers ::getComment
      * @covers ::getCreatedBy
      * @covers ::getCreatedAt
      * @covers ::getSize
      * @covers ::getFileList
      */
-    public function testCreateFromTorrentFile() {
+    public function testCreateFromTorrentFile() : void {
         $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_files/valid.torrent');
 
-        $this->assertSame('http://trackerurl', $torrent->getAnnounce());
+        $this->assertSame('http://trackerurl', $torrent->getAnnounceUrl());
         $this->assertSame('This is a comment', $torrent->getComment());
         $this->assertSame('PHP BitTorrent', $torrent->getCreatedBy());
         $this->assertSame(1323713688, $torrent->getCreatedAt());
@@ -211,13 +216,11 @@ class TorrentTest extends TestCase {
 
     /**
      * @covers ::createFromTorrentFile
-     * @covers ::getAnnounce
+     * @covers ::getAnnounceUrl
      * @covers ::getFileList
      */
-    public function testCreateFromTorrentFileWithLists() {
+    public function testCreateFromTorrentFileWithLists() : void {
         $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_extra_files/extra.torrent');
-
-        // we expect an array of arrays, according to the spec
         $announceList = [
             [
                 'http://tracker/',
@@ -226,7 +229,7 @@ class TorrentTest extends TestCase {
             ]
         ];
 
-        $this->assertSame('http://tracker/', $torrent->getAnnounce());
+        $this->assertSame('http://tracker/', $torrent->getAnnounceUrl());
         $this->assertEquals($announceList, $torrent->getAnnounceList());
         $this->assertSame(1, count($torrent->getFileList()));
     }
@@ -235,9 +238,8 @@ class TorrentTest extends TestCase {
      * @covers ::createFromTorrentFile
      * @covers ::getExtraMeta
      */
-    public function testCreateFromTorrentFileWithExtra() {
+    public function testCreateFromTorrentFileWithExtra() : void {
         $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_extra_files/extra.torrent');
-
         $webSeeds = [
             'url-list' =>
                 [
@@ -252,17 +254,17 @@ class TorrentTest extends TestCase {
 
     /**
      * @covers ::createFromPath
-     * @covers ::getAnnounce
+     * @covers ::getAnnounceUrl
      * @covers ::getName
      * @covers ::getSize
      * @covers ::getFileList
      */
-    public function testCreateFromPathWhenUsingADirectoryAsArgument() {
+    public function testCreateFromPathWhenUsingADirectoryAsArgument() : void {
         $path = __DIR__ . '/_files';
         $trackerUrl = 'http://trackerurl';
         $torrent = Torrent::createFromPath($path, $trackerUrl);
 
-        $this->assertSame($trackerUrl, $torrent->getAnnounce());
+        $this->assertSame($trackerUrl, $torrent->getAnnounceUrl());
         $this->assertSame('_files', $torrent->getName());
         $this->assertEquals(902910, $torrent->getSize());
         $this->assertSame(7, count($torrent->getFileList()));
@@ -270,17 +272,17 @@ class TorrentTest extends TestCase {
 
     /**
      * @covers ::createFromPath
-     * @covers ::getAnnounce
+     * @covers ::getAnnounceUrl
      * @covers ::getName
      * @covers ::getSize
      * @covers ::getFileList
      */
-    public function testCreateFromPathWhenUsingAFileAsArgument() {
+    public function testCreateFromPathWhenUsingAFileAsArgument() : void {
         $path = __DIR__ . '/_files/valid.torrent';
         $trackerUrl = 'http://trackerurl';
         $torrent = Torrent::createFromPath($path, $trackerUrl);
 
-        $this->assertSame($trackerUrl, $torrent->getAnnounce());
+        $this->assertSame($trackerUrl, $torrent->getAnnounceUrl());
         $this->assertSame('valid.torrent', $torrent->getName());
         $this->assertSame(440, $torrent->getSize());
         $this->assertSame(1, count($torrent->getFileList()));
@@ -288,12 +290,12 @@ class TorrentTest extends TestCase {
 
     /**
      * @covers ::createFromPath
-     * @covers ::setComment
-     * @covers ::setCreatedBy
-     * @covers ::setAnnounceList
+     * @covers ::withComment
+     * @covers ::withCreatedBy
+     * @covers ::withAnnounceList
      * @covers ::save
      * @covers ::createFromTorrentFile
-     * @covers ::getAnnounce
+     * @covers ::getAnnounceUrl
      * @covers ::getComment
      * @covers ::getCreatedBy
      * @covers ::getName
@@ -302,7 +304,7 @@ class TorrentTest extends TestCase {
      * @covers ::getAnnounceList
      * @covers ::getInfoPart
      */
-    public function testSaveTorrent() {
+    public function testSaveTorrent() : void {
         $path         = __DIR__ . '/_files';
         $announce     = 'http://tracker/';
         $announceList = [['http://tracker2'], ['http://tracker3']];
@@ -314,16 +316,14 @@ class TorrentTest extends TestCase {
             $this->fail('Could not create file: ' . $target);
         }
 
-        $torrent = Torrent::createFromPath($path, $announce);
-        $torrent->setComment($comment)
-                ->setCreatedBy($createdBy)
-                ->setAnnounceList($announceList)
-                ->save($target);
-
-        // Now load the file and make sure the values are correct
+        $torrent = Torrent::createFromPath($path, $announce)
+            ->withComment($comment)
+            ->withCreatedBy($createdBy)
+            ->withAnnounceList($announceList);
+        $torrent->save($target);
         $torrent = Torrent::createFromTorrentFile($target);
 
-        $this->assertSame($announce, $torrent->getAnnounce());
+        $this->assertSame($announce, $torrent->getAnnounceUrl());
         $this->assertSame($comment, $torrent->getComment());
         $this->assertSame($createdBy, $torrent->getCreatedBy());
         $this->assertSame('_files', $torrent->getName());
@@ -331,18 +331,17 @@ class TorrentTest extends TestCase {
         $this->assertSame(7, count($torrent->getFileList()));
         $this->assertSame($announceList, $torrent->getAnnounceList());
 
-        // Remove the saved file
         unlink($target);
     }
 
     /**
      * @covers ::createFromPath
-     * @covers ::setExtraMeta
+     * @covers ::withExtraMeta
      * @covers ::save
      * @covers ::createFromTorrentFile
      * @covers ::getExtraMeta
      */
-    public function testSaveWithExtra() {
+    public function testSaveWithExtra() : void {
         $path      = __DIR__ . '/_files';
         $announce  = 'http://tracker/';
         $target    = tempnam(sys_get_temp_dir(), 'PHP\BitTorrent');
@@ -359,29 +358,22 @@ class TorrentTest extends TestCase {
             ],
         ];
 
-        $torrent = Torrent::createFromPath($path, $announce);
-        $torrent->setExtraMeta($extra)
-                ->save($target);
+        $torrent = Torrent::createFromPath($path, $announce)->withExtraMeta($extra);
+        $torrent->save($target);
 
-        // Now load the file and make sure the values are correct
         $torrent = Torrent::createFromTorrentFile($target);
 
         $this->assertEquals($extra, $torrent->getExtraMeta());
 
-        // Remove the saved file
         unlink($target);
     }
 
     /**
-     * Try to save extra fields with keys that already exist
-     *
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Duplicate key in extra meta info
      * @covers ::createFromPath
-     * @covers ::setExtraMeta
+     * @covers ::withExtraMeta
      * @covers ::save
      */
-    public function testSaveWithInvalidExtra() {
+    public function testSaveWithInvalidExtra() : void {
         $path      = __DIR__ . '/_files';
         $announce  = 'http://tracker/';
         $target    = tempnam(sys_get_temp_dir(), 'PHP\BitTorrent');
@@ -392,140 +384,129 @@ class TorrentTest extends TestCase {
 
         $extra = ['announce' => 'http://extratracker'];
 
-        $torrent = Torrent::createFromPath($path, $announce);
-        $torrent->setExtraMeta($extra)
-                ->save($target);
+        $torrent = Torrent::createFromPath($path, $announce)
+            ->withExtraMeta($extra);
 
-        // Remove the saved file
-        unlink($target);
-    }
-
-    /**
-     * Try to save when no announce has been given. The code we are testing is AFTER the code that
-     * checks if the file specified is writeable, so make sure the argument to save() is a file that
-     * is writeable.
-     *
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage Announce URL is missing
-     * @covers ::save
-     */
-    public function testSaveWithNoAnnounce() {
-        $target = tempnam(sys_get_temp_dir(), 'PHP\BitTorrent');
-        $this->torrent->save($target);
-    }
-
-    /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage The info part of the torrent is not set.
-     * @covers ::setAnnounce
-     * @covers ::save
-     * @covers ::getInfoPart
-     */
-    public function testSaveWithNoInfoBlock() {
-        $target = tempnam(sys_get_temp_dir(), 'PHP\BitTorrent');
-        $this->torrent->setAnnounce('http://tracker')
-                      ->save($target);
-    }
-
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Could not open file
-     * @covers ::createFromPath
-     * @covers ::save
-     */
-    public function testSaveToUnwritableFile() {
-        $target = uniqid() . DIRECTORY_SEPARATOR . uniqid();
-
-        $torrent = Torrent::createFromPath(__FILE__, 'http://tracker/');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Duplicate key in extra meta info');
         $torrent->save($target);
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage foobar does not exist
+     * @covers ::save
+     */
+    public function testSaveWithNoAnnounce() : void {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Announce URL is missing');
+        $this->torrent->save(tempnam(sys_get_temp_dir(), 'PHP\BitTorrent'));
+    }
+
+    /**
+     * @covers ::withAnnounceUrl
+     * @covers ::save
+     * @covers ::getInfoPart
+     */
+    public function testSaveWithNoInfoBlock() : void {
+        $torrent = $this->torrent->withAnnounceUrl('http://tracker');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('The info part of the torrent is not set.');
+        $torrent->save(tempnam(sys_get_temp_dir(), 'PHP\BitTorrent'));
+    }
+
+    /**
+     * @covers ::createFromPath
+     * @covers ::save
+     */
+    public function testSaveToUnwritableFile() : void {
+        $torrent = Torrent::createFromPath(__FILE__, 'http://tracker/');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Could not open file');
+        $torrent->save(uniqid() . DIRECTORY_SEPARATOR . uniqid());
+    }
+
+    /**
      * @covers ::createFromTorrentFile
      */
-    public function testCreateFromTorrentFileWithUnexistingTorrentFile() {
+    public function testCreateFromTorrentFileWithUnexistingTorrentFile() : void {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('foobar does not exist');
         Torrent::createFromTorrentFile('foobar');
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Invalid path: foobar
      * @covers ::createFromPath
      */
-    public function testCreateFromPathWithInvalidPath() {
+    public function testCreateFromPathWithInvalidPath() : void {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid path: foobar');
         Torrent::createFromPath('foobar', 'http://trackerurl');
     }
 
     /**
-     * @expectedException RuntimeException
      * @covers ::getHash
      */
-    public function testThrowsExceptionWhenTryingToGenerateHashWithEmptyTorrentFile() {
+    public function testThrowsExceptionWhenTryingToGenerateHashWithEmptyTorrentFile() : void {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('The info part of the torrent is not set.');
         $this->torrent->getHash();
     }
 
     /**
-     * @expectedException RuntimeException
      * @covers ::getEncodedHash
      */
-    public function testThrowsExceptionWhenTryingToGenerateEncodedHashWithEmptyTorrentFile() {
+    public function testThrowsExceptionWhenTryingToGenerateEncodedHashWithEmptyTorrentFile() : void {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('The info part of the torrent is not set.');
         $this->torrent->getEncodedHash();
     }
 
     /**
      * @covers ::getHash
      */
-    public function testGetHash() {
-        $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_files/valid.torrent');
-        $this->assertSame('c717bfd30211a5e36c94cabaab3b3ca0dc89f91a', $torrent->getHash());
+    public function testGetHash() : void {
+        $this->assertSame(
+            'c717bfd30211a5e36c94cabaab3b3ca0dc89f91a',
+            Torrent::createFromTorrentFile(__DIR__ . '/_files/valid.torrent')->getHash()
+        );
     }
 
     /**
      * @covers ::getEncodedHash
      * @covers ::getHash
      */
-    public function testGetEncodedHash() {
-        $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_files/valid.torrent');
-        $this->assertSame('%C7%17%BF%D3%02%11%A5%E3l%94%CA%BA%AB%3B%3C%A0%DC%89%F9%1A', $torrent->getEncodedHash());
+    public function testGetEncodedHash() : void {
+        $this->assertSame(
+            '%C7%17%BF%D3%02%11%A5%E3l%94%CA%BA%AB%3B%3C%A0%DC%89%F9%1A',
+            Torrent::createFromTorrentFile(__DIR__ . '/_files/valid.torrent')->getEncodedHash()
+        );
     }
 
     /**
      * @covers ::getSize
      */
-    public function testGetSizeWithLargeValues() {
-        $torrent1 = Torrent::createFromTorrentFile(__DIR__ . '/_files/large_files.torrent');
-        $torrent2 = Torrent::createFromTorrentFile(__DIR__ . '/_files/large_file.img.torrent');
-
-        $this->assertEquals("6442450944", $torrent1->getSize());
-        $this->assertEquals("5368709120", $torrent2->getSize());
+    public function testGetSizeWithLargeValues() : void {
+        $this->assertSame(6442450944, Torrent::createFromTorrentFile(__DIR__ . '/_files/large_files.torrent')->getSize());
+        $this->assertSame(5368709120, Torrent::createFromTorrentFile(__DIR__ . '/_files/large_file.img.torrent')->getSize());
     }
 
     /**
      * @covers ::isPrivate
      */
-    public function testIsPrivateWhenFlagDoesNotExist() {
-        $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_files/large_files.torrent');
-
-        $this->assertFalse($torrent->isPrivate());
+    public function testIsPrivateWhenFlagDoesNotExist() : void {
+        $this->assertFalse(Torrent::createFromTorrentFile(__DIR__ . '/_files/large_files.torrent')->isPrivate());
     }
 
     /**
      * @covers ::isPrivate
      */
-    public function testIsPrivateWhenItExistsAndIs1() {
-        $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_files/file_with_private_set_to_1.torrent');
-
-        $this->assertTrue($torrent->isPrivate());
+    public function testIsPrivateWhenItExistsAndIs1() : void {
+        $this->assertTrue(Torrent::createFromTorrentFile(__DIR__ . '/_files/file_with_private_set_to_1.torrent')->isPrivate());
     }
 
     /**
      * @covers ::isPrivate
      */
-    public function testIsPrivateWhenItExistsAndIsNot1() {
-        $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_files/file_with_private_set_to_0.torrent');
-
-        $this->assertFalse($torrent->isPrivate());
+    public function testIsPrivateWhenItExistsAndIsNot1() : void {
+        $this->assertFalse(Torrent::createFromTorrentFile(__DIR__ . '/_files/file_with_private_set_to_0.torrent')->isPrivate());
     }
 }
