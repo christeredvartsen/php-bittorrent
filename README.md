@@ -52,7 +52,7 @@ The decoder class also has a method for decoding a torrent file (which is an enc
 <?php
 require 'vendor/autoload.php';
 
-$decoder = new BitTorrent\\Decoder();
+$decoder = new BitTorrent\Decoder();
 $decodedFile = $decoder->decodeFile('/path/to/file.torrent');
 ```
 
