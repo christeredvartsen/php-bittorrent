@@ -320,7 +320,9 @@ class TorrentTest extends TestCase {
             ->withComment($comment)
             ->withCreatedBy($createdBy)
             ->withAnnounceList($announceList);
-        $torrent->save($target);
+
+        $this->assertSame($torrent, $torrent->save($target));
+
         $torrent = Torrent::createFromTorrentFile($target);
 
         $this->assertSame($announce, $torrent->getAnnounceUrl());
