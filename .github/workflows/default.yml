@@ -24,7 +24,7 @@ jobs:
     - name: Get lines of code
       run: composer run qa:phploc
 
-    - uses: actions/upload-artifact@master
+    - uses: actions/upload-artifact@v1
       with:
         name: phploc
         path: build/artifacts/phploc/phploc.xml
@@ -35,7 +35,7 @@ jobs:
     - name: Run unit tests
       run: composer run test:phpunit:coverage
 
-    - uses: actions/upload-artifact@master
+    - uses: actions/upload-artifact@v1
       with:
         name: PHPUnit Code Coverage report
         path: build/artifacts/phpunit/coverage
