@@ -16,7 +16,7 @@ interface EncoderInterface {
     /**
      * Encode an integer
      *
-     * @param int|string $integer The integer to encode
+     * @param int $integer The integer to encode
      * @return string Returns the encoded string
      */
     function encodeInteger(int $integer) : string;
