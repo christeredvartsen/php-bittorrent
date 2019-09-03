@@ -24,6 +24,11 @@ jobs:
     - name: Get lines of code
       run: composer run qa:phploc
 
+    - uses: actions/upload-artifact@master
+      with:
+        name: phploc
+        path: build/artifacts/phploc/phploc.xml
+
     - name: Run static code analyser
       run: composer run qa:phpstan
 
