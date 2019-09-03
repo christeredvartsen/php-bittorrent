@@ -187,7 +187,7 @@ class Torrent {
      * This method will save the current object to a file. If the file specified exists it will be
      * overwritten.
      */
-    public function save(string $filename) : void {
+    public function save(string $filename) : self {
         if (!is_writable($filename) && !is_writable(dirname($filename))) {
             throw new InvalidArgumentException(sprintf('Could not open file "%s" for writing.', $filename));
         }
@@ -225,6 +225,8 @@ class Torrent {
         }
 
         file_put_contents($filename, $this->encoder->encodeDictionary($torrent));
+
+        return $this;
     }
 
     public function getFileList() : array {
