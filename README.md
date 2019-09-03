@@ -1,21 +1,15 @@
 # PHP BitTorrent
 **PHP BitTorrent** is a set of components that can be used to interact with torrent files (read+write) and encode/decode to/from the BitTorrent format.
 
-[![Current Build Status](https://secure.travis-ci.org/christeredvartsen/php-bittorrent.png)](http://travis-ci.org/christeredvartsen/php-bittorrent)
+[![Current Build Status](https://github.com/christeredvartsen/php-bittorrent/workflows/CI/badge.svg)](https://github.com/christeredvartsen/php-bittorrent/actions)
 
 ## Requirements
-PHP BitTorrent requires PHP 7.1 or above.
+PHP BitTorrent requires PHP 7.2 or above.
 
 ## Installation
 PHP BitTorrent can be installed using [Composer](https://getcomposer.org):
 
-```json
-{
-  "require": {
-    "christeredvartsen/bittorrent": "^2.0"
-  }
-}
-```
+    composer require christeredvartsen/php-bittorrent ^2.0
 
 ## Using the PHP BitTorrent API
 ### Encode PHP variables
@@ -24,9 +18,7 @@ PHP BitTorrent can be installed using [Composer](https://getcomposer.org):
 <?php
 require 'vendor/autoload.php';
 
-use BitTorrent\Encoder;
-
-$encoder = new Encoder();
+$encoder = new BitTorrent\Encoder();
 
 var_dump($encoder->encodeString('Some string')); // string(14) "11:Some string"
 var_dump($encoder->encodeInteger(42)); // string(4) "i42e"
@@ -42,9 +34,7 @@ There is also a convenience method simply called `encode` in the `BitTorrent\Enc
 <?php
 require 'vendor/autoload.php';
 
-use BitTorrent\Decoder;
-
-$decoder = new Decoder();
+$decoder = new BitTorrent\Decoder();
 
 var_dump($decoder->decodeString('11:Some string')); // string(11) "Some string"
 var_dump($decoder->decodeInteger('i42e')); // int(42)
@@ -62,9 +52,7 @@ The decoder class also has a method for decoding a torrent file (which is an enc
 <?php
 require 'vendor/autoload.php';
 
-use BitTorrent\Decoder;
-
-$decoder = new PHP\BitTorrent\Decoder();
+$decoder = new BitTorrent\\Decoder();
 $decodedFile = $decoder->decodeFile('/path/to/file.torrent');
 ```
 
@@ -76,9 +64,7 @@ The `BitTorrent\Torrent` class represents a torrent file and can be used to crea
 <?php
 require 'vendor/autoload.php';
 
-use BitTorrent\Torrent;
-
-$torrent = Torrent::createFromPath('/path/to/files', 'http://tracker/announce.php')
+$torrent = BitTorrent\Torrent::createFromPath('/path/to/files', 'http://tracker/announce.php')
     ->withComment('Some comment')
     ->save('/save/to/path/file.torrent');
 ```
@@ -89,9 +75,7 @@ The class can also load a torrent file:
 <?php
 require 'vendor/autoload.php';
 
-use BitTorrent\Torrent;
-
-$torrent = Torrent::createFromTorrentFile('/path/to/file.torrent')
+$torrent = BitTorrent\Torrent::createFromTorrentFile('/path/to/file.torrent')
     ->withAnnounce('http://tracker/announce.php') // Override announce in original file
     ->withComment('Some comment') // Override commend in original file
     ->save('/save/to/path/file.torrent'); // Save to a new file

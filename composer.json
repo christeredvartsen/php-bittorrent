@@ -1,5 +1,5 @@
 {
-  "name": "christeredvartsen/bittorrent",
+  "name": "christeredvartsen/php-bittorrent",
   "type": "library",
   "description": "A set of components that can be used to interact with torrent files (read+write) and classes that can encode/decode to/from the BitTorrent format.",
   "keywords": [
