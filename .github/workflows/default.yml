@@ -12,8 +12,20 @@ jobs:
     - name: Dump PHP version
       run: php -v
 
+    - name: Validate composer.json
+      run: composer validate --strict
+
+    - name: Lint all PHP files
+      run: composer run qa:lint
+
     - name: Install Barrel API Client dependencies through Composer
       run: composer install --prefer-dist --no-progress --no-suggest
 
-    - name: Run CI steps
-      run: composer run ci
+    - name: Get lines of code
+      run: composer run qa:phploc
+
+    - name: Run static code analyser
+      run: composer run qa:phpstan
+
+    - name: Run unit tests
+      run: composer run test:phpunit
