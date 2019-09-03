@@ -7,10 +7,10 @@ __N/A__
 
 * Use strict types
 * Remove support for 32 bit platforms
-* Bump PHP requirement from 5.3 to 7.1
+* Bump PHP requirement from 5.3 to 7.2
 * Change namespace from PHP\BitTorrent to BitTorrent
-* Renamed package from `christeredvartsen/php-bittorrent` to `christeredvartsen/bittorrent`
 * Added method to check if the torrent is private (@stormwalkerec)
+* Made `BitTorrent\Torrent` immutable
 
 Version 1.1.0
 -------------
