@@ -196,6 +196,7 @@ class TorrentTest extends TestCase {
 
     /**
      * @covers ::createFromTorrentFile
+     * @covers ::createFromDictionary
      * @covers ::getAnnounceUrl
      * @covers ::getComment
      * @covers ::getCreatedBy
@@ -204,7 +205,28 @@ class TorrentTest extends TestCase {
      * @covers ::getFileList
      */
     public function testCreateFromTorrentFile() : void {
-        $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_files/valid.torrent');
+        $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_files/valid.torrent', new Decoder());
+
+        $this->assertSame('http://trackerurl', $torrent->getAnnounceUrl());
+        $this->assertSame('This is a comment', $torrent->getComment());
+        $this->assertSame('PHP BitTorrent', $torrent->getCreatedBy());
+        $this->assertSame(1323713688, $torrent->getCreatedAt());
+        $this->assertEquals(30243, $torrent->getSize());
+        $this->assertSame(5, count($torrent->getFileList()));
+    }
+
+    /**
+     * @covers ::createFromString
+     * @covers ::createFromDictionary
+     * @covers ::getAnnounceUrl
+     * @covers ::getComment
+     * @covers ::getCreatedBy
+     * @covers ::getCreatedAt
+     * @covers ::getSize
+     * @covers ::getFileList
+     */
+    public function testCreateFromTorrentFileString() : void {
+        $torrent = Torrent::createFromString(file_get_contents(__DIR__ . '/_files/valid.torrent'), new Decoder());
 
         $this->assertSame('http://trackerurl', $torrent->getAnnounceUrl());
         $this->assertSame('This is a comment', $torrent->getComment());
@@ -216,11 +238,12 @@ class TorrentTest extends TestCase {
 
     /**
      * @covers ::createFromTorrentFile
+     * @covers ::createFromDictionary
      * @covers ::getAnnounceUrl
      * @covers ::getFileList
      */
     public function testCreateFromTorrentFileWithLists() : void {
-        $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_extra_files/extra.torrent');
+        $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_extra_files/extra.torrent', new Decoder());
         $announceList = [
             [
                 'http://tracker/',
@@ -239,7 +262,7 @@ class TorrentTest extends TestCase {
      * @covers ::getExtraMeta
      */
     public function testCreateFromTorrentFileWithExtra() : void {
-        $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_extra_files/extra.torrent');
+        $torrent = Torrent::createFromTorrentFile(__DIR__ . '/_extra_files/extra.torrent', new Decoder());
         $webSeeds = [
             'url-list' =>
                 [
@@ -323,7 +346,7 @@ class TorrentTest extends TestCase {
 
         $this->assertSame($torrent, $torrent->save($target));
 
-        $torrent = Torrent::createFromTorrentFile($target);
+        $torrent = Torrent::createFromTorrentFile($target, new Decoder());
 
         $this->assertSame($announce, $torrent->getAnnounceUrl());
         $this->assertSame($comment, $torrent->getComment());
@@ -363,7 +386,7 @@ class TorrentTest extends TestCase {
         $torrent = Torrent::createFromPath($path, $announce)->withExtraMeta($extra);
         $torrent->save($target);
 
-        $torrent = Torrent::createFromTorrentFile($target);
+        $torrent = Torrent::createFromTorrentFile($target, new Decoder());
 
         $this->assertEquals($extra, $torrent->getExtraMeta());
 
@@ -432,7 +455,7 @@ class TorrentTest extends TestCase {
     public function testCreateFromTorrentFileWithUnexistingTorrentFile() : void {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('foobar does not exist');
-        Torrent::createFromTorrentFile('foobar');
+        Torrent::createFromTorrentFile('foobar', new Decoder());
     }
 
     /**
@@ -468,7 +491,7 @@ class TorrentTest extends TestCase {
     public function testGetHash() : void {
         $this->assertSame(
             'c717bfd30211a5e36c94cabaab3b3ca0dc89f91a',
-            Torrent::createFromTorrentFile(__DIR__ . '/_files/valid.torrent')->getHash()
+            Torrent::createFromTorrentFile(__DIR__ . '/_files/valid.torrent', new Decoder())->getHash()
         );
     }
 
@@ -479,7 +502,7 @@ class TorrentTest extends TestCase {
     public function testGetEncodedHash() : void {
         $this->assertSame(
             '%C7%17%BF%D3%02%11%A5%E3l%94%CA%BA%AB%3B%3C%A0%DC%89%F9%1A',
-            Torrent::createFromTorrentFile(__DIR__ . '/_files/valid.torrent')->getEncodedHash()
+            Torrent::createFromTorrentFile(__DIR__ . '/_files/valid.torrent', new Decoder())->getEncodedHash()
         );
     }
 
@@ -487,28 +510,29 @@ class TorrentTest extends TestCase {
      * @covers ::getSize
      */
     public function testGetSizeWithLargeValues() : void {
-        $this->assertSame(6442450944, Torrent::createFromTorrentFile(__DIR__ . '/_files/large_files.torrent')->getSize());
-        $this->assertSame(5368709120, Torrent::createFromTorrentFile(__DIR__ . '/_files/large_file.img.torrent')->getSize());
+        $decoder = new Decoder();
+        $this->assertSame(6442450944, Torrent::createFromTorrentFile(__DIR__ . '/_files/large_files.torrent', $decoder)->getSize());
+        $this->assertSame(5368709120, Torrent::createFromTorrentFile(__DIR__ . '/_files/large_file.img.torrent', $decoder)->getSize());
     }
 
     /**
      * @covers ::isPrivate
      */
     public function testIsPrivateWhenFlagDoesNotExist() : void {
-        $this->assertFalse(Torrent::createFromTorrentFile(__DIR__ . '/_files/large_files.torrent')->isPrivate());
+        $this->assertFalse(Torrent::createFromTorrentFile(__DIR__ . '/_files/large_files.torrent', new Decoder())->isPrivate());
     }
 
     /**
      * @covers ::isPrivate
      */
     public function testIsPrivateWhenItExistsAndIs1() : void {
-        $this->assertTrue(Torrent::createFromTorrentFile(__DIR__ . '/_files/file_with_private_set_to_1.torrent')->isPrivate());
+        $this->assertTrue(Torrent::createFromTorrentFile(__DIR__ . '/_files/file_with_private_set_to_1.torrent', new Decoder())->isPrivate());
     }
 
     /**
      * @covers ::isPrivate
      */
     public function testIsPrivateWhenItExistsAndIsNot1() : void {
-        $this->assertFalse(Torrent::createFromTorrentFile(__DIR__ . '/_files/file_with_private_set_to_0.torrent')->isPrivate());
+        $this->assertFalse(Torrent::createFromTorrentFile(__DIR__ . '/_files/file_with_private_set_to_0.torrent', new Decoder())->isPrivate());
     }
 }

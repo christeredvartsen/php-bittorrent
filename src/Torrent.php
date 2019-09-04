@@ -282,50 +282,49 @@ class Torrent {
         return (isset($info['private']) && 1 === $info['private']);
     }
 
-    static public function createFromTorrentFile(string $path, DecoderInterface $decoder = null) : self {
-        if (!is_file($path)) {
-            throw new InvalidArgumentException(sprintf('%s does not exist.', $path));
-        }
+    static public function createFromString(string $contents, DecoderInterface $decoder, bool $strict = false) : self {
+        return static::createFromDictionary($decoder->decodeFileContents($contents, $strict));
+    }
 
-        if (null === $decoder) {
-            $decoder = new Decoder();
-        }
+    static public function createFromTorrentFile(string $path, DecoderInterface $decoder, bool $strict = false) : self {
+        return static::createFromDictionary($decoder->decodeFile($path, $strict));
+    }
 
-        $decodedFile = $decoder->decodeFile($path);
+    static public function createFromDictionary(array $dictionary) : self {
         $torrent = new static();
 
-        if (isset($decodedFile['announce'])) {
-            $torrent = $torrent->withAnnounceUrl($decodedFile['announce']);
-            unset($decodedFile['announce']);
+        if (isset($dictionary['announce'])) {
+            $torrent = $torrent->withAnnounceUrl($dictionary['announce']);
+            unset($dictionary['announce']);
         }
 
-        if (isset($decodedFile['announce-list'])) {
-            $torrent = $torrent->withAnnounceList($decodedFile['announce-list']);
-            unset($decodedFile['announce-list']);
+        if (isset($dictionary['announce-list'])) {
+            $torrent = $torrent->withAnnounceList($dictionary['announce-list']);
+            unset($dictionary['announce-list']);
         }
 
-        if (isset($decodedFile['comment'])) {
-            $torrent = $torrent->withComment($decodedFile['comment']);
-            unset($decodedFile['comment']);
+        if (isset($dictionary['comment'])) {
+            $torrent = $torrent->withComment($dictionary['comment']);
+            unset($dictionary['comment']);
         }
 
-        if (isset($decodedFile['created by'])) {
-            $torrent = $torrent->withCreatedBy($decodedFile['created by']);
-            unset($decodedFile['created by']);
+        if (isset($dictionary['created by'])) {
+            $torrent = $torrent->withCreatedBy($dictionary['created by']);
+            unset($dictionary['created by']);
         }
 
-        if (isset($decodedFile['creation date'])) {
-            $torrent = $torrent->withCreatedAt($decodedFile['creation date']);
-            unset($decodedFile['creation date']);
+        if (isset($dictionary['creation date'])) {
+            $torrent = $torrent->withCreatedAt($dictionary['creation date']);
+            unset($dictionary['creation date']);
         }
 
-        if (isset($decodedFile['info'])) {
-            $torrent = $torrent->withInfo($decodedFile['info']);
-            unset($decodedFile['info']);
+        if (isset($dictionary['info'])) {
+            $torrent = $torrent->withInfo($dictionary['info']);
+            unset($dictionary['info']);
         }
 
-        if (count($decodedFile) > 0) {
-            $torrent = $torrent->withExtraMeta($decodedFile);
+        if (count($dictionary) > 0) {
+            $torrent = $torrent->withExtraMeta($dictionary);
         }
 
         return $torrent;
