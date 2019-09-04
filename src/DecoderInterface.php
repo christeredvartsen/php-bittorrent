@@ -24,6 +24,17 @@ interface DecoderInterface {
     function decodeFile(string $file, bool $strict = false) : array;
 
     /**
+     * Decode the contents of a file as a string
+     *
+     * @param string $contents The contents of a torrent file
+     * @param bool $strict If set to true this method will check for certain elements in the
+     *                        dictionary.
+     * @return array Returns the decoded version of the file as an array
+     * @throws InvalidArgumentException
+     */
+    function decodeFileContents(string $contents, bool $strict = false) : array;
+
+    /**
      * Decode any bittorrent encoded string
      *
      * @param string $string The string to decode

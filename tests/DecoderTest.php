@@ -175,6 +175,7 @@ class DecoderTest extends TestCase {
 
     /**
      * @covers ::decodeFile
+     * @covers ::decodeFileContents
      */
     public function testDecodeTorrentFileStrictWithMissingAnnounce() : void {
         $this->expectException(InvalidArgumentException::class);
@@ -184,6 +185,7 @@ class DecoderTest extends TestCase {
 
     /**
      * @covers ::decodeFile
+     * @covers ::decodeFileContents
      */
     public function testDecodeTorrentFileStrictWithMissingInfo() : void {
         $this->expectException(InvalidArgumentException::class);
@@ -202,6 +204,7 @@ class DecoderTest extends TestCase {
 
     /**
      * @covers ::decodeFile
+     * @covers ::decodeFileContents
      */
     public function testDecodeFileWithStrictChecksEnabled() : void {
         $list = $this->decoder->decodeFile(__DIR__ . '/_files/valid.torrent', true);

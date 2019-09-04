@@ -15,7 +15,11 @@ class Decoder implements DecoderInterface {
             throw new InvalidArgumentException(sprintf('File %s does not exist or can not be read.', $file));
         }
 
-        $dictionary = $this->decodeDictionary(file_get_contents($file, true));
+        return $this->decodeFileContents(file_get_contents($file, true), $strict);
+    }
+
+    public function decodeFileContents(string $contents, bool $strict = false) : array {
+        $dictionary = $this->decodeDictionary($contents);
 
         if ($strict) {
             if (!isset($dictionary['announce']) || !is_string($dictionary['announce']) && !empty($dictionary['announce'])) {
