@@ -77,8 +77,9 @@ require 'vendor/autoload.php';
 
 $torrent = BitTorrent\Torrent::createFromTorrentFile('/path/to/file.torrent')
     ->withAnnounce('http://tracker/announce.php') // Override announce in original file
-    ->withComment('Some comment') // Override commend in original file
-    ->save('/save/to/path/file.torrent'); // Save to a new file
+    ->withComment('Some comment'); // Override commend in original file
+
+$torrent->save('/save/to/path/file.torrent'); // Save to a new file
 ```
 
 ## License
