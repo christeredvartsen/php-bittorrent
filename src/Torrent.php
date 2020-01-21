@@ -542,10 +542,10 @@ class Torrent {
             $info['name'] = $files[0]['filename'];
             $info['length'] = $files[0]['filesize'];
             $position = 0;
-            $fp = fopen($filePath . DIRECTORY_SEPARATOR . $files[0]['filename'], 'rb');
+            $fp = fopen($p = $filePath . DIRECTORY_SEPARATOR . $files[0]['filename'], 'rb');
 
             if (false === $fp) {
-                throw new RuntimeException('Failed to open file');
+                throw new RuntimeException(sprintf('Failed to open file: %s', $p));
             }
 
             while ($position < $info['length']) {
@@ -586,10 +586,10 @@ class Torrent {
                 ];
 
                 $position = 0;
-                $fp = fopen($absolutePath . DIRECTORY_SEPARATOR . $filename, 'rb');
+                $fp = fopen($p = $absolutePath . DIRECTORY_SEPARATOR . $filename, 'rb');
 
                 if (false === $fp) {
-                    throw new RuntimeException('Failed to open file');
+                    throw new RuntimeException(sprintf('Failed to open file: %s', $p));
                 }
 
                 while ($position < $filesize) {
