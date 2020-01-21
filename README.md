@@ -65,8 +65,9 @@ The `BitTorrent\Torrent` class represents a torrent file and can be used to crea
 require 'vendor/autoload.php';
 
 $torrent = BitTorrent\Torrent::createFromPath('/path/to/files', 'http://tracker/announce.php')
-    ->withComment('Some comment')
-    ->save('/save/to/path/file.torrent');
+    ->withComment('Some comment');
+
+$torrent->save('/save/to/path/file.torrent');
 ```
 
 The class can also load a torrent file:
