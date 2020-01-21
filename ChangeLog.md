@@ -3,7 +3,7 @@ Changelog for PHP BitTorrent
 
 Version 2.0.0
 -------------
-__N/A__
+__2020-01-21__
 
 * Use strict types
 * Remove support for 32 bit platforms
