@@ -31,7 +31,7 @@ class Torrent {
     /**
      * The list of announce URLs
      *
-     * @var array
+     * @var string[]
      */
     private $announceList = [];
 
@@ -70,6 +70,12 @@ class Torrent {
      */
     private $extraMeta;
 
+    /**
+     * Class constructor
+     *
+     * @param string $announceUrl Initial announce URL
+     * @param EncoderInterface $encoder Internal encoder instance
+     */
     public function __construct(string $announceUrl = null, EncoderInterface $encoder = null) {
         if (null !== $announceUrl) {
             $this->announceUrl = $announceUrl;
@@ -82,6 +88,12 @@ class Torrent {
         $this->encoder = $encoder;
     }
 
+    /**
+     * Set piece length exponent
+     *
+     * @param int $pieceLengthExp
+     * @return self
+     */
     public function withPieceLengthExp(int $pieceLengthExp) : self {
         $new = clone $this;
         $new->pieceLengthExp = $pieceLengthExp;
@@ -89,10 +101,21 @@ class Torrent {
         return $new;
     }
 
+    /**
+     * Get the piece length exponent
+     *
+     * @return int
+     */
     public function getPieceLengthExp() : int {
         return $this->pieceLengthExp;
     }
 
+    /**
+     * Set the announce URL
+     *
+     * @param string $announceUrl
+     * @return self
+     */
     public function withAnnounceUrl(string $announceUrl) : self {
         $new = clone $this;
         $new->announceUrl = $announceUrl;
@@ -100,10 +123,21 @@ class Torrent {
         return $new;
     }
 
+    /**
+     * Get the announce URL
+     *
+     * @return ?string
+     */
     public function getAnnounceUrl() : ?string {
         return $this->announceUrl;
     }
 
+    /**
+     * Set the internal encoder
+     *
+     * @param EncoderInterface $encoder
+     * @return self
+     */
     public function withEncoder(EncoderInterface $encoder) : self {
         $new = clone $this;
         $new->encoder = $encoder;
@@ -111,10 +145,21 @@ class Torrent {
         return $new;
     }
 
+    /**
+     * Get the encoder
+     *
+     * @return EncoderInterface
+     */
     public function getEncoder() : EncoderInterface {
         return $this->encoder;
     }
 
+    /**
+     * Set announce URL list
+     *
+     * @param string[] $announceList
+     * @return self
+     */
     public function withAnnounceList(array $announceList) : self {
         $new = clone $this;
         $new->announceList = $announceList;
@@ -122,10 +167,21 @@ class Torrent {
         return $new;
     }
 
+    /**
+     * Get the announce list
+     *
+     * @return string[]
+     */
     public function getAnnounceList() : ?array {
         return $this->announceList;
     }
 
+    /**
+     * Set a comment
+     *
+     * @param string $comment
+     * @return self
+     */
     public function withComment(string $comment) : self {
         $new = clone $this;
         $new->comment = $comment;
@@ -133,10 +189,21 @@ class Torrent {
         return $new;
     }
 
+    /**
+     * Get the comment
+     *
+     * @return ?string
+     */
     public function getComment() : ?string {
         return $this->comment;
     }
 
+    /**
+     * Set the created by field
+     *
+     * @param string $createdBy
+     * @return self
+     */
     public function withCreatedBy(string $createdBy) : self {
         $new = clone $this;
         $new->createdBy = $createdBy;
@@ -144,10 +211,21 @@ class Torrent {
         return $new;
     }
 
+    /**
+     * Get the created by string
+     *
+     * @return ?string
+     */
     public function getCreatedBy() : ?string {
         return $this->createdBy;
     }
 
+    /**
+     * Set the created at field
+     *
+     * @param int $createdAt
+     * @return self
+     */
     public function withCreatedAt(int $createdAt) : self {
         $new = clone $this;
         $new->createdAt = $createdAt;
@@ -155,10 +233,21 @@ class Torrent {
         return $new;
     }
 
+    /**
+     * Get the created at field
+     *
+     * @return ?int
+     */
     public function getCreatedAt() : ?int {
         return $this->createdAt;
     }
 
+    /**
+     * Set additional info
+     *
+     * @param array $info
+     * @return self
+     */
     public function withInfo(array $info) : self {
         $new = clone $this;
         $new->info = $info;
@@ -166,10 +255,21 @@ class Torrent {
         return $new;
     }
 
+    /**
+     * Get additional info
+     *
+     * @return ?array
+     */
     public function getInfo() : ?array {
         return $this->info;
     }
 
+    /**
+     * Set extra metadata
+     *
+     * @param array $extra
+     * @return self
+     */
     public function withExtraMeta(array $extra) : self {
         $new = clone $this;
         $new->extraMeta = $extra;
@@ -177,6 +277,11 @@ class Torrent {
         return $new;
     }
 
+    /**
+     * Get extra metadata
+     *
+     * @return ?array
+     */
     public function getExtraMeta() : ?array {
         return $this->extraMeta;
     }
@@ -186,10 +291,14 @@ class Torrent {
      *
      * This method will save the current object to a file. If the file specified exists it will be
      * overwritten.
+     *
+     * @param string $path The path to save the file to
+     * @throws RuntimeException
+     * @return bool Returns true on success or false on failure
      */
-    public function save(string $filename) : self {
-        if (!is_writable($filename) && !is_writable(dirname($filename))) {
-            throw new InvalidArgumentException(sprintf('Could not open file "%s" for writing.', $filename));
+    public function save(string $path) : bool {
+        if (!is_writable($path) && !is_writable(dirname($path))) {
+            throw new InvalidArgumentException(sprintf('Could not open file "%s" for writing.', $path));
         }
 
         if (null === $announceUrl = $this->getAnnounceUrl()) {
@@ -224,11 +333,14 @@ class Torrent {
             }
         }
 
-        file_put_contents($filename, $this->encoder->encodeDictionary($torrent));
-
-        return $this;
+        return false !== file_put_contents($path, $this->encoder->encodeDictionary($torrent));
     }
 
+    /**
+     * Get file list
+     *
+     * @return array
+     */
     public function getFileList() : array {
         $info = $this->getInfoPart();
 
@@ -239,6 +351,11 @@ class Torrent {
         return $info['files'];
     }
 
+    /**
+     * Get file size
+     *
+     * @return int
+     */
     public function getSize() : int {
         $info = $this->getInfoPart();
 
@@ -246,15 +363,26 @@ class Torrent {
             return $info['length'];
         }
 
-        return array_sum(array_map(function(array $file) : int {
+        return (int) array_sum(array_map(function(array $file) : int {
             return $file['length'];
         }, $this->getFileList()));
     }
 
+    /**
+     * Get the name from the info part
+     *
+     * @return string
+     */
     public function getName() : string {
         return $this->getInfoPart()['name'];
     }
 
+    /**
+     * Get sha1 hash from the encoded info part
+     *
+     * @param bool $raw Whether or not to return the hash in raw format
+     * @return string
+     */
     public function getHash(bool $raw = false) : string {
         return sha1(
             $this->encoder->encodeDictionary($this->getInfoPart()),
@@ -262,10 +390,20 @@ class Torrent {
         );
     }
 
+    /**
+     * Get the encoded hash
+     *
+     * @return string
+     */
     public function getEncodedHash() : string {
         return urlencode($this->getHash(true));
     }
 
+    /**
+     * Get the info part of the torrent
+     *
+     * @return array
+     */
     private function getInfoPart() : array {
         $info = $this->getInfo();
 
@@ -276,22 +414,49 @@ class Torrent {
         return $info;
     }
 
+    /**
+     * Check if the torrent is private
+     *
+     * @return bool
+     */
     public function isPrivate() : bool {
         $info = $this->getInfoPart();
 
         return (isset($info['private']) && 1 === $info['private']);
     }
 
+    /**
+     * Create torrent instance from a string
+     *
+     * @param string $contents
+     * @param DecoderInterface $decoder
+     * @param bool $strict
+     * @return self
+     */
     static public function createFromString(string $contents, DecoderInterface $decoder, bool $strict = false) : self {
         return static::createFromDictionary($decoder->decodeFileContents($contents, $strict));
     }
 
+    /**
+     * Create torrent instance from a torrent file
+     *
+     * @param string $path
+     * @param DecoderInterface $decoder
+     * @param bool $strict
+     * @return self
+     */
     static public function createFromTorrentFile(string $path, DecoderInterface $decoder, bool $strict = false) : self {
         return static::createFromDictionary($decoder->decodeFile($path, $strict));
     }
 
+    /**
+     * Create torrent instance from a dictionary
+     *
+     * @param array $dictionary
+     * @return self
+     */
     static public function createFromDictionary(array $dictionary) : self {
-        $torrent = new static();
+        $torrent = new self();
 
         if (isset($dictionary['announce'])) {
             $torrent = $torrent->withAnnounceUrl($dictionary['announce']);
@@ -330,8 +495,16 @@ class Torrent {
         return $torrent;
     }
 
+    /**
+     * Create torrent instance from local path
+     *
+     * @param string $path
+     * @param string $announceUrl
+     * @throws RuntimeException
+     * @return self
+     */
     static public function createFromPath(string $path, string $announceUrl = null) : self {
-        $torrent = new static($announceUrl);
+        $torrent = new self($announceUrl);
         $files = [];
 
         $absolutePath = realpath($path);
@@ -371,7 +544,12 @@ class Torrent {
             $position = 0;
             $fp = fopen($filePath . DIRECTORY_SEPARATOR . $files[0]['filename'], 'rb');
 
+            if (false === $fp) {
+                throw new RuntimeException('Failed to open file');
+            }
+
             while ($position < $info['length']) {
+                /** @var string */
                 $part = fread($fp, min($info['piece length'], $info['length'] - $position));
                 $pieces[] = sha1($part, true);
 
@@ -409,6 +587,10 @@ class Torrent {
 
                 $position = 0;
                 $fp = fopen($absolutePath . DIRECTORY_SEPARATOR . $filename, 'rb');
+
+                if (false === $fp) {
+                    throw new RuntimeException('Failed to open file');
+                }
 
                 while ($position < $filesize) {
                     $bytes = min(($filesize - $position), ($info['piece length'] - $done));

@@ -7,9 +7,9 @@ interface EncoderInterface {
     /**
      * Encode any encodable variable
      *
-     * @param int|string|array $var The variable to encode
-     * @return string Returns the encoded string
+     * @param mixed $var The variable to encode. Supports: int, string and array
      * @throws InvalidArgumentException
+     * @return string Returns the encoded string
      */
     function encode($var) : string;
 

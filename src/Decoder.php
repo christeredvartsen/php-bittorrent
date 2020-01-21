@@ -4,18 +4,29 @@ namespace BitTorrent;
 use InvalidArgumentException;
 
 class Decoder implements DecoderInterface {
+    /**
+     * @var EncoderInterface
+     */
     private $encoder;
 
+    /**
+     * Class constructor
+     *
+     * @param EncoderInterface $encoder Optional encoder instance
+     */
     public function __construct(EncoderInterface $encoder = null) {
         $this->encoder = $encoder ?? new Encoder();
     }
 
-    public function decodeFile(string $file, bool $strict = false) : array {
-        if (!is_readable($file)) {
-            throw new InvalidArgumentException(sprintf('File %s does not exist or can not be read.', $file));
+    public function decodeFile(string $path, bool $strict = false) : array {
+        if (!is_readable($path)) {
+            throw new InvalidArgumentException(sprintf('File %s does not exist or can not be read.', $path));
         }
 
-        return $this->decodeFileContents(file_get_contents($file, true), $strict);
+        /** @var string */
+        $contents = file_get_contents($path, true);
+
+        return $this->decodeFileContents($contents, $strict);
     }
 
     public function decodeFileContents(string $contents, bool $strict = false) : array {

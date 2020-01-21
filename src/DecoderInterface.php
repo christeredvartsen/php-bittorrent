@@ -15,22 +15,22 @@ interface DecoderInterface {
      *
      * By default the method does not check for these elements.
      *
-     * @param string $file Path to the torrent file we want to decode
+     * @param string $path Path to the torrent file we want to decode
      * @param bool $strict If set to true this method will check for certain elements in the
-     *                        dictionary.
-     * @return array Returns the decoded version of the file as an array
+     *                     dictionary.
      * @throws InvalidArgumentException
+     * @return array Returns the decoded version of the file as an array
      */
-    function decodeFile(string $file, bool $strict = false) : array;
+    function decodeFile(string $path, bool $strict = false) : array;
 
     /**
      * Decode the contents of a file as a string
      *
      * @param string $contents The contents of a torrent file
      * @param bool $strict If set to true this method will check for certain elements in the
-     *                        dictionary.
-     * @return array Returns the decoded version of the file as an array
+     *                     dictionary.
      * @throws InvalidArgumentException
+     * @return array Returns the decoded version of the file as an array
      */
     function decodeFileContents(string $contents, bool $strict = false) : array;
 
@@ -38,8 +38,8 @@ interface DecoderInterface {
      * Decode any bittorrent encoded string
      *
      * @param string $string The string to decode
-     * @return int|string|array Returns the native PHP counterpart of the encoded string
      * @throws InvalidArgumentException
+     * @return int|string|array Returns the native PHP counterpart of the encoded string
      */
     function decode(string $string);
 
@@ -47,8 +47,8 @@ interface DecoderInterface {
      * Decode an encoded PHP integer
      *
      * @param string $integer The integer to decode
-     * @return int Returns the decoded integer
      * @throws InvalidArgumentException
+     * @return int Returns the decoded integer
      */
     function decodeInteger(string $integer) : int;
 
@@ -56,8 +56,8 @@ interface DecoderInterface {
      * Decode an encoded PHP string
      *
      * @param string $string The string to decode
-     * @return string Returns the decoded string value
      * @throws InvalidArgumentException
+     * @return string Returns the decoded string value
      */
     function decodeString(string $string) : string;
 
@@ -65,8 +65,8 @@ interface DecoderInterface {
      * Decode an encoded PHP array
      *
      * @param string $list Encoded list
-     * @return array Returns a numerical array
      * @throws InvalidArgumentException
+     * @return array Returns a numerical array
      */
     function decodeList(string $list) : array;
 
@@ -74,8 +74,8 @@ interface DecoderInterface {
      * Decode an encoded PHP associative array
      *
      * @param string $dictionary Encoded dictionary
-     * @return array Returns an associative array
      * @throws InvalidArgumentException
+     * @return array Returns an associative array
      */
     function decodeDictionary(string $dictionary) : array;
 }
