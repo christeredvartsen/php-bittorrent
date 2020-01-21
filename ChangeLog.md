@@ -1,5 +1,16 @@
 Changelog for PHP BitTorrent
-=====================
+============================
+
+Version 2.0.0
+-------------
+__2020-01-21__
+
+* Use strict types
+* Remove support for 32 bit platforms
+* Bump PHP requirement from 5.3 to 7.2
+* Change namespace from PHP\BitTorrent to BitTorrent
+* Added method to check if the torrent is private (@stormwalkerec)
+* Made `BitTorrent\Torrent` immutable
 
 Version 1.1.0
 -------------

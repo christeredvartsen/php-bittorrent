@@ -1,27 +1,10 @@
-<?php
-/**
- * This file is part of the PHP BitTorrent package
- *
- * (c) Christer Edvartsen <cogo@starzinger.net>
- *
- * For the full copyright and license information, please view the LICENSE file that was
- * distributed with this source code.
- */
-
-namespace PHP\BitTorrent;
+<?php declare(strict_types=1);
+namespace BitTorrent;
 
 use InvalidArgumentException;
 
-/**
- * Decode bittorrent strings to it's PHP variable counterpart
- *
- * @package Decoder
- * @author Christer Edvartsen <cogo@starzinger.net>
- */
 class Decoder implements DecoderInterface {
     /**
-     * Encoder instance
-     *
      * @var EncoderInterface
      */
     private $encoder;
@@ -29,46 +12,43 @@ class Decoder implements DecoderInterface {
     /**
      * Class constructor
      *
-     * @param EncoderInterface $encoder An instance of an encoder
+     * @param EncoderInterface $encoder Optional encoder instance
      */
     public function __construct(EncoderInterface $encoder = null) {
-        if ($encoder === null) {
-            $encoder = new Encoder();
-        }
-
-        $this->encoder = $encoder;
+        $this->encoder = $encoder ?? new Encoder();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function decodeFile($file, $strict = false) {
-        if (!is_readable($file)) {
-            throw new InvalidArgumentException('File ' . $file . ' does not exist or can not be read.');
+    public function decodeFile(string $path, bool $strict = false) : array {
+        if (!is_readable($path)) {
+            throw new InvalidArgumentException(sprintf('File %s does not exist or can not be read.', $path));
         }
 
-        $dictionary = $this->decodeDictionary(file_get_contents($file, true));
+        /** @var string */
+        $contents = file_get_contents($path, true);
+
+        return $this->decodeFileContents($contents, $strict);
+    }
+
+    public function decodeFileContents(string $contents, bool $strict = false) : array {
+        $dictionary = $this->decodeDictionary($contents);
 
         if ($strict) {
-            if (!isset($dictionary['announce']) || !is_string($dictionary['announce'])) {
-                throw new InvalidArgumentException('Missing "announce" key.');
-            } else if (!isset($dictionary['info']) || !is_array($dictionary['info'])) {
-                throw new InvalidArgumentException('Missing "info" key.');
+            if (!isset($dictionary['announce']) || !is_string($dictionary['announce']) && !empty($dictionary['announce'])) {
+                throw new InvalidArgumentException('Missing or empty "announce" key.');
+            } else if (!isset($dictionary['info']) || !is_array($dictionary['info']) && !empty($dictionary['info'])) {
+                throw new InvalidArgumentException('Missing or empty "info" key.');
             }
         }
 
         return $dictionary;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function decode($string) {
-        if ($string[0] === 'i') {
+    public function decode(string $string) {
+        if ('i' === $string[0]) {
             return $this->decodeInteger($string);
-        } else if ($string[0] === 'l') {
+        } else if ('l' === $string[0]) {
             return $this->decodeList($string);
-        } else if ($string[0] === 'd') {
+        } else if ('d' === $string[0]) {
             return $this->decodeDictionary($string);
         } else if (preg_match('/^\d+:/', $string)) {
             return $this->decodeString($string);
@@ -77,41 +57,30 @@ class Decoder implements DecoderInterface {
         throw new InvalidArgumentException('Parameter is not correctly encoded.');
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function decodeInteger($integer) {
-        if ($integer[0] !== 'i' || (!$ePos = strpos($integer, 'e'))) {
+    public function decodeInteger(string $integer) : int {
+        if ('i' !== $integer[0] || (!$ePos = strpos($integer, 'e'))) {
             throw new InvalidArgumentException('Invalid integer. Integers must start wth "i" and end with "e".');
         }
 
         $integer = substr($integer, 1, ($ePos - 1));
         $len = strlen($integer);
 
-        if (($integer[0] === '0' && $len > 1) || ($integer[0] === '-' && $integer[1] === '0') || !is_numeric($integer)) {
+        if (('0' === $integer[0] && $len > 1) || ('-' === $integer[0] && '0' === $integer[1]) || !is_numeric($integer)) {
             throw new InvalidArgumentException('Invalid integer value.');
         }
 
-        if (PHP_INT_SIZE === 8) {
-            return (int) $integer;
-        }
-
-        return $integer;
+        return (int) $integer;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function decodeString($string) {
+    public function decodeString(string $string) : string {
         $stringParts = explode(':', $string, 2);
 
-        // The string must have two parts
-        if (count($stringParts) !== 2) {
+        if (2 !== count($stringParts)) {
             throw new InvalidArgumentException('Invalid string. Strings consist of two parts separated by ":".');
         }
 
         $length = (int) $stringParts[0];
-        $lengthLen = strlen($length);
+        $lengthLen = strlen((string) $length);
 
         if (($lengthLen + 1 + $length) > strlen($string)) {
             throw new InvalidArgumentException('The length of the string does not match the prefix of the encoded data.');
@@ -120,21 +89,18 @@ class Decoder implements DecoderInterface {
         return substr($string, ($lengthLen + 1), $length);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function decodeList($list) {
-        if ($list[0] !== 'l') {
+    public function decodeList(string $list) : array {
+        if ('l' !== $list[0]) {
             throw new InvalidArgumentException('Parameter is not an encoded list.');
         }
 
-        $ret = array();
+        $ret = [];
 
         $length = strlen($list);
         $i = 1;
 
         while ($i < $length) {
-            if ($list[$i] === 'e') {
+            if ('e' === $list[$i]) {
                 break;
             }
 
@@ -147,20 +113,17 @@ class Decoder implements DecoderInterface {
         return $ret;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function decodeDictionary($dictionary) {
-        if ($dictionary[0] !== 'd') {
+    public function decodeDictionary(string $dictionary) : array {
+        if ('d' !== $dictionary[0]) {
             throw new InvalidArgumentException('Parameter is not an encoded dictionary.');
         }
 
         $length = strlen($dictionary);
-        $ret = array();
+        $ret = [];
         $i = 1;
 
         while ($i < $length) {
-            if ($dictionary[$i] === 'e') {
+            if ('e' === $dictionary[$i]) {
                 break;
             }
 

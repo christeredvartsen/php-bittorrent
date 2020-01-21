@@ -1,0 +1,48 @@
+name: Build and test
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Dump PHP version
+      run: php -v
+
+    - name: Validate composer.json
+      run: composer validate --strict
+
+    - name: Lint all PHP files
+      run: composer run qa:lint
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v1
+      with:
+        path: vendor
+        key: ${{ runner.os }}-node-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Install Barrel API Client dependencies through Composer
+      if: steps.composer-cache.outputs.cache-hit != 'true'
+      run: composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Get lines of code
+      run: composer run qa:phploc
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: phploc
+        path: build/artifacts/phploc/phploc.xml
+
+    - name: Run static code analyser
+      run: composer run qa:phpstan
+
+    - name: Run unit tests
+      run: composer run test:phpunit:coverage
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: PHPUnit Code Coverage report
+        path: build/artifacts/phpunit/coverage

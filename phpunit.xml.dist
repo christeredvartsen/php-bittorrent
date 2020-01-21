@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit colors="true" bootstrap="tests/bootstrap.php">
+<phpunit colors="false" bootstrap="vendor/autoload.php">
   <testsuites>
     <testsuite name="PHP BitTorrent test suite">
-      <directory>tests/PHP</directory>
+      <directory>tests</directory>
     </testsuite>
   </testsuites>
-  <logging>
-    <log type="coverage-html" target="build/coverage" title="Code coverage" charset="UTF-8" yui="true" highlight="true" />
-    <log type="coverage-clover" target="build/logs/clover.xml" />
-    <log type="junit" target="build/logs/junit.xml" logIncompleteSkipped="false" />
-  </logging>
   <filter>
     <whitelist addUncoveredFilesFromWhitelist="true">
-      <directory suffix=".php">PHP</directory>
+      <directory suffix=".php">src</directory>
     </whitelist>
   </filter>
 </phpunit>
