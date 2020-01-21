@@ -1,13 +1,10 @@
-name: CI
-
-on: [push]
-
+name: Build and test
+on: push
 jobs:
   build:
-    runs-on: ubuntu-18.04
-
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
 
     - name: Dump PHP version
       run: php -v
@@ -18,7 +15,17 @@ jobs:
     - name: Lint all PHP files
       run: composer run qa:lint
 
+    - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v1
+        with:
+          path: vendor
+          key: ${{ runner.os }}-node-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
     - name: Install Barrel API Client dependencies through Composer
+      if: steps.composer-cache.outputs.cache-hit != 'true'
       run: composer install --prefer-dist --no-progress --no-suggest
 
     - name: Get lines of code
