@@ -39,7 +39,7 @@
   "scripts": {
     "clean:build": "rm -rf build",
     "qa:lint": "for file in `git ls-files '*php'`; do php -l $file; done",
-    "qa:phpstan": "vendor/bin/phpstan analyse src tests -l 4",
+    "qa:phpstan": "vendor/bin/phpstan analyse src -l max --no-progress",
     "qa:phploc": [
       "rm -rf build/artifacts/phploc",
       "mkdir -p build/artifacts/phploc",
